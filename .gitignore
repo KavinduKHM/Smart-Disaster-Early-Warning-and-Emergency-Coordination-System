@@ -1,8 +1,0 @@
-node_modules/
-dist/
-.angular/
-.env
-*.log
-.DS_Store
-package-lock.json
-
