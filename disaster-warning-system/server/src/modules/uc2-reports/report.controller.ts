@@ -10,7 +10,11 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
+  UseInterceptors,
+  UploadedFile,
+  BadRequestException,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ReportService } from './report.service';
 import { CreateReportDto } from './dto/create-report.dto';
 import { UpdateReportDto } from './dto/update-report.dto';
@@ -19,10 +23,31 @@ import { RejectReportDto } from './dto/reject-report.dto';
 import { QueryReportDto } from './dto/query-report.dto';
 import { JwtAuthGuard, OptionalJwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { CloudinaryService } from '../shared/cloudinary/cloudinary.service';
 
 @Controller('reports')
 export class ReportController {
-  constructor(private readonly reportService: ReportService) {}
+  constructor(
+    private readonly reportService: ReportService,
+    private readonly cloudinaryService: CloudinaryService,
+  ) {}
+
+  @Post('upload-photo')
+  @UseInterceptors(FileInterceptor('photo'))
+  async uploadPhoto(
+    @UploadedFile() file?: Express.Multer.File,
+    @Body('base64') base64Data?: string,
+  ) {
+    if (file) {
+      const result = await this.cloudinaryService.uploadFile(file);
+      return { url: (result as any).secure_url, public_id: (result as any).public_id };
+    } else if (base64Data) {
+      const result = await this.cloudinaryService.uploadBase64(base64Data);
+      return { url: (result as any).secure_url, public_id: (result as any).public_id };
+    } else {
+      throw new BadRequestException('Please provide an image file or base64 data string');
+    }
+  }
 
   @Post()
   @UseGuards(OptionalJwtAuthGuard)
