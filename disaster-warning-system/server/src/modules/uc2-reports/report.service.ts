@@ -8,6 +8,7 @@ import { UpdateReportDto } from './dto/update-report.dto';
 import { VerifyReportDto } from './dto/verify-report.dto';
 import { RejectReportDto } from './dto/reject-report.dto';
 import { QueryReportDto } from './dto/query-report.dto';
+import { CloudinaryService } from '../shared/cloudinary/cloudinary.service';
 
 @Injectable()
 export class ReportService {
@@ -16,6 +17,7 @@ export class ReportService {
     private readonly reportModel: Model<GroundReportDocument>,
     @InjectModel(ReportVerification.name)
     private readonly verificationModel: Model<ReportVerificationDocument>,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
   private async generateReportId(): Promise<string> {
@@ -25,13 +27,39 @@ export class ReportService {
     return `REP-${year}-${nextNum}`;
   }
 
+  /**
+   * Helper to automatically process and upload any base64 image strings to Cloudinary
+   */
+  private async processPhotos(photos?: string[]): Promise<string[]> {
+    if (!photos || photos.length === 0) return [];
+
+    const processedPhotos: string[] = [];
+    for (const photo of photos) {
+      if (photo.startsWith('data:image/') || photo.length > 500) {
+        try {
+          const uploadRes = await this.cloudinaryService.uploadBase64(photo);
+          processedPhotos.push((uploadRes as any).secure_url);
+        } catch (err) {
+          console.error('Failed to upload base64 image to Cloudinary, keeping original:', err);
+          processedPhotos.push(photo);
+        }
+      } else {
+        processedPhotos.push(photo);
+      }
+    }
+
+    return processedPhotos;
+  }
+
   async create(dto: CreateReportDto, user?: any): Promise<GroundReportDocument> {
     const reportId = await this.generateReportId();
-    
-    // Automatically derive reporter identity from JWT user if available
+
     const reportedBy = user ? user.name || user.email : dto.reportedBy || 'CITIZEN-001';
     const reporterType = user ? user.role || 'CITIZEN' : dto.reporterType || 'CITIZEN';
     const district = dto.district || (user ? user.district : 'Kandy');
+
+    // Automatically process photos: upload base64 images to Cloudinary CDN
+    const finalPhotos = await this.processPhotos(dto.photos);
 
     const newReport = new this.reportModel({
       reportId,
@@ -45,7 +73,7 @@ export class ReportService {
         type: 'Point',
         coordinates: [dto.longitude, dto.latitude], // GeoJSON: [lon, lat]
       },
-      photos: dto.photos || [],
+      photos: finalPhotos,
       status: 'PENDING',
     });
 
@@ -130,7 +158,10 @@ export class ReportService {
     if (dto.description) report.description = dto.description;
     if (dto.district) report.district = dto.district;
     if (dto.address !== undefined) report.address = dto.address;
-    if (dto.photos) report.photos = dto.photos;
+    
+    if (dto.photos) {
+      report.photos = await this.processPhotos(dto.photos);
+    }
 
     if (dto.latitude !== undefined && dto.longitude !== undefined) {
       report.location = {
