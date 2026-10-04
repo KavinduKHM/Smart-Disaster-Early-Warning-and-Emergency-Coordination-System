@@ -10,13 +10,15 @@ import { ReliefModule } from './modules/uc4-relief/relief.module';
 
 dotenv.config();
 
-const mongoUri =
-  process.env.MONGODB_URI ||
-  'mongodb+srv://asheniimalsha0_db_user:asheni@cluster0.j5gvtgv.mongodb.net/disaster_warning?retryWrites=true&w=majority&appName=Cluster0';
+const mongoUri = process.env.MONGODB_URI;
+
+if (!mongoUri) {
+  console.warn('WARNING: MONGODB_URI is not set in environment variables! Please check your .env file.');
+}
 
 @Module({
   imports: [
-    MongooseModule.forRoot(mongoUri),
+    MongooseModule.forRoot(mongoUri || ''),
     SharedModule,
     AuthModule,
     WarningModule,
