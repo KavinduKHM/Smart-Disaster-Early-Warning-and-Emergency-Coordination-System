@@ -1,4 +1,11 @@
+import { IsString, IsOptional } from 'class-validator';
+
 export class VerifyReportDto {
-  verified!: boolean;
-  notes?: string;
+  @IsString()
+  @IsOptional()
+  verifiedBy?: string;
+
+  @IsString()
+  @IsOptional()
+  remarks?: string;
 }
