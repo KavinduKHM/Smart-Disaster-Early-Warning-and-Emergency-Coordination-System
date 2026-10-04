@@ -1,5 +1,29 @@
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Min,
+} from 'class-validator';
+
 export class AllocateResourceDto {
-  resourceType!: string;
-  quantity!: number;
-  shelterId!: string;
+  @IsString()
+  @IsNotEmpty()
+  resourceId: string;
+
+  @IsString()
+  @IsNotEmpty()
+  shelterId: string;
+
+  @IsNumber()
+  @Min(1)
+  quantity: number;
+
+  @IsOptional()
+  @IsString()
+  distributedBy?: string;
+
+  @IsOptional()
+  @IsString()
+  notes?: string;
 }
