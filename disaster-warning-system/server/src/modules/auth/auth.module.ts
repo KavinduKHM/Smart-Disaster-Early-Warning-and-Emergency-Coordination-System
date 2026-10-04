@@ -15,7 +15,7 @@ import { JwtAuthGuard, OptionalJwtAuthGuard } from './guards/jwt-auth.guard';
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       useFactory: () => ({
-        secret: process.env.JWT_SECRET || 'disaster_warning_secret_key_2026',
+        secret: process.env.JWT_SECRET || 'disaster_warning_secret_key',
         signOptions: { expiresIn: '7d' },
       }),
     }),

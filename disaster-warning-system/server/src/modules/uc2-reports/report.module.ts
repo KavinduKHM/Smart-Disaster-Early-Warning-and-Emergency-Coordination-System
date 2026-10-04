@@ -4,6 +4,7 @@ import { ReportController } from './report.controller';
 import { ReportService } from './report.service';
 import { GroundReport, GroundReportSchema } from './schemas/ground-report.schema';
 import { ReportVerification, ReportVerificationSchema } from './schemas/report-verification.schema';
+import { CloudinaryModule } from '../shared/cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { ReportVerification, ReportVerificationSchema } from './schemas/report-v
       { name: GroundReport.name, schema: GroundReportSchema },
       { name: ReportVerification.name, schema: ReportVerificationSchema },
     ]),
+    CloudinaryModule,
   ],
   controllers: [ReportController],
   providers: [ReportService],
