@@ -1,14 +1,23 @@
-/* Global Styles for Disaster Warning & Emergency Coordination System */
-:root {
-  --primary-color: #d9534f;
-  --secondary-color: #0275d8;
-  --background-color: #f8f9fa;
-  --text-color: #333;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body {
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    overscroll-behavior: none;
+  }
+  main > :first-child {
+    margin-top: 0 !important;
+  }
+  main > :last-child {
+    margin-bottom: 0 !important;
+  }
 }
 
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  background-color: var(--background-color);
-  color: var(--text-color);
+::-webkit-scrollbar {
+  display: none;
 }
