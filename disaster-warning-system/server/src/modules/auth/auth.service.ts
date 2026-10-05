@@ -9,6 +9,7 @@ import { Model } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import { User, UserDocument } from './schemas/user.schema';
+import { RescueTeam, RescueTeamDocument } from '../uc3-rescue/rescue-teams/schemas/rescue-team.schema';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 
@@ -17,8 +18,15 @@ export class AuthService {
   constructor(
     @InjectModel(User.name)
     private readonly userModel: Model<UserDocument>,
+    @InjectModel(RescueTeam.name)
+    private readonly rescueTeamModel: Model<RescueTeamDocument>,
     private readonly jwtService: JwtService,
   ) {}
+
+  private async generateTeamId(): Promise<string> {
+    const count = await this.rescueTeamModel.countDocuments();
+    return `TEAM-${(count + 1).toString().padStart(3, '0')}`;
+  }
 
   async register(dto: RegisterDto) {
     const existing = await this.userModel.findOne({ email: dto.email.toLowerCase() }).exec();
@@ -27,15 +35,43 @@ export class AuthService {
     }
 
     const hashedPassword = await bcrypt.hash(dto.password, 10);
+    const role = dto.role || 'CITIZEN';
+
+    let generatedTeamId = dto.badgeId;
+
+    // If registering as a RESCUE_TEAM, automatically create the full RescueTeam record
+    if (role === 'RESCUE_TEAM') {
+      generatedTeamId = await this.generateTeamId();
+
+      const newRescueTeam = new this.rescueTeamModel({
+        teamId: generatedTeamId,
+        name: dto.name,
+        organization: dto.organization || 'Sri Lanka Navy',
+        type: dto.teamType || 'WATER_RESCUE',
+        members: dto.membersCount || 10,
+        district: dto.district || 'Kandy',
+        location: {
+          type: 'Point',
+          coordinates: [dto.longitude || 80.6337, dto.latitude || 7.2906],
+        },
+        status: 'AVAILABLE',
+      });
+
+      await newRescueTeam.save();
+    }
 
     const newUser = new this.userModel({
       name: dto.name,
       email: dto.email.toLowerCase(),
       password: hashedPassword,
-      role: dto.role || 'CITIZEN',
+      role,
       district: dto.district || 'Kandy',
       phone: dto.phone || '',
       badgeId: dto.badgeId || '',
+      teamId: generatedTeamId,
+      organization: dto.organization,
+      teamType: dto.teamType,
+      membersCount: dto.membersCount,
     });
 
     const savedUser = await newUser.save();
@@ -46,6 +82,7 @@ export class AuthService {
       name: savedUser.name,
       role: savedUser.role,
       district: savedUser.district,
+      teamId: savedUser.teamId,
     };
 
     const token = this.jwtService.sign(payload);
@@ -60,6 +97,10 @@ export class AuthService {
         district: savedUser.district,
         phone: savedUser.phone,
         badgeId: savedUser.badgeId,
+        teamId: savedUser.teamId,
+        organization: savedUser.organization,
+        teamType: savedUser.teamType,
+        membersCount: savedUser.membersCount,
       },
     };
   }
@@ -81,6 +122,7 @@ export class AuthService {
       name: user.name,
       role: user.role,
       district: user.district,
+      teamId: user.teamId,
     };
 
     const token = this.jwtService.sign(payload);
@@ -95,6 +137,10 @@ export class AuthService {
         district: user.district,
         phone: user.phone,
         badgeId: user.badgeId,
+        teamId: user.teamId,
+        organization: user.organization,
+        teamType: user.teamType,
+        membersCount: user.membersCount,
       },
     };
   }
@@ -125,12 +171,16 @@ export class AuthService {
         phone: '0771234567',
       },
       {
-        name: 'Kamal Silva',
-        email: 'volunteer@disaster.lk',
+        name: 'Sri Lanka Navy Water Rescue Team 1',
+        email: 'rescueteam@disaster.lk',
         password: passwordHash,
-        role: 'VOLUNTEER',
-        district: 'Badulla',
-        phone: '0719876543',
+        role: 'RESCUE_TEAM',
+        district: 'Kandy',
+        phone: '0812345678',
+        teamId: 'TEAM-001',
+        organization: 'Sri Lanka Navy',
+        teamType: 'WATER_RESCUE',
+        membersCount: 12,
       },
       {
         name: 'Duty Officer Ruwan',
@@ -160,6 +210,19 @@ export class AuthService {
         badgeId: 'DIST-KANDY-01',
       },
     ];
+
+    // Also seed initial RescueTeam record for the sample rescue team
+    const sampleTeam = new this.rescueTeamModel({
+      teamId: 'TEAM-001',
+      name: 'Sri Lanka Navy Water Rescue Team 1',
+      organization: 'Sri Lanka Navy',
+      type: 'WATER_RESCUE',
+      members: 12,
+      district: 'Kandy',
+      location: { type: 'Point', coordinates: [80.6337, 7.2906] },
+      status: 'AVAILABLE',
+    });
+    await sampleTeam.save();
 
     await this.userModel.insertMany(defaultUsers);
     return {

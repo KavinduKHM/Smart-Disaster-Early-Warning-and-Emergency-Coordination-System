@@ -11,7 +11,7 @@ export class GroundReport {
   @Prop({ required: true, default: 'CITIZEN-001' })
   reportedBy!: string;
 
-  @Prop({ required: true, enum: ['CITIZEN', 'VOLUNTEER', 'DUTY_OFFICER'], default: 'CITIZEN' })
+  @Prop({ required: true, enum: ['CITIZEN', 'DUTY_OFFICER'], default: 'CITIZEN' })
   reporterType!: string;
 
   @Prop({
