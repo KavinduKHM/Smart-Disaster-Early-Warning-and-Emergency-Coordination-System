@@ -1,0 +1,211 @@
+<div class="min-h-screen bg-slate-50 flex flex-col justify-center items-center py-10 px-4 sm:px-6 lg:px-8 font-sans">
+  
+  <div class="max-w-lg w-full bg-white rounded-2xl shadow-xl border border-slate-100 p-8 space-y-6">
+    
+    <!-- Top Shield Icon -->
+    <div class="flex justify-center">
+      <div class="w-14 h-14 bg-blue-50 border border-blue-100 rounded-2xl flex items-center justify-center shadow-sm">
+        <svg class="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Title & Description -->
+    <div class="text-center space-y-1">
+      <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Portal Registration</h2>
+      <p class="text-xs text-slate-500">Create an authenticated account for national disaster coordination.</p>
+    </div>
+
+    <!-- Error Alert -->
+    <div *ngIf="errorMessage" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm flex items-center gap-2">
+      <svg class="w-5 h-5 text-red-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+      </svg>
+      <span>{{ errorMessage }}</span>
+    </div>
+
+    <!-- Registration Form -->
+    <form (ngSubmit)="onRegister()" class="space-y-4">
+      
+      <!-- Role Selection -->
+      <div class="space-y-1">
+        <label class="block text-xs font-semibold text-slate-700">Select Account Role *</label>
+        <select 
+          [(ngModel)]="selectedRole" 
+          name="selectedRole" 
+          class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-2 focus:ring-blue-600 focus:border-blue-600 block p-3 font-medium"
+        >
+          <option value="CITIZEN">👤 Citizen / Public User</option>
+          <option value="RESCUE_TEAM">🚑 Rescue Team (Full Unit Registration)</option>
+          <option value="DUTY_OFFICER">👮 Duty Officer (Field Verification)</option>
+          <option value="DMC_OFFICER">🏢 DMC Officer (National Command)</option>
+          <option value="DISTRICT_OFFICER">🏛️ District Officer (Regional Coordinator)</option>
+        </select>
+      </div>
+
+      <!-- General Name Field -->
+      <div class="space-y-1">
+        <label class="block text-xs font-semibold text-slate-700">
+          <span *ngIf="selectedRole !== 'RESCUE_TEAM'">Full Name *</span>
+          <span *ngIf="selectedRole === 'RESCUE_TEAM'">Rescue Team Unit Name *</span>
+        </label>
+        <input 
+          type="text" 
+          [(ngModel)]="name" 
+          name="name" 
+          [placeholder]="selectedRole === 'RESCUE_TEAM' ? 'e.g. Sri Lanka Navy Water Rescue Unit 2' : 'e.g. Asheni Imalsha'"
+          required 
+          class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl p-3 focus:ring-2 focus:ring-blue-600"
+        >
+      </div>
+
+      <!-- Email & Password -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div class="space-y-1">
+          <label class="block text-xs font-semibold text-slate-700">Email Address *</label>
+          <input 
+            type="email" 
+            [(ngModel)]="email" 
+            name="email" 
+            placeholder="user@domain.com" 
+            required 
+            class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl p-3 focus:ring-2 focus:ring-blue-600"
+          >
+        </div>
+        <div class="space-y-1">
+          <label class="block text-xs font-semibold text-slate-700">Password *</label>
+          <input 
+            type="password" 
+            [(ngModel)]="password" 
+            name="password" 
+            placeholder="Min 6 chars" 
+            required 
+            class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl p-3 focus:ring-2 focus:ring-blue-600"
+          >
+        </div>
+      </div>
+
+      <!-- District & Phone -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div class="space-y-1">
+          <label class="block text-xs font-semibold text-slate-700">Operating District *</label>
+          <select 
+            [(ngModel)]="district" 
+            name="district" 
+            class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl p-3 focus:ring-2 focus:ring-blue-600"
+          >
+            <option *ngFor="let d of districts" [value]="d">{{ d }}</option>
+          </select>
+        </div>
+        <div class="space-y-1">
+          <label class="block text-xs font-semibold text-slate-700">Phone Number</label>
+          <input 
+            type="text" 
+            [(ngModel)]="phone" 
+            name="phone" 
+            placeholder="0771234567" 
+            class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl p-3 focus:ring-2 focus:ring-blue-600"
+          >
+        </div>
+      </div>
+
+      <!-- Officer Specific Badge ID -->
+      <div *ngIf="['DUTY_OFFICER', 'DMC_OFFICER', 'DISTRICT_OFFICER'].includes(selectedRole)" class="space-y-1 bg-slate-50 p-3 rounded-xl border border-slate-200">
+        <label class="block text-xs font-semibold text-slate-700">Official Badge ID / Service Number</label>
+        <input 
+          type="text" 
+          [(ngModel)]="badgeId" 
+          name="badgeId" 
+          placeholder="e.g. DMC-OFF-101" 
+          class="w-full bg-white border border-slate-300 text-slate-900 text-sm rounded-lg p-2.5"
+        >
+      </div>
+
+      <!-- RESCUE TEAM SPECIFIC FIELDS -->
+      <div *ngIf="selectedRole === 'RESCUE_TEAM'" class="space-y-3 bg-blue-50/60 p-4 rounded-xl border border-blue-100">
+        <h4 class="text-xs font-bold text-blue-900 uppercase tracking-wider">🚑 Rescue Unit Parameters</h4>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-blue-900">Organization</label>
+            <input 
+              type="text" 
+              [(ngModel)]="organization" 
+              name="organization" 
+              placeholder="e.g. Sri Lanka Navy" 
+              class="w-full bg-white border border-slate-300 text-slate-900 text-xs rounded-lg p-2.5"
+            >
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-blue-900">Team Rescue Type</label>
+            <select 
+              [(ngModel)]="teamType" 
+              name="teamType" 
+              class="w-full bg-white border border-slate-300 text-slate-900 text-xs rounded-lg p-2.5"
+            >
+              <option value="WATER_RESCUE">Water Rescue</option>
+              <option value="SEARCH_AND_RESCUE">Search & Rescue</option>
+              <option value="MEDICAL">Medical Emergency</option>
+              <option value="FIRE">Fire Response</option>
+              <option value="EVACUATION">Evacuation Unit</option>
+              <option value="GENERAL">General Rescue</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <div>
+            <label class="block text-xs font-semibold text-blue-900">Personnel Count</label>
+            <input 
+              type="number" 
+              [(ngModel)]="membersCount" 
+              name="membersCount" 
+              min="1" 
+              class="w-full bg-white border border-slate-300 text-slate-900 text-xs rounded-lg p-2.5"
+            >
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-blue-900">Base Lat</label>
+            <input 
+              type="number" 
+              [(ngModel)]="latitude" 
+              name="latitude" 
+              step="0.0001" 
+              class="w-full bg-white border border-slate-300 text-slate-900 text-xs rounded-lg p-2.5"
+            >
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-blue-900">Base Lon</label>
+            <input 
+              type="number" 
+              [(ngModel)]="longitude" 
+              name="longitude" 
+              step="0.0001" 
+              class="w-full bg-white border border-slate-300 text-slate-900 text-xs rounded-lg p-2.5"
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button 
+        type="submit" 
+        [disabled]="isLoading"
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition-all duration-200 flex justify-center items-center gap-2 disabled:opacity-50 text-base"
+      >
+        <span *ngIf="!isLoading">Register Account ➔</span>
+        <span *ngIf="isLoading">Processing Registration...</span>
+      </button>
+
+    </form>
+
+    <!-- Switch to Login -->
+    <div class="text-center text-sm text-slate-600">
+      Already have an account? 
+      <a routerLink="/login" class="text-blue-600 hover:text-blue-700 font-bold hover:underline">Sign In Here</a>
+    </div>
+
+  </div>
+
+</div>

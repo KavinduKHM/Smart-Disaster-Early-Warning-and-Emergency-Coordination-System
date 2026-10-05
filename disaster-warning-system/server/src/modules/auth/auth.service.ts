@@ -39,7 +39,6 @@ export class AuthService {
 
     let generatedTeamId = dto.badgeId;
 
-    // If registering as a RESCUE_TEAM, automatically create the full RescueTeam record
     if (role === 'RESCUE_TEAM') {
       generatedTeamId = await this.generateTeamId();
 
@@ -153,6 +152,10 @@ export class AuthService {
     return user;
   }
 
+  async findAllUsers() {
+    return await this.userModel.find().select('-password').sort({ createdAt: -1 }).exec();
+  }
+
   async seedUsers() {
     const count = await this.userModel.countDocuments();
     if (count > 0) {
@@ -211,7 +214,6 @@ export class AuthService {
       },
     ];
 
-    // Also seed initial RescueTeam record for the sample rescue team
     const sampleTeam = new this.rescueTeamModel({
       teamId: 'TEAM-001',
       name: 'Sri Lanka Navy Water Rescue Team 1',

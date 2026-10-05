@@ -21,6 +21,11 @@ export class AuthController {
     return this.authService.login(loginDto);
   }
 
+  @Get('users')
+  async findAllUsers() {
+    return this.authService.findAllUsers();
+  }
+
   @Get('me')
   @UseGuards(JwtAuthGuard)
   async getProfile(@CurrentUser() user: any) {
