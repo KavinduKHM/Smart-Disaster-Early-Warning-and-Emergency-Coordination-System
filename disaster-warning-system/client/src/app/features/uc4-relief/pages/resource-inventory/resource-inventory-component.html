@@ -1,0 +1,142 @@
+<div class="page">
+
+  <h1>Resource Inventory</h1>
+
+  <div class="card">
+
+    <h2>Add Resource</h2>
+
+    <form
+      (ngSubmit)="createResource()"
+    >
+
+      <input
+        type="text"
+        placeholder="Resource Name"
+        [(ngModel)]="resource.name"
+        name="name"
+        required
+      />
+
+      <select
+        [(ngModel)]="resource.category"
+        name="category"
+      >
+
+        <option value="FOOD">
+          Food
+        </option>
+
+        <option value="WATER">
+          Water
+        </option>
+
+        <option value="MEDICINE">
+          Medicine
+        </option>
+
+        <option value="OTHER">
+          Other
+        </option>
+
+      </select>
+
+      <input
+        type="number"
+        placeholder="Quantity"
+        [(ngModel)]="resource.quantity"
+        name="quantity"
+        required
+      />
+
+      <input
+        type="text"
+        placeholder="Unit (kg, bottles, boxes)"
+        [(ngModel)]="resource.unit"
+        name="unit"
+        required
+      />
+
+      <input
+        type="text"
+        placeholder="Organization"
+        [(ngModel)]="resource.organization"
+        name="organization"
+      />
+
+      <input
+        type="text"
+        placeholder="Storage Location"
+        [(ngModel)]="resource.storageLocation"
+        name="storageLocation"
+      />
+
+      <button type="submit">
+        Add Resource
+      </button>
+
+    </form>
+
+  </div>
+
+
+  <div class="card">
+
+    <h2>Current Inventory</h2>
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>Resource</th>
+          <th>Category</th>
+          <th>Quantity</th>
+          <th>Unit</th>
+          <th>Organization</th>
+          <th>Storage</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <tr
+          *ngFor="let resource of resources"
+        >
+
+          <td>
+            {{ resource.name }}
+          </td>
+
+          <td>
+            {{ resource.category }}
+          </td>
+
+          <td
+            [class.low-stock]="
+              resource.quantity <= 10
+            "
+          >
+            {{ resource.quantity }}
+          </td>
+
+          <td>
+            {{ resource.unit }}
+          </td>
+
+          <td>
+            {{ resource.organization }}
+          </td>
+
+          <td>
+            {{ resource.storageLocation }}
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
