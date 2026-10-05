@@ -1,7 +1,11 @@
+import * as dns from 'dns';
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import * as dotenv from 'dotenv';
 import { AppModule } from './app.module';
+
+// Fix for Node.js querySrv ETIMEOUT on Windows/ISP networks
+dns.setServers(['8.8.8.8', '8.8.4.4']);
 
 dotenv.config();
 
