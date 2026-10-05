@@ -6,12 +6,16 @@ import { JwtModule } from '@nestjs/jwt';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { User, UserSchema } from './schemas/user.schema';
+import { RescueTeam, RescueTeamSchema } from '../uc3-rescue/rescue-teams/schemas/rescue-team.schema';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtAuthGuard, OptionalJwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    MongooseModule.forFeature([
+      { name: User.name, schema: UserSchema },
+      { name: RescueTeam.name, schema: RescueTeamSchema },
+    ]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       useFactory: () => ({

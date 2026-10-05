@@ -16,7 +16,7 @@ export class User {
 
   @Prop({
     required: true,
-    enum: ['CITIZEN', 'VOLUNTEER', 'DUTY_OFFICER', 'DMC_OFFICER', 'DISTRICT_OFFICER'],
+    enum: ['CITIZEN', 'RESCUE_TEAM', 'DUTY_OFFICER', 'DMC_OFFICER', 'DISTRICT_OFFICER'],
     default: 'CITIZEN',
   })
   role!: string;
@@ -29,6 +29,19 @@ export class User {
 
   @Prop({ default: '' })
   badgeId?: string;
+
+  // Additional fields for RESCUE_TEAM accounts
+  @Prop()
+  teamId?: string;
+
+  @Prop()
+  organization?: string;
+
+  @Prop({ enum: ['WATER_RESCUE', 'SEARCH_AND_RESCUE', 'MEDICAL', 'FIRE', 'EVACUATION', 'GENERAL'] })
+  teamType?: string;
+
+  @Prop()
+  membersCount?: number;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
