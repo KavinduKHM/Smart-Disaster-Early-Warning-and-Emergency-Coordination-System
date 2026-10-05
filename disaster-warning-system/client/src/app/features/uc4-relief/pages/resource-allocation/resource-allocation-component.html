@@ -1,0 +1,154 @@
+<div class="page">
+
+  <h1>Resource Allocation</h1>
+
+  <div class="card">
+
+    <h2>Allocate Relief Resources</h2>
+
+    <form
+      (ngSubmit)="allocateResource()"
+    >
+
+      <label>Resource</label>
+
+      <select
+        [(ngModel)]="allocation.resourceId"
+        name="resourceId"
+        required
+      >
+
+        <option value="">
+          Select Resource
+        </option>
+
+        <option
+          *ngFor="let resource of resources"
+          [value]="resource._id"
+        >
+          {{ resource.name }}
+          -
+          {{ resource.quantity }}
+          {{ resource.unit }}
+        </option>
+
+      </select>
+
+
+      <label>Shelter</label>
+
+      <select
+        [(ngModel)]="allocation.shelterId"
+        name="shelterId"
+        required
+      >
+
+        <option value="">
+          Select Shelter
+        </option>
+
+        <option
+          *ngFor="let shelter of shelters"
+          [value]="shelter._id"
+        >
+          {{ shelter.name }}
+          -
+          {{ shelter.currentOccupancy }}
+          /
+          {{ shelter.capacity }}
+        </option>
+
+      </select>
+
+
+      <label>Quantity</label>
+
+      <input
+        type="number"
+        min="1"
+        [(ngModel)]="allocation.quantity"
+        name="quantity"
+        required
+      />
+
+
+      <label>Distributed By</label>
+
+      <input
+        type="text"
+        [(ngModel)]="allocation.distributedBy"
+        name="distributedBy"
+      />
+
+
+      <label>Notes</label>
+
+      <textarea
+        [(ngModel)]="allocation.notes"
+        name="notes"
+        placeholder="Distribution notes"
+      ></textarea>
+
+
+      <button type="submit">
+        Allocate Resource
+      </button>
+
+    </form>
+
+  </div>
+
+
+  <div class="card">
+
+    <h2>Distribution History</h2>
+
+    <table>
+
+      <thead>
+
+        <tr>
+          <th>Resource</th>
+          <th>Shelter</th>
+          <th>Quantity</th>
+          <th>Distributed By</th>
+          <th>Status</th>
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        <tr
+          *ngFor="let allocation of allocations"
+        >
+
+          <td>
+            {{ allocation.resourceId?.name }}
+          </td>
+
+          <td>
+            {{ allocation.shelterId?.name }}
+          </td>
+
+          <td>
+            {{ allocation.quantity }}
+          </td>
+
+          <td>
+            {{ allocation.distributedBy }}
+          </td>
+
+          <td>
+            {{ allocation.status }}
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
