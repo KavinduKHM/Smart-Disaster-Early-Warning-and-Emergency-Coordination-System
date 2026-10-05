@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { SharedModule } from './modules/shared/shared.module';
@@ -10,10 +11,18 @@ import { ReliefModule } from './modules/uc4-relief/relief.module';
 
 @Module({
   imports: [
-     MongooseModule.forRoot(
-      process.env.MONGODB_URI ||
-        'mongodb://localhost:27017/disaster_warning_system',
-    ),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+
+      useFactory: (configService: ConfigService) => ({
+        uri: configService.get<string>('MONGODB_URI'),
+      }),
+    }),
     SharedModule,
     AuthModule,
     WarningModule,
