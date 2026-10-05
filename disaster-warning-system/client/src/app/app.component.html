@@ -1,757 +1,872 @@
-<aside class="fixed left-0 top-0 h-full w-80 bg-surface-container-lowest z-50 flex flex-col justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)] overflow-y-auto"><div class="flex flex-col"><div class="p-space-lg flex items-center gap-space-sm bg-surface-container-low"><img alt="Sri Lanka Disaster Early Warning & Emergency Coordination Emblem" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1VNf3TZPjwDmjAE-jziEgF11WG4XaPL4VZm3uiIJW7rSxSjhsOY4vMZznLBOMv0Lkc_S_LPCFJSrsT4fFcMLMZjwOrltQtAAmixLOEgVpxd--H9gGUj3eF1m6YqcanULtIVyP81-v6i8clpIzguB6D6P9t_7GKYj032FdbrmreO1kXOrQu-248kMFWAsDhdNPNfsZJvLhhGJ04rIZniARPTwwI1U5Xp-Fbyz6Uqoh6APv5LzW3s_7ANcZZl"/><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-on-surface">Disaster Management Centre</span><span class="font-label-sm text-label-sm text-on-surface-variant">Govt of Sri Lanka • Early Warning System</span></div></div><div class="px-space-lg py-space-sm bg-surface-container"><div class="flex items-center justify-between"><span class="font-label-sm text-label-sm uppercase text-on-surface-variant">Active Command Node</span><span class="px-space-xs py-0.5 rounded-full bg-secondary text-on-secondary font-label-sm text-label-sm">National HQ</span></div></div><nav class="flex flex-col p-space-sm gap-space-xs" data-active-classes="bg-primary-container text-on-primary font-headline-sm"><a class="flex items-center justify-between px-space-md py-space-sm rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="dmc-operations-dashboard" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">grid_view</span><span class="font-body-md text-body-md">DMC Operations Dashboard</span></div></a><a class="flex items-center justify-between px-space-md py-space-sm rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="live-disaster-map" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">public</span><span class="font-body-md text-body-md">Live Disaster Map</span></div><span class="flex items-center gap-1 px-space-xs py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm"><span class="w-1.5 h-1.5 rounded-full bg-error animate-ping"></span>LIVE</span></a><a aria-current="page" class="flex items-center justify-between px-space-md py-space-sm rounded transition-colors bg-primary-container text-on-primary font-headline-sm" data-path="disaster-alerts" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">warning</span><span class="font-body-md text-body-md">Disaster Alerts</span></div><span class="px-space-xs py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm">12</span></a><a class="flex items-center justify-between px-space-md py-space-sm rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="hazard-reports" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">report</span><span class="font-body-md text-body-md">Hazard Reports</span></div><span class="px-space-xs py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">28</span></a><a class="flex items-center justify-between px-space-md py-space-sm rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="emergency-incidents" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">e911_emergency</span><span class="font-body-md text-body-md">Emergency Incidents</span></div><span class="px-space-xs py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm">7</span></a><a class="flex items-center justify-between px-space-md py-space-sm rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="rescue-operations" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">minor_crash</span><span class="font-body-md text-body-md">Rescue Operations</span></div><span class="px-space-xs py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm">5 Active</span></a><a class="flex items-center justify-between px-space-md py-space-sm rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="shelters-resources" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">night_shelter</span><span class="font-body-md text-body-md">Shelters & Resources</span></div></a><a class="flex items-center justify-between px-space-md py-space-sm rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="reports-analytics" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">analytics</span><span class="font-body-md text-body-md">Reports & Analytics</span></div></a><div class="my-space-xs mx-space-md h-px bg-surface-container-high"></div><a class="flex items-center justify-between px-space-md py-space-sm rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="citizen-public-portal" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">campaign</span><span class="font-body-md text-body-md">Citizen Public Portal</span></div></a><a class="flex items-center justify-between px-space-md py-space-sm rounded text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="rescue-field-mode" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">emergency</span><span class="font-body-md text-body-md">Rescue Field Mode</span></div></a></nav></div><div class="flex flex-col bg-surface-container-low p-space-md gap-space-sm"><div class="p-space-sm bg-surface-container rounded flex flex-col gap-1"><div class="flex items-center justify-between"><span class="font-label-sm text-label-sm text-on-surface-variant">Telemetry Uplink</span><span class="flex items-center gap-1 font-data-mono text-data-mono text-on-surface"><span class="w-2 h-2 rounded-full bg-secondary"></span>12ms</span></div><div class="flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant"><span>GNSS NavSync</span><span class="text-on-surface font-label-sm text-label-sm">GPS Active</span></div></div><div class="flex items-center justify-between pt-space-xs"><div class="flex items-center gap-space-sm"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-on-surface leading-tight">Maj. D. Silva</span><span class="font-label-sm text-label-sm text-on-surface-variant">National Coord.</span></div></div><div class="flex items-center gap-1"><button class="p-1 text-on-surface-variant hover:text-on-surface" type="button"><span class="material-symbols-outlined text-[20px]">settings</span></button><button class="p-1 text-on-surface-variant hover:text-error" type="button"><span class="material-symbols-outlined text-[20px]">logout</span></button></div></div></div></aside><div class="pl-80"><header class="fixed top-0 left-80 right-0 h-16 bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-lg"><div class="flex items-center gap-space-md"><button class="lg:hidden p-1 text-on-surface-variant hover:text-on-surface" type="button"><span class="material-symbols-outlined">menu</span></button><div class="flex items-center gap-space-xs bg-surface-container-low px-space-sm py-1 rounded"><span class="material-symbols-outlined text-[18px] text-on-surface-variant">location_on</span><select class="bg-transparent font-headline-sm text-headline-sm text-on-surface border-none focus:outline-none cursor-pointer"><option>National Command (All-Island)</option><option>Western • Colombo</option><option>Central • Kandy</option><option>Sabaragamuwa • Ratnapura</option><option>Sabaragamuwa • Kegalle</option><option>Southern • Galle</option></select></div><div class="flex items-center gap-space-xs font-data-mono text-data-mono px-space-sm py-1 bg-surface-container rounded"><span class="w-2 h-2 rounded-full bg-secondary"></span><span class="text-on-surface font-semibold">SLST 14:32:08</span><span class="text-on-surface-variant font-label-sm text-label-sm">UTC+05:30</span></div></div><div class="flex-1 max-w-md mx-space-lg"><div class="relative"><span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><span class="material-symbols-outlined text-on-surface-variant text-[18px]">search</span></span><input class="w-full pl-9 pr-4 py-1.5 rounded bg-surface-container-low font-body-sm text-body-sm text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:bg-surface-container" placeholder="Search disaster alerts, coordinates, shelters, or units..." type="search"/></div></div><div class="flex items-center gap-space-sm"><button class="px-space-md py-1.5 rounded bg-error text-on-error font-headline-sm text-headline-sm flex items-center gap-1 shadow-sm hover:opacity-95 transition-opacity" type="button" (click)="openModal()"><span class="material-symbols-outlined text-[18px]">emergency_home</span><span>Issue Alert</span></button><button class="px-space-md py-1.5 rounded bg-primary text-on-primary font-headline-sm text-headline-sm flex items-center gap-1 hover:opacity-90 transition-opacity" type="button"><span class="material-symbols-outlined text-[18px]">add</span><span>Log Incident</span></button><div class="h-6 w-px bg-surface-container-high mx-space-xs"></div><button class="p-2 text-on-surface-variant hover:text-on-surface rounded hover:bg-surface-container-low" type="button"><span class="material-symbols-outlined text-[20px]">volume_up</span></button><button class="relative p-2 text-on-surface-variant hover:text-on-surface rounded hover:bg-surface-container-low" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1 right-1 w-4 h-4 rounded-full bg-error text-on-error font-label-sm text-label-sm flex items-center justify-center font-bold">3</span></button><div class="flex items-center gap-space-xs pl-space-xs"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><span class="px-space-xs py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm font-semibold">DMC HQ</span></div></div></header><main class="relative pt-16 bg-surface min-h-screen w-full px-space-lg py-space-lg"><div class="flex flex-col w-full">
-<div class="flex flex-col gap-space-lg mb-space-xl">
-<div class="flex flex-wrap items-center justify-between gap-space-md">
+<aside class="fixed left-0 top-0 h-full w-80 bg-surface-container-lowest z-50 flex flex-col justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)] overflow-y-auto"><div class="flex flex-col"><div class="p-space-lg flex items-center gap-space-sm bg-surface-container-low">
+<span class="p-1.5 rounded bg-error text-on-error material-symbols-outlined text-[28px]">public</span>
+<div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-on-surface">Disaster Management Centre</span><span class="font-label-sm text-label-sm text-on-surface-variant">Govt of Sri Lanka • Early Warning System</span></div></div><div class="px-space-lg py-space-sm bg-surface-container"><div class="flex items-center justify-between"><span class="font-label-sm text-label-sm uppercase text-on-surface-variant">Active Command Node</span><span class="px-space-xs py-0.5 rounded-full bg-secondary text-on-secondary font-label-sm text-label-sm">National HQ</span></div></div>
+<nav class="flex flex-col p-space-sm gap-space-xs">
+<a class="flex items-center justify-between px-space-md py-space-sm rounded transition-colors cursor-pointer" [class.bg-primary-container]="currentRoute === 'dmc-operations-dashboard'" [class.text-on-primary]="currentRoute === 'dmc-operations-dashboard'" [class.font-headline-sm]="currentRoute === 'dmc-operations-dashboard'" [class.text-on-surface-variant]="currentRoute !== 'dmc-operations-dashboard'" [class.hover:bg-surface-container-high]="currentRoute !== 'dmc-operations-dashboard'" [class.hover:text-on-surface]="currentRoute !== 'dmc-operations-dashboard'" (click)="navigateTo('dmc-operations-dashboard')"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">grid_view</span><span class="font-body-md text-body-md">DMC Operations Dashboard</span></div></a>
+<a class="flex items-center justify-between px-space-md py-space-sm rounded transition-colors cursor-pointer" [class.bg-primary-container]="currentRoute === 'live-disaster-map'" [class.text-on-primary]="currentRoute === 'live-disaster-map'" [class.font-headline-sm]="currentRoute === 'live-disaster-map'" [class.text-on-surface-variant]="currentRoute !== 'live-disaster-map'" [class.hover:bg-surface-container-high]="currentRoute !== 'live-disaster-map'" [class.hover:text-on-surface]="currentRoute !== 'live-disaster-map'" (click)="navigateTo('live-disaster-map')"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">public</span><span class="font-body-md text-body-md">Live Disaster Map</span></div><span class="flex items-center gap-1 px-space-xs py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm"><span class="w-1.5 h-1.5 rounded-full bg-error animate-ping"></span>LIVE</span></a>
+<a class="flex items-center justify-between px-space-md py-space-sm rounded transition-colors cursor-pointer" [class.bg-primary-container]="currentRoute === 'disaster-alerts'" [class.text-on-primary]="currentRoute === 'disaster-alerts'" [class.font-headline-sm]="currentRoute === 'disaster-alerts'" [class.text-on-surface-variant]="currentRoute !== 'disaster-alerts'" [class.hover:bg-surface-container-high]="currentRoute !== 'disaster-alerts'" [class.hover:text-on-surface]="currentRoute !== 'disaster-alerts'" (click)="navigateTo('disaster-alerts')"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">warning</span><span class="font-body-md text-body-md">Disaster Alerts</span></div><span class="px-space-xs py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm">12</span></a>
+<a class="flex items-center justify-between px-space-md py-space-sm rounded transition-colors cursor-pointer" [class.bg-primary-container]="currentRoute === 'hazard-reports'" [class.text-on-primary]="currentRoute === 'hazard-reports'" [class.font-headline-sm]="currentRoute === 'hazard-reports'" [class.text-on-surface-variant]="currentRoute !== 'hazard-reports'" [class.hover:bg-surface-container-high]="currentRoute !== 'hazard-reports'" [class.hover:text-on-surface]="currentRoute !== 'hazard-reports'" (click)="navigateTo('hazard-reports')"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">report</span><span class="font-body-md text-body-md">Hazard Reports</span></div><span class="px-space-xs py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">28</span></a>
+<a class="flex items-center justify-between px-space-md py-space-sm rounded transition-colors cursor-pointer" [class.bg-primary-container]="currentRoute === 'emergency-incidents'" [class.text-on-primary]="currentRoute === 'emergency-incidents'" [class.font-headline-sm]="currentRoute === 'emergency-incidents'" [class.text-on-surface-variant]="currentRoute !== 'emergency-incidents'" [class.hover:bg-surface-container-high]="currentRoute !== 'emergency-incidents'" [class.hover:text-on-surface]="currentRoute !== 'emergency-incidents'" (click)="navigateTo('emergency-incidents')"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">e911_emergency</span><span class="font-body-md text-body-md">Emergency Incidents</span></div><span class="px-space-xs py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm">{{ incidents.length }}</span></a>
+<a class="flex items-center justify-between px-space-md py-space-sm rounded transition-colors cursor-pointer" [class.bg-primary-container]="currentRoute === 'rescue-operations'" [class.text-on-primary]="currentRoute === 'rescue-operations'" [class.font-headline-sm]="currentRoute === 'rescue-operations'" [class.text-on-surface-variant]="currentRoute !== 'rescue-operations'" [class.hover:bg-surface-container-high]="currentRoute !== 'rescue-operations'" [class.hover:text-on-surface]="currentRoute !== 'rescue-operations'" (click)="navigateTo('rescue-operations')"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">minor_crash</span><span class="font-body-md text-body-md">Rescue Operations</span></div><span class="px-space-xs py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm">5 Active</span></a>
+<a class="flex items-center justify-between px-space-md py-space-sm rounded transition-colors cursor-pointer" [class.bg-primary-container]="currentRoute === 'shelters-resources'" [class.text-on-primary]="currentRoute === 'shelters-resources'" [class.font-headline-sm]="currentRoute === 'shelters-resources'" [class.text-on-surface-variant]="currentRoute !== 'shelters-resources'" [class.hover:bg-surface-container-high]="currentRoute !== 'shelters-resources'" [class.hover:text-on-surface]="currentRoute !== 'shelters-resources'" (click)="navigateTo('shelters-resources')"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">night_shelter</span><span class="font-body-md text-body-md">Shelters & Resources</span></div></a>
+<a class="flex items-center justify-between px-space-md py-space-sm rounded transition-colors cursor-pointer" [class.bg-primary-container]="currentRoute === 'reports-analytics'" [class.text-on-primary]="currentRoute === 'reports-analytics'" [class.font-headline-sm]="currentRoute === 'reports-analytics'" [class.text-on-surface-variant]="currentRoute !== 'reports-analytics'" [class.hover:bg-surface-container-high]="currentRoute !== 'reports-analytics'" [class.hover:text-on-surface]="currentRoute !== 'reports-analytics'" (click)="navigateTo('reports-analytics')"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">analytics</span><span class="font-body-md text-body-md">Reports & Analytics</span></div></a><div class="my-space-xs mx-space-md h-px bg-surface-container-high"></div>
+<a class="flex items-center justify-between px-space-md py-space-sm rounded transition-colors cursor-pointer" [class.bg-primary-container]="currentRoute === 'citizen-public-portal'" [class.text-on-primary]="currentRoute === 'citizen-public-portal'" [class.font-headline-sm]="currentRoute === 'citizen-public-portal'" [class.text-on-surface-variant]="currentRoute !== 'citizen-public-portal'" [class.hover:bg-surface-container-high]="currentRoute !== 'citizen-public-portal'" [class.hover:text-on-surface]="currentRoute !== 'citizen-public-portal'" (click)="navigateTo('citizen-public-portal')"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">campaign</span><span class="font-body-md text-body-md">Citizen Public Portal</span></div></a>
+<a class="flex items-center justify-between px-space-md py-space-sm rounded transition-colors cursor-pointer" [class.bg-primary-container]="currentRoute === 'rescue-field-mode'" [class.text-on-primary]="currentRoute === 'rescue-field-mode'" [class.font-headline-sm]="currentRoute === 'rescue-field-mode'" [class.text-on-surface-variant]="currentRoute !== 'rescue-field-mode'" [class.hover:bg-surface-container-high]="currentRoute !== 'rescue-field-mode'" [class.hover:text-on-surface]="currentRoute !== 'rescue-field-mode'" (click)="navigateTo('rescue-field-mode')"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">emergency</span><span class="font-body-md text-body-md">Rescue Field Mode</span></div></a></nav></div><div class="flex flex-col bg-surface-container-low p-space-md gap-space-sm"><div class="p-space-sm bg-surface-container rounded flex flex-col gap-1"><div class="flex items-center justify-between"><span class="font-label-sm text-label-sm text-on-surface-variant">Telemetry Uplink</span><span class="flex items-center gap-1 font-data-mono text-data-mono text-on-surface"><span class="w-2 h-2 rounded-full" [ngClass]="errorMessage ? 'bg-error' : 'bg-secondary'"></span>{{ errorMessage ? 'Offline' : '12ms' }}</span></div><div class="flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant"><span>GNSS NavSync</span><span class="text-on-surface font-label-sm text-label-sm">GPS Active</span></div></div><div class="flex items-center justify-between pt-space-xs"><div class="flex items-center gap-space-sm"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-on-surface leading-tight">Maj. D. Silva</span><span class="font-label-sm text-label-sm text-on-surface-variant">National Coord.</span></div></div><div class="flex items-center gap-1"><button class="p-1 text-on-surface-variant hover:text-on-surface" type="button" (click)="loadIncidents()"><span class="material-symbols-outlined text-[20px]">refresh</span></button><button class="p-1 text-on-surface-variant hover:text-error" type="button"><span class="material-symbols-outlined text-[20px]">logout</span></button></div></div></div></aside><div class="pl-80"><header class="fixed top-0 left-80 right-0 h-16 bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-lg"><div class="flex items-center gap-space-md"><button class="lg:hidden p-1 text-on-surface-variant hover:text-on-surface" type="button"><span class="material-symbols-outlined">menu</span></button><div class="flex items-center gap-space-xs bg-surface-container-low px-space-sm py-1 rounded"><span class="material-symbols-outlined text-[18px] text-on-surface-variant">location_on</span><select [(ngModel)]="filterDistrict" (change)="applyFilters()" class="bg-transparent font-headline-sm text-headline-sm text-on-surface border-none focus:outline-none cursor-pointer"><option value="ALL">National Command (All-Island)</option><option *ngFor="let d of districts" [value]="d">{{ d }}</option></select></div><div class="flex items-center gap-space-xs font-data-mono text-data-mono px-space-sm py-1 bg-surface-container rounded"><span class="w-2 h-2 rounded-full bg-secondary"></span><span class="text-on-surface font-semibold">SLST {{ currentTime }}</span><span class="text-on-surface-variant font-label-sm text-label-sm">UTC+05:30</span></div></div><div class="flex-1 max-w-md mx-space-lg"><div class="relative"><span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><span class="material-symbols-outlined text-on-surface-variant text-[18px]">search</span></span><input [(ngModel)]="searchQuery" (input)="applyFilters()" class="w-full pl-9 pr-4 py-1.5 rounded bg-surface-container-low font-body-sm text-body-sm text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:bg-surface-container" placeholder="Search disaster alerts, coordinates, shelters, or units..." type="search"/></div></div><div class="flex items-center gap-space-sm"><button class="px-space-md py-1.5 rounded bg-error text-on-error font-headline-sm text-headline-sm flex items-center gap-1 shadow-sm hover:opacity-95 transition-opacity" (click)="openModal()" type="button"><span class="material-symbols-outlined text-[18px]">emergency_home</span><span>Issue Alert</span></button><button class="px-space-md py-1.5 rounded bg-primary text-on-primary font-headline-sm text-headline-sm flex items-center gap-1 hover:opacity-90 transition-opacity" (click)="openModal()" type="button"><span class="material-symbols-outlined text-[18px]">add</span><span>Log Incident</span></button><div class="h-6 w-px bg-surface-container-high mx-space-xs"></div><button class="p-2 text-on-surface-variant hover:text-on-surface rounded hover:bg-surface-container-low" type="button"><span class="material-symbols-outlined text-[20px]">volume_up</span></button><button class="relative p-2 text-on-surface-variant hover:text-on-surface rounded hover:bg-surface-container-low" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1 right-1 w-4 h-4 rounded-full bg-error text-on-error font-label-sm text-label-sm flex items-center justify-center font-bold">3</span></button><div class="flex items-center gap-space-xs pl-space-xs"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><span class="px-space-xs py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm font-semibold">DMC HQ</span></div></div></header><main class="relative pt-16 bg-surface min-h-screen w-full px-space-lg py-space-lg">
+<ng-container *ngIf="currentRoute === 'live-disaster-map'">
+<div class="flex flex-col w-full">
+<!-- Operational Sub-Header Bar -->
+<header class="bg-surface-container-lowest p-space-md mb-space-md shadow-sm rounded-xl flex flex-col xl:flex-row xl:items-center justify-between gap-space-md">
 <div class="flex flex-col">
-<div class="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider mb-1">
-<span>Early Warning Dissemination</span>
-<span>•</span>
-<span>Protocol CAP-v1.2</span>
-<span>•</span>
-<span class="text-error font-semibold flex items-center gap-1">
-<span class="w-1.5 h-1.5 rounded-full bg-error animate-ping"></span>
-            DEFCON 2 ACTIVE
-          </span>
-</div>
-<h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight">Disaster Alerts Management</h1>
-<p class="font-body-md text-body-md text-on-surface-variant mt-0.5">
-          Issue, broadcast and monitor multi-channel early warning advisories across districts in real time.
-        </p>
-</div>
 <div class="flex items-center gap-space-sm">
-<button class="px-space-md py-2 rounded bg-surface-container-lowest text-on-surface font-headline-sm text-headline-sm flex items-center gap-1.5 shadow-sm hover:bg-surface-container-low transition-colors" type="button">
-<span class="material-symbols-outlined text-[18px] text-on-surface-variant">history_edu</span>
-<span>Export Audit Log</span>
+<span class="p-1.5 rounded-lg bg-primary-container text-on-primary">
+<span class="material-symbols-outlined text-[20px]">public</span>
+</span>
+<div class="flex items-baseline gap-space-sm flex-wrap">
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Live Disaster Operations Map</h1>
+<span class="px-space-xs py-0.5 rounded bg-surface-container text-on-surface-variant font-data-mono text-label-sm uppercase">GIS Node: LK-CENTRAL-04</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Spatial GIS tracking of active hazards, incidents, emergency response units & relief shelters</p>
+</div>
+<!-- Map & District Live Controls -->
+<div class="flex items-center flex-wrap gap-space-sm">
+<!-- District Filter -->
+<div class="flex items-center gap-1.5 bg-surface-container px-space-md py-1.5 rounded-lg">
+<span class="material-symbols-outlined text-secondary text-[18px]">map</span>
+<select class="bg-transparent font-headline-sm text-label-md text-on-surface focus:outline-none cursor-pointer">
+<option>All Sri Lanka (National View)</option>
+<option selected="">Central Province (Kandy Focus)</option>
+<option>Western Province (Kelani Basin)</option>
+<option>Sabaragamuwa (Kegalle / Ratnapura)</option>
+<option>Southern Province (Nilwala Basin)</option>
+</select>
+</div>
+<!-- Live Socket Status Toggle -->
+<div class="flex items-center gap-2 bg-surface-container px-space-md py-1.5 rounded-lg">
+<span class="relative flex h-2.5 w-2.5">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-secondary"></span>
+</span>
+<span class="font-data-mono text-data-mono text-on-surface font-semibold">Socket.IO Realtime: 24 Active</span>
+</div>
+<!-- Map Layer Switcher Dropdown -->
+<div class="flex items-center bg-surface-container-high rounded-lg p-0.5">
+<button class="px-space-sm py-1 rounded bg-surface-container-lowest font-headline-sm text-label-sm text-on-surface shadow-xs" type="button">OSM Tactical</button>
+<button class="px-space-sm py-1 rounded text-on-surface-variant font-headline-sm text-label-sm hover:text-on-surface" type="button">Satellite</button>
+<button class="px-space-sm py-1 rounded text-on-surface-variant font-headline-sm text-label-sm hover:text-on-surface flex items-center gap-1" type="button">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>Radar
+        </button>
+<button class="px-space-sm py-1 rounded text-on-surface-variant font-headline-sm text-label-sm hover:text-on-surface" type="button">Topographic</button>
+</div>
+</div>
+</header>
+<!-- Main Multi-Pane Command Grid -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-space-md items-start">
+<!-- LEFT 70%: Operational GIS Map Display (Col span 8 on XL) -->
+<div class="xl:col-span-8 flex flex-col gap-space-sm relative">
+<!-- Interactive Visual Map Container -->
+<div class="relative w-full h-[720px] rounded-xl overflow-hidden shadow-sm bg-surface-container-low flex flex-col select-none">
+<!-- Live Static / Cartographic Map Canvas Base with Central Sri Lanka Focus -->
+<div class="absolute inset-0 w-full h-full bg-cover bg-center" data-location="Kandy, Central Province, Sri Lanka" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDA3Pi_xRj8Z1dmn5CGWMdCRdvqnC36OAro_c_NlA29ILHeED218b3B8ZuE4kE5v5VtWaKWBkQYq8jGZUuQ9uT4dIhzHVC48KuaBF-UMrEIRs54ehmI8G9MIjYxl7mn-dIyem2N7QX4q5T4wrhtzd6MWJAYn5pEBEhnfaq5fcI1iYqhYEqCvhDXL708kZAnz2Tf1CgwoDfrLI5BOa9HntWu5d6bZQ_PWG9l-h7tTVvNBFFZhL-jN4SwLQ'); filter: saturate(0.85) contrast(1.05);">
+</div>
+<!-- Translucent Dark Overlay for Tactical HUD readability -->
+<div class="absolute inset-0 bg-primary/20 pointer-events-none"></div>
+<!-- SVG Tactical GIS Vector Layers (Inundation Polygons, River Mahaweli path, Slope warning, GPS trails) -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none z-10" preserveaspectratio="none" viewbox="0 0 1000 800">
+<defs>
+<lineargradient id="floodGrad" x1="0" x2="1" y1="0" y2="1">
+<stop offset="0%" stop-color="#ba1a1a" stop-opacity="0.38"></stop>
+<stop offset="100%" stop-color="#ba1a1a" stop-opacity="0.15"></stop>
+</lineargradient>
+<lineargradient id="slopeGrad" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#4069f2" stop-opacity="0.3"></stop>
+<stop offset="100%" stop-color="#1d4ed8" stop-opacity="0.1"></stop>
+</lineargradient>
+</defs>
+<!-- Hazard Danger Zone 1: Mahaweli Basin Flash Inundation Zone (Translucent Red Polygon) -->
+<polygon fill="url(#floodGrad)" points="340,320 460,310 520,380 480,470 380,490 320,410" stroke="#ba1a1a" stroke-dasharray="6,4" stroke-width="2"></polygon>
+<text fill="#ffffff" font-size="11" font-weight="700" letter-spacing="1.5" opacity="0.9" x="400" y="390">FLOOD INUNDATION CRITICAL (3.8M)</text>
+<!-- Hazard Danger Zone 2: Kegalle Aranayake Ridge Slope Slip Zone (Translucent Amber/Blue contour) -->
+<polygon fill="url(#slopeGrad)" points="170,420 280,390 310,480 240,540 150,500" stroke="#1d4ed8" stroke-dasharray="4,4" stroke-width="1.8"></polygon>
+<text fill="#dce1ff" font-size="10" font-weight="600" opacity="0.85" x="180" y="465">NBRO LEVEL-3 LANDSLIDE EVAC ZONE</text>
+<!-- Trajectory Line: Team Bravo Dispatched Route (Dashed Animated Trail) -->
+<path class="animate-pulse" d="M 680,620 Q 520,530 430,420" fill="none" stroke="#1d4ed8" stroke-dasharray="8,6" stroke-width="3"></path>
+<!-- Trajectory Line: Team Alpha On-Site Perimeter -->
+<circle cx="430" cy="410" fill="none" opacity="0.8" r="32" stroke="#ba1a1a" stroke-dasharray="3,3" stroke-width="1.5"></circle>
+</svg>
+<!-- FLOATING TOP HUD: Location Search & Coordinates & Quick Filters -->
+<div class="relative z-20 p-space-md flex flex-col md:flex-row items-stretch md:items-center justify-between gap-space-sm">
+<!-- Search box -->
+<div class="flex items-center gap-space-xs bg-surface-container-lowest/95 backdrop-blur px-space-md py-1.5 rounded-lg shadow-md max-w-md w-full">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">search</span>
+<input class="w-full bg-transparent font-body-sm text-body-sm text-on-surface placeholder:text-on-surface-variant focus:outline-none" placeholder="Search village, GN division or coordinates (e.g. 7.29, 80.63)" type="text" value="Peradeniya, Kandy District"/>
+<button class="p-1 text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined text-[18px]">tune</span></button>
+</div>
+<!-- Active Filter Chips -->
+<div class="flex items-center gap-1.5 overflow-x-auto py-1">
+<button class="flex items-center gap-1 px-space-sm py-1 rounded-full bg-error text-on-error font-label-sm text-label-sm shadow-sm whitespace-nowrap">
+<span class="w-1.5 h-1.5 rounded-full bg-surface-container-lowest animate-ping"></span>Incidents ({{ activeCount }})
+            </button>
+<button class="flex items-center gap-1 px-space-sm py-1 rounded-full bg-surface-container-lowest text-on-surface font-label-sm text-label-sm shadow-sm whitespace-nowrap hover:bg-surface-container">
+<span class="w-2 h-2 rounded-full bg-tertiary-fixed-dim"></span>Hazards (18)
+            </button>
+<button class="flex items-center gap-1 px-space-sm py-1 rounded-full bg-surface-container-lowest text-on-surface font-label-sm text-label-sm shadow-sm whitespace-nowrap hover:bg-surface-container">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>Units (5)
+            </button>
+<button class="flex items-center gap-1 px-space-sm py-1 rounded-full bg-surface-container-lowest text-on-surface font-label-sm text-label-sm shadow-sm whitespace-nowrap hover:bg-surface-container">
+<span class="w-2 h-2 rounded-full bg-surface-tint"></span>Shelters (14)
+            </button>
+</div>
+</div>
+<!-- FLOATING MAP MARKERS (ABSOLUTE POSITIONS CORRESPONDING TO SRI LANKA CENTRAL BASIN) -->
+<!-- Dynamic Markers based on incidents length (mocking locations visually while pulling data) -->
+<div *ngFor="let item of incidents; let i = index" class="absolute z-20 group cursor-pointer" [ngStyle]="{'top': (48 + i*9) + '%', 'left': (42 - i*20) + '%', 'transform': 'translate(-50%, -50%)'}" (click)="selectIncident(item)">
+<div class="relative flex items-center justify-center">
+<span class="animate-ping absolute inline-flex h-9 w-9 rounded-full opacity-75" [ngClass]="item.priority === 'CRITICAL' ? 'bg-error' : 'bg-secondary'"></span>
+<div class="w-7 h-7 rounded-full text-on-error flex items-center justify-center shadow-md" [ngClass]="getPriorityBadgeClass(item.priority)">
+<span class="material-symbols-outlined text-[16px]">{{ getHazardIcon(item.type) }}</span>
+</div>
+</div>
+<!-- Label Pill -->
+<div class="absolute top-8 left-1/2 -translate-x-1/2 bg-surface-container-lowest text-on-surface px-space-sm py-1 rounded shadow-md whitespace-nowrap flex flex-col items-center">
+<span class="font-data-mono text-label-sm font-bold tracking-tight" [ngClass]="item.priority === 'CRITICAL' ? 'text-error' : 'text-secondary'">{{ item.incidentId }}</span>
+<span class="font-body-sm text-[10px] text-on-surface-variant">{{ item.district }} • {{ item.priority }}</span>
+</div>
+</div>
+
+<!-- Marker 5: Team Alpha Tactical Unit (Army 58 Div - ON SITE) -->
+<div class="absolute z-20 top-[46%] left-[44%] -translate-x-1/2 -translate-y-1/2 group cursor-pointer">
+<div class="px-space-xs py-1 rounded bg-secondary text-on-secondary shadow-md flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">directions_boat</span>
+<span class="font-data-mono text-label-sm font-bold">Team Alpha</span>
+<span class="w-1.5 h-1.5 rounded-full bg-surface-container-lowest animate-pulse"></span>
+</div>
+</div>
+<!-- Marker 6: Team Bravo Tactical Unit (DMC Swift Water - EN ROUTE) -->
+<div class="absolute z-20 top-[68%] left-[64%] -translate-x-1/2 -translate-y-1/2 group cursor-pointer">
+<div class="px-space-xs py-1 rounded bg-secondary-container text-on-secondary-container shadow-md flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">local_shipping</span>
+<span class="font-data-mono text-label-sm font-bold">Team Bravo (EN ROUTE)</span>
+</div>
+</div>
+<!-- MAP CONTROLS OVERLAY: Zoom, Layer Toggles, Compass -->
+<div class="absolute right-space-md top-space-xl z-20 flex flex-col gap-1.5">
+<button class="w-8 h-8 rounded bg-surface-container-lowest shadow text-on-surface hover:bg-surface-container flex items-center justify-center font-bold text-lg" type="button">+</button>
+<button class="w-8 h-8 rounded bg-surface-container-lowest shadow text-on-surface hover:bg-surface-container flex items-center justify-center font-bold text-lg" type="button">-</button>
+<div class="h-2"></div>
+<button class="w-8 h-8 rounded bg-surface-container-lowest shadow text-on-surface hover:bg-surface-container flex items-center justify-center" title="Center on Sri Lanka HQ" type="button">
+<span class="material-symbols-outlined text-[18px]">my_location</span>
 </button>
-<button class="px-space-md py-2 rounded bg-surface-container-lowest text-on-surface font-headline-sm text-headline-sm flex items-center gap-1.5 shadow-sm hover:bg-surface-container-low transition-colors" type="button">
-<span class="material-symbols-outlined text-[18px] text-on-surface-variant">menu_book</span>
-<span>Broadcast Protocols</span>
+<button class="w-8 h-8 rounded bg-surface-container-lowest shadow text-on-surface hover:bg-surface-container flex items-center justify-center" title="Tactical Layers" type="button">
+<span class="material-symbols-outlined text-[18px]">layers</span>
 </button>
-<button class="px-space-lg py-2 rounded bg-error text-on-error font-headline-sm text-headline-sm flex items-center gap-2 shadow-md hover:opacity-95 transition-opacity" (click)="openModal()" type="button">
-<span class="material-symbols-outlined text-[20px]">campaign</span>
-<span>+ Issue New Emergency Alert</span>
+<button class="w-8 h-8 rounded bg-surface-container-lowest shadow text-on-surface hover:bg-surface-container flex items-center justify-center" title="Full Screen GIS" type="button">
+<span class="material-symbols-outlined text-[18px]">fullscreen</span>
 </button>
 </div>
+<!-- FLOATING BOTTOM HUD: Telemetry Coordinate Bar & Visual Legend -->
+<div class="mt-auto relative z-20 p-space-md flex flex-col md:flex-row items-start md:items-end justify-between gap-space-sm">
+<!-- Tactical Map Legend Card -->
+<div class="bg-surface-container-lowest/95 backdrop-blur p-space-sm rounded-lg shadow-md flex flex-wrap items-center gap-space-md text-[11px] font-label-sm text-on-surface">
+<div class="flex items-center gap-1.5">
+<span class="w-3 h-3 rounded-full bg-error inline-block"></span>
+<span>Incident Priority 1</span>
 </div>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-space-lg">
-<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col justify-between relative overflow-hidden">
-<div class="absolute -right-4 -bottom-4 w-28 h-28 bg-error-container rounded-full opacity-30 pointer-events-none"></div>
-<div class="flex items-center justify-between">
-<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wide">Active Broadcasts</span>
-<span class="px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold flex items-center gap-1">
-<span class="w-1.5 h-1.5 rounded-full bg-error animate-ping"></span> Live Transmission
-          </span>
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rotate-45 bg-tertiary-fixed-dim inline-block"></span>
+<span>Field Hazard Report</span>
 </div>
-<div class="my-space-md flex items-baseline gap-space-xs">
-<span class="font-display-lg text-display-lg text-on-surface">12</span>
-<span class="font-headline-md text-headline-md text-on-surface-variant">Alerts</span>
+<div class="flex items-center gap-1.5">
+<span class="w-3 h-3 rounded bg-secondary inline-block"></span>
+<span>Active Rescue Asset</span>
 </div>
-<div class="flex items-center gap-space-sm pt-space-xs">
-<span class="px-2 py-1 rounded bg-error-container text-on-error-container font-label-sm text-label-sm font-bold flex items-center gap-1">
-<span class="w-1.5 h-1.5 rounded-full bg-error"></span> 3 Critical
-          </span>
-<span class="px-2 py-1 rounded bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm font-semibold">
-            5 High
-          </span>
-<span class="px-2 py-1 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">
-            4 Medium
-          </span>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px] text-secondary">shield</span>
+<span>Emergency Shelter</span>
 </div>
-</div>
-<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col justify-between relative overflow-hidden">
-<div class="absolute -right-4 -bottom-4 w-28 h-28 bg-secondary-fixed rounded-full opacity-40 pointer-events-none"></div>
-<div class="flex items-center justify-between">
-<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wide">Population Reached</span>
-<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-secondary font-label-sm text-label-sm font-medium">Island-Wide</span>
-</div>
-<div class="my-space-md flex items-baseline gap-space-xs">
-<span class="font-display-lg text-display-lg text-on-surface">1.42</span>
-<span class="font-headline-md text-headline-md text-on-surface-variant">Million Citizens</span>
-</div>
-<div class="flex items-center gap-space-md text-on-surface-variant font-body-sm text-body-sm">
-<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[15px] text-secondary">cell_tower</span> 820k Cell Broadcast</span>
-<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[15px] text-secondary">sms</span> 492k SMS</span>
-<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[15px] text-secondary">devices</span> 108k Push</span>
+<div class="flex items-center gap-1.5">
+<span class="w-3 h-1 bg-error border-b border-dashed inline-block"></span>
+<span>Inundation Zone</span>
 </div>
 </div>
-<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col justify-between relative overflow-hidden">
-<div class="absolute -right-4 -bottom-4 w-28 h-28 bg-surface-container rounded-full opacity-50 pointer-events-none"></div>
-<div class="flex items-center justify-between">
-<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wide">Delivery Confirmation Rate</span>
-<span class="font-data-mono text-data-mono text-secondary font-semibold">&lt; 45s SLA Met</span>
+<!-- GNSS Telemetry Status Badge -->
+<div class="bg-primary-container text-on-primary px-space-md py-1.5 rounded-lg shadow font-data-mono text-label-sm flex items-center gap-space-sm">
+<span class="flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>Cursor: 7.2906° N, 80.6337° E</span>
+</span>
+<span class="text-on-primary-container">|</span>
+<span>Zoom: 13.4</span>
+<span class="text-on-primary-container">|</span>
+<span>Datum: WGS 84 (SLD99)</span>
 </div>
-<div class="my-space-md flex items-center justify-between">
-<div class="flex items-baseline gap-space-xs">
-<span class="font-display-lg text-display-lg text-on-surface">98.4%</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant">acknowledged</span>
 </div>
-<svg class="w-12 h-12 -mr-1" viewBox="0 0 36 36">
-<path class="text-surface-container" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3.5"></path>
-<path class="text-secondary" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="98.4, 100" stroke-linecap="round" stroke-width="3.5"></path>
+</div>
+<!-- Quick GIS Timeline / Weather Hydrograph Strip -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col md:flex-row items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-md">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Mahaweli Basin River Gauge</span>
+<span class="font-headline-md text-headline-md text-error font-bold">3.82 m <span class="font-body-sm text-body-sm font-normal text-on-surface-variant">(Major Flood: 3.50m)</span></span>
+</div>
+<!-- Sparkline River Level Indicator -->
+<div class="h-9 w-36">
+<svg class="w-full h-full text-error" fill="none" viewbox="0 0 100 30">
+<path d="M0 24 Q20 22 40 18 T70 11 T100 4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2.5"></path>
+<path d="M0 24 Q20 22 40 18 T70 11 T100 4 L100 30 L0 30 Z" fill="currentColor" fill-opacity="0.12"></path>
+<circle cx="100" cy="4" fill="currentColor" r="3"></circle>
 </svg>
 </div>
-<div class="w-full bg-surface-container-low rounded-full h-1.5 overflow-hidden">
-<div class="bg-secondary h-1.5 rounded-full" style="width: 98.4%;"></div>
 </div>
-</div>
-</div>
-</div>
-<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm mb-space-lg">
-<div class="flex flex-col lg:flex-row gap-space-md items-stretch lg:items-center justify-between">
-<div class="flex-1 relative">
-<span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-on-surface-variant">
-<span class="material-symbols-outlined text-[20px]">search</span>
-</span>
-<input class="w-full pl-10 pr-4 py-2 bg-surface-container-low rounded text-on-surface placeholder:text-on-surface-variant font-body-md text-body-md focus:outline-none focus:bg-surface-container" placeholder="Search alert ID, keyword, district or GN division..." type="search"/>
-</div>
-<div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-space-xs font-body-sm text-body-sm">
-<div class="bg-surface-container-low px-space-sm py-1.5 rounded flex flex-col">
-<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Hazard Type</span>
-<select class="bg-transparent font-headline-sm text-headline-sm text-on-surface border-none focus:outline-none cursor-pointer pt-0.5">
-<option>All Hazards</option>
-<option>Flood</option>
-<option>Landslide</option>
-<option>Heavy Rainfall</option>
-<option>Cyclone</option>
-<option>Drought</option>
-</select>
-</div>
-<div class="bg-surface-container-low px-space-sm py-1.5 rounded flex flex-col">
-<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Warning Level</span>
-<select class="bg-transparent font-headline-sm text-headline-sm text-on-surface border-none focus:outline-none cursor-pointer pt-0.5">
-<option>All Levels</option>
-<option>Evacuate (Level 3)</option>
-<option>Warning (Level 2)</option>
-<option>Watch (Level 1)</option>
-<option>Advisory</option>
-</select>
-</div>
-<div class="bg-surface-container-low px-space-sm py-1.5 rounded flex flex-col">
-<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Severity</span>
-<select class="bg-transparent font-headline-sm text-headline-sm text-on-surface border-none focus:outline-none cursor-pointer pt-0.5">
-<option>All Severities</option>
-<option>Critical</option>
-<option>High</option>
-<option>Medium</option>
-<option>Low</option>
-</select>
-</div>
-<div class="bg-surface-container-low px-space-sm py-1.5 rounded flex flex-col">
-<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">District</span>
-<select class="bg-transparent font-headline-sm text-headline-sm text-on-surface border-none focus:outline-none cursor-pointer pt-0.5">
-<option>All 25 Districts</option>
-<option>Kandy</option>
-<option>Kegalle</option>
-<option>Ratnapura</option>
-<option>Colombo</option>
-<option>Galle</option>
-<option>Badulla</option>
-</select>
-</div>
-<div class="bg-surface-container-low px-space-sm py-1.5 rounded flex flex-col">
-<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Status</span>
-<select class="bg-transparent font-headline-sm text-headline-sm text-on-surface border-none focus:outline-none cursor-pointer pt-0.5">
-<option>Active (12)</option>
-<option>Scheduled (2)</option>
-<option>Expired (45)</option>
-<option>Cancelled (4)</option>
-</select>
-</div>
-</div>
-</div>
-</div>
-<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden mb-space-2xl">
-<div class="px-space-lg py-space-md bg-surface-container-low flex items-center justify-between">
-<div class="flex items-center gap-space-sm">
-<span class="font-headline-md text-headline-md text-on-surface">Active Alert Transmissions</span>
-<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm font-semibold">12 Broadcasts live</span>
-</div>
-<div class="flex items-center gap-space-xs font-label-sm text-label-sm text-on-surface-variant">
-<span>Auto-refreshing CAP XML feed</span>
-<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
-</div>
-</div>
-<div class="hidden md:block overflow-x-auto">
-<table class="w-full text-left">
-<thead>
-<tr class="bg-surface-container text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">
-<th class="py-3 px-space-lg">Alert ID</th>
-<th class="py-3 px-space-md">Hazard</th>
-<th class="py-3 px-space-md">Warning Level</th>
-<th class="py-3 px-space-md">Severity</th>
-<th class="py-3 px-space-md">Target Districts & Zones</th>
-<th class="py-3 px-space-md">Channels</th>
-<th class="py-3 px-space-md">Timestamp & Operator</th>
-<th class="py-3 px-space-md">Status</th>
-<th class="py-3 px-space-lg text-right">Actions</th>
-</tr>
-</thead>
-<tbody class="font-body-md text-body-md text-on-surface">
-<tr class="hover:bg-surface-container-low transition-colors bg-surface-container-highest/20 cursor-pointer" (click)="toggleDrawer(true)">
-<td class="py-3 px-space-lg font-data-mono text-data-mono font-bold text-secondary">
-              A-104
-            </td>
-<td class="py-3 px-space-md">
-<div class="flex items-center gap-1.5 font-headline-sm text-headline-sm text-on-surface">
-<span class="p-1 rounded bg-secondary-fixed text-on-secondary-fixed material-symbols-outlined text-[18px]">flood</span>
-<span>Flood</span>
-</div>
-</td>
-<td class="py-3 px-space-md">
-<span class="px-2 py-0.5 rounded font-label-sm text-label-sm bg-error text-on-error font-bold tracking-wide">
-                EVACUATE
-              </span>
-</td>
-<td class="py-3 px-space-md">
-<span class="px-2 py-0.5 rounded bg-error-container text-on-error-container font-label-sm text-label-sm font-bold flex items-center gap-1 w-max">
-<span class="w-1.5 h-1.5 rounded-full bg-error"></span> CRITICAL
-              </span>
-</td>
-<td class="py-3 px-space-md">
-<div class="flex flex-col">
-<span class="font-headline-sm text-headline-sm">Kandy</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant">Ganga Ihala, Udunuwara, Katugastota</span>
-</div>
-</td>
-<td class="py-3 px-space-md">
-<div class="flex items-center gap-1 text-on-surface-variant">
-<span class="p-1 rounded bg-surface-container material-symbols-outlined text-[16px] text-secondary" title="Cell Broadcast">cell_tower</span>
-<span class="p-1 rounded bg-surface-container material-symbols-outlined text-[16px] text-secondary" title="SMS Gateway">sms</span>
-<span class="p-1 rounded bg-surface-container material-symbols-outlined text-[16px] text-error" title="Acoustic Siren">volume_up</span>
-<span class="p-1 rounded bg-surface-container material-symbols-outlined text-[16px] text-on-surface" title="Citizen Web Portal">public</span>
-</div>
-</td>
-<td class="py-3 px-space-md">
-<div class="flex flex-col font-data-mono text-data-mono">
-<span>10:30 AM Today</span>
-<span class="text-on-surface-variant font-label-sm text-label-sm">DMC Central Ops</span>
-</div>
-</td>
-<td class="py-3 px-space-md">
-<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm font-semibold">
-<span class="w-2 h-2 rounded-full bg-error animate-ping"></span>
-                ACTIVE
-              </span>
-</td>
-<td class="py-3 px-space-lg text-right">
-<div class="flex items-center justify-end gap-1" (click)="$event.stopPropagation()">
-<button class="p-1 rounded hover:bg-surface-container text-secondary" (click)="toggleDrawer(true)" title="View Details Drawer" type="button">
-<span class="material-symbols-outlined text-[20px]">visibility</span>
-</button>
-<button class="p-1 rounded hover:bg-surface-container text-on-surface-variant" title="Edit Alert" type="button">
-<span class="material-symbols-outlined text-[20px]">edit</span>
-</button>
-<button class="p-1 rounded hover:bg-error-container text-error" title="Cancel Alert" type="button">
-<span class="material-symbols-outlined text-[20px]">cancel</span>
-</button>
-</div>
-</td>
-</tr>
-<tr class="hover:bg-surface-container-low transition-colors">
-<td class="py-3 px-space-lg font-data-mono text-data-mono font-bold text-on-surface">
-              A-103
-            </td>
-<td class="py-3 px-space-md">
-<div class="flex items-center gap-1.5 font-headline-sm text-headline-sm text-on-surface">
-<span class="p-1 rounded bg-tertiary-fixed text-on-tertiary-fixed font-semibold material-symbols-outlined text-[18px]">landslide</span>
-<span>Landslide</span>
-</div>
-</td>
-<td class="py-3 px-space-md">
-<span class="px-2 py-0.5 rounded font-label-sm text-label-sm bg-secondary text-on-secondary font-bold tracking-wide">
-                WARNING
-              </span>
-</td>
-<td class="py-3 px-space-md">
-<span class="px-2 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed-variant font-label-sm text-label-sm font-bold flex items-center gap-1 w-max">
-<span class="w-1.5 h-1.5 rounded-full bg-error"></span> HIGH
-              </span>
-</td>
-<td class="py-3 px-space-md">
-<div class="flex flex-col">
-<span class="font-headline-sm text-headline-sm">Kegalle</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant">Aranayake, Mawanella & Dehiowita slopes</span>
-</div>
-</td>
-<td class="py-3 px-space-md">
-<div class="flex items-center gap-1 text-on-surface-variant">
-<span class="p-1 rounded bg-surface-container material-symbols-outlined text-[16px] text-secondary">cell_tower</span>
-<span class="p-1 rounded bg-surface-container material-symbols-outlined text-[16px] text-secondary">sms</span>
-<span class="p-1 rounded bg-surface-container material-symbols-outlined text-[16px] text-on-surface">public</span>
-</div>
-</td>
-<td class="py-3 px-space-md">
-<div class="flex flex-col font-data-mono text-data-mono">
-<span>09:15 AM Today</span>
-<span class="text-on-surface-variant font-label-sm text-label-sm">NBRO GeoTeam</span>
-</div>
-</td>
-<td class="py-3 px-space-md">
-<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm font-semibold">
-<span class="w-2 h-2 rounded-full bg-secondary"></span>
-                ACTIVE
-              </span>
-</td>
-<td class="py-3 px-space-lg text-right">
-<div class="flex items-center justify-end gap-1">
-<button class="p-1 rounded hover:bg-surface-container text-secondary" (click)="toggleDrawer(true)" type="button">
-<span class="material-symbols-outlined text-[20px]">visibility</span>
-</button>
-<button class="p-1 rounded hover:bg-surface-container text-on-surface-variant" type="button">
-<span class="material-symbols-outlined text-[20px]">edit</span>
-</button>
-<button class="p-1 rounded hover:bg-error-container text-error" type="button">
-<span class="material-symbols-outlined text-[20px]">cancel</span>
-</button>
-</div>
-</td>
-</tr>
-<tr class="hover:bg-surface-container-low transition-colors">
-<td class="py-3 px-space-lg font-data-mono text-data-mono font-bold text-on-surface">
-              A-102
-            </td>
-<td class="py-3 px-space-md">
-<div class="flex items-center gap-1.5 font-headline-sm text-headline-sm text-on-surface">
-<span class="p-1 rounded bg-surface-container-high text-on-surface-variant material-symbols-outlined text-[18px]">rainy</span>
-<span>Heavy Rain</span>
-</div>
-</td>
-<td class="py-3 px-space-md">
-<span class="px-2 py-0.5 rounded font-label-sm text-label-sm bg-surface-container-highest text-on-surface font-bold tracking-wide">
-                WATCH
-              </span>
-</td>
-<td class="py-3 px-space-md">
-<span class="px-2 py-0.5 rounded bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm font-bold flex items-center gap-1 w-max">
-                MEDIUM
-              </span>
-</td>
-<td class="py-3 px-space-md">
-<div class="flex flex-col">
-<span class="font-headline-sm text-headline-sm">Ratnapura</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant">Kuruwita, Pelmadulla, Ayagama</span>
-</div>
-</td>
-<td class="py-3 px-space-md">
-<div class="flex items-center gap-1 text-on-surface-variant">
-<span class="p-1 rounded bg-surface-container material-symbols-outlined text-[16px] text-secondary">sms</span>
-<span class="p-1 rounded bg-surface-container material-symbols-outlined text-[16px] text-on-surface">public</span>
-</div>
-</td>
-<td class="py-3 px-space-md">
-<div class="flex flex-col font-data-mono text-data-mono">
-<span>08:00 AM Today</span>
-<span class="text-on-surface-variant font-label-sm text-label-sm">Met Dept Sri Lanka</span>
-</div>
-</td>
-<td class="py-3 px-space-md">
-<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm font-semibold">
-<span class="w-2 h-2 rounded-full bg-secondary"></span>
-                ACTIVE
-              </span>
-</td>
-<td class="py-3 px-space-lg text-right">
-<div class="flex items-center justify-end gap-1">
-<button class="p-1 rounded hover:bg-surface-container text-secondary" (click)="toggleDrawer(true)" type="button">
-<span class="material-symbols-outlined text-[20px]">visibility</span>
-</button>
-<button class="p-1 rounded hover:bg-surface-container text-on-surface-variant" type="button">
-<span class="material-symbols-outlined text-[20px]">edit</span>
-</button>
-<button class="p-1 rounded hover:bg-error-container text-error" type="button">
-<span class="material-symbols-outlined text-[20px]">cancel</span>
-</button>
-</div>
-</td>
-</tr>
-<tr class="hover:bg-surface-container-low transition-colors">
-<td class="py-3 px-space-lg font-data-mono text-data-mono font-bold text-on-surface">
-              A-101
-            </td>
-<td class="py-3 px-space-md">
-<div class="flex items-center gap-1.5 font-headline-sm text-headline-sm text-on-surface">
-<span class="p-1 rounded bg-surface-container-high text-on-surface-variant material-symbols-outlined text-[18px]">cyclone</span>
-<span>Cyclone Watch</span>
-</div>
-</td>
-<td class="py-3 px-space-md">
-<span class="px-2 py-0.5 rounded font-label-sm text-label-sm bg-surface-container-highest text-on-surface font-bold tracking-wide">
-                ADVISORY
-              </span>
-</td>
-<td class="py-3 px-space-md">
-<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm font-bold flex items-center gap-1 w-max">
-                LOW
-              </span>
-</td>
-<td class="py-3 px-space-md">
-<div class="flex flex-col">
-<span class="font-headline-sm text-headline-sm">Batticaloa & Trincomalee</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant">Eastern Coastal Belt (Deep Sea Advisory)</span>
-</div>
-</td>
-<td class="py-3 px-space-md">
-<div class="flex items-center gap-1 text-on-surface-variant">
-<span class="p-1 rounded bg-surface-container material-symbols-outlined text-[16px] text-secondary">cell_tower</span>
-<span class="p-1 rounded bg-surface-container material-symbols-outlined text-[16px] text-on-surface">public</span>
-</div>
-</td>
-<td class="py-3 px-space-md">
-<div class="flex flex-col font-data-mono text-data-mono">
-<span>Yesterday 18:00</span>
-<span class="text-on-surface-variant font-label-sm text-label-sm">Maritime Unit</span>
-</div>
-</td>
-<td class="py-3 px-space-md">
-<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm font-semibold">
-<span class="w-2 h-2 rounded-full bg-secondary"></span>
-                ACTIVE
-              </span>
-</td>
-<td class="py-3 px-space-lg text-right">
-<div class="flex items-center justify-end gap-1">
-<button class="p-1 rounded hover:bg-surface-container text-secondary" (click)="toggleDrawer(true)" type="button">
-<span class="material-symbols-outlined text-[20px]">visibility</span>
-</button>
-<button class="p-1 rounded hover:bg-surface-container text-on-surface-variant" type="button">
-<span class="material-symbols-outlined text-[20px]">edit</span>
-</button>
-<button class="p-1 rounded hover:bg-error-container text-error" type="button">
-<span class="material-symbols-outlined text-[20px]">cancel</span>
-</button>
-</div>
-</td>
-</tr>
-<tr class="hover:bg-surface-container-low transition-colors opacity-75">
-<td class="py-3 px-space-lg font-data-mono text-data-mono font-bold text-on-surface">
-              A-098
-            </td>
-<td class="py-3 px-space-md">
-<div class="flex items-center gap-1.5 font-headline-sm text-headline-sm text-on-surface">
-<span class="p-1 rounded bg-surface-container text-on-surface-variant material-symbols-outlined text-[18px]">water_drop</span>
-<span>Drought Watch</span>
-</div>
-</td>
-<td class="py-3 px-space-md">
-<span class="px-2 py-0.5 rounded font-label-sm text-label-sm bg-surface-container text-on-surface-variant font-bold tracking-wide">
-                ADVISORY
-              </span>
-</td>
-<td class="py-3 px-space-md">
-<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm font-bold flex items-center gap-1 w-max">
-                LOW
-              </span>
-</td>
-<td class="py-3 px-space-md">
-<div class="flex flex-col">
-<span class="font-headline-sm text-headline-sm">Hambantota</span>
-<span class="font-body-sm text-body-sm text-on-surface-variant">Ambalantota, Suriyawewa</span>
-</div>
-</td>
-<td class="py-3 px-space-md">
-<div class="flex items-center gap-1 text-on-surface-variant">
-<span class="p-1 rounded bg-surface-container material-symbols-outlined text-[16px] text-on-surface">public</span>
-</div>
-</td>
-<td class="py-3 px-space-md">
-<div class="flex flex-col font-data-mono text-data-mono">
-<span>02 Days Ago</span>
-<span class="text-on-surface-variant font-label-sm text-label-sm">Agrarian Services</span>
-</div>
-</td>
-<td class="py-3 px-space-md">
-<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm font-medium">
-                EXPIRED
-              </span>
-</td>
-<td class="py-3 px-space-lg text-right">
-<div class="flex items-center justify-end gap-1">
-<button class="p-1 rounded hover:bg-surface-container text-on-surface-variant" (click)="toggleDrawer(true)" type="button">
-<span class="material-symbols-outlined text-[20px]">visibility</span>
-</button>
-<button class="p-1 rounded hover:bg-surface-container text-on-surface-variant opacity-40 cursor-not-allowed" type="button">
-<span class="material-symbols-outlined text-[20px]">edit</span>
-</button>
-</div>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="block md:hidden divide-y divide-surface-container">
-<div class="p-space-md flex flex-col gap-space-sm bg-surface-container-highest/20" (click)="toggleDrawer(true)">
-<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-lg">
 <div class="flex items-center gap-2">
-<span class="font-data-mono text-data-mono font-bold text-secondary">A-104</span>
-<span class="px-2 py-0.5 rounded bg-error text-on-error font-label-sm text-label-sm font-bold">EVACUATE</span>
+<span class="material-symbols-outlined text-[20px] text-secondary">rainy</span>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">24h Rainfall: Peradeniya</span>
+<span class="font-data-mono text-body-md text-on-surface font-semibold">142.6 mm</span>
 </div>
-<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm font-semibold">
-<span class="w-2 h-2 rounded-full bg-error animate-ping"></span> ACTIVE
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px] text-on-surface-variant">air</span>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Wind Vector</span>
+<span class="font-data-mono text-body-md text-on-surface font-semibold">SW &#64; 24 kt</span>
+</div>
+</div>
+<button class="px-space-md py-1.5 rounded bg-surface-container font-headline-sm text-label-md text-on-surface hover:bg-surface-container-high transition-colors" type="button">
+            Hydrograph Telemetry
+          </button>
+</div>
+</div>
+</div>
+<!-- RIGHT 30%: Interactive Tactical Operations Panel (Col span 4 on XL) -->
+<div class="xl:col-span-4 flex flex-col gap-space-md">
+<!-- Panel Header & Primary Tabs -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-headline-md text-headline-md text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[20px] text-secondary">crisis_alert</span>
+            Tactical Operations
           </span>
+<span class="px-space-xs py-0.5 rounded bg-error-container text-on-error-container font-label-sm text-label-sm font-bold">{{ criticalCount }} CRITICAL</span>
 </div>
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-[18px] text-error">flood</span>
-<span class="font-headline-sm text-headline-sm">Flood Warning: Kandy Basin</span>
-</div>
-<div class="text-on-surface-variant font-body-sm text-body-sm">
-          Districts: Kandy (Ganga Ihala, Udunuwara) • 10:30 AM today
-        </div>
-<div class="flex items-center justify-between pt-space-xs">
-<span class="px-2 py-0.5 rounded bg-error-container text-on-error-container font-label-sm text-label-sm font-bold">CRITICAL SEVERITY</span>
-<button class="text-secondary font-headline-sm text-headline-sm flex items-center gap-1" type="button">
-<span>View Full Directive</span>
-<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
-</button>
+<!-- Navigation Tabs -->
+<div class="flex items-center p-0.5 bg-surface-container rounded-lg font-headline-sm text-label-md text-on-surface-variant">
+<button class="flex-1 py-1.5 rounded-md bg-surface-container-lowest text-on-surface shadow-xs font-semibold" type="button">
+            Incidents ({{ activeCount }})
+          </button>
+<button class="flex-1 py-1.5 rounded-md text-on-surface-variant hover:text-on-surface transition-colors" type="button">
+            Telemetry (5)
+          </button>
+<button class="flex-1 py-1.5 rounded-md text-on-surface-variant hover:text-on-surface transition-colors" type="button">
+            Relief (14)
+          </button>
 </div>
 </div>
-<div class="p-space-md flex flex-col gap-space-sm">
+<!-- Tab 1 Active Incidents Content List -->
+<div class="flex flex-col gap-space-sm max-h-[600px] overflow-y-auto pr-2 pb-2">
+<!-- Dynamic Incident Cards from MongoDB -->
+<div *ngFor="let item of incidents" class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col gap-space-xs transition-shadow cursor-pointer hover:bg-surface-container-low" [class.ring-2]="selectedIncident?.incidentId === item.incidentId" [class.ring-secondary]="selectedIncident?.incidentId === item.incidentId" (click)="selectIncident(item)">
 <div class="flex items-center justify-between">
-<div class="flex items-center gap-2">
-<span class="font-data-mono text-data-mono font-bold text-on-surface">A-103</span>
-<span class="px-2 py-0.5 rounded bg-secondary text-on-secondary font-label-sm text-label-sm font-bold">WARNING</span>
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full" [ngClass]="item.status === 'ACTIVE' ? 'bg-error animate-ping' : 'bg-outline'"></span>
+<span class="font-data-mono text-label-sm font-bold" [ngClass]="item.priority === 'CRITICAL' ? 'text-error' : 'text-on-surface'">{{ item.incidentId }}</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">• {{ item.district }} District</span>
 </div>
-<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm font-semibold">
-<span class="w-2 h-2 rounded-full bg-secondary"></span> ACTIVE
+<span class="px-space-xs py-0.5 rounded font-label-sm text-label-sm font-bold tracking-wider uppercase" [ngClass]="getPriorityBadgeClass(item.priority)">{{ item.priority }}</span>
+</div>
+<div class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-1">
+  <span class="material-symbols-outlined text-[18px] text-secondary">{{ getHazardIcon(item.type) }}</span>
+  {{ item.type }} in {{ item.district }}
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">{{ item.description }}</p>
+<div class="p-space-sm bg-surface-container-low rounded-lg flex items-center justify-between my-1">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded bg-secondary text-on-secondary flex items-center justify-center">
+<span class="material-symbols-outlined text-[14px]">local_shipping</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-label-sm text-on-surface">Target Pop: {{ item.peopleAffected | number }}</span>
+<span class="font-data-mono text-[11px] text-secondary font-semibold">{{ item.status }}</span>
+</div>
+</div>
+<div class="text-right flex flex-col">
+<span class="font-data-mono text-label-sm font-bold text-on-surface">{{ formatDate(item.reportedAt) }}</span>
+<span class="font-body-sm text-[10px] text-on-surface-variant block">{{ item.createdBy }}</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs pt-1">
+<button class="flex-1 py-1.5 rounded bg-surface-container hover:bg-surface-container-high text-on-surface font-headline-sm text-label-sm flex items-center justify-center gap-1 transition-colors" type="button" (click)="selectIncident(item); $event.stopPropagation()">
+<span class="material-symbols-outlined text-[16px]">location_searching</span>
+<span>Track Incident</span>
+</button>
+<button *ngIf="item.status === 'ACTIVE'" class="px-space-md py-1.5 rounded bg-surface-container font-headline-sm text-label-sm text-on-surface hover:bg-error hover:text-on-error transition-colors" type="button" (click)="selectIncident(item); closeSelectedIncident(); $event.stopPropagation()">
+              Close / Resolve
+            </button>
+</div>
+</div>
+</div>
+
+
+<!-- Quick Relief Shelters Summary Rail -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px] text-secondary">night_shelter</span>
+            Sector Shelters Status
           </span>
+<a class="font-label-sm text-label-sm text-secondary hover:underline" href="#">View All (14)</a>
+</div>
+<div class="flex flex-col gap-2">
+<!-- Shelter item 1 -->
+<div class="flex items-center justify-between p-space-xs rounded bg-surface-container-low">
+<div class="flex flex-col">
+<span class="font-headline-sm text-label-md text-on-surface">Kandy Central Cultural Center</span>
+<span class="font-body-sm text-[11px] text-on-surface-variant">Medical post ready • 210/350</span>
 </div>
 <div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-[18px] text-on-tertiary-fixed-variant">landslide</span>
-<span class="font-headline-sm text-headline-sm">Landslide Warning: Kegalle Slopes</span>
+<div class="w-16 bg-surface-container-highest rounded-full h-1.5 overflow-hidden">
+<div class="bg-secondary h-1.5 rounded-full" style="width: 64%"></div>
 </div>
-<div class="text-on-surface-variant font-body-sm text-body-sm">
-          Districts: Kegalle (Aranayake, Mawanella) • 09:15 AM today
-        </div>
+<span class="font-data-mono text-label-sm text-on-surface font-semibold">64%</span>
 </div>
 </div>
-</div>
-<div class="fixed top-0 right-0 h-full w-full sm:w-[480px] bg-surface-container-lowest shadow-2xl z-50 transform transition-transform duration-300 ease-in-out flex flex-col justify-between overflow-y-auto" [class.translate-x-full]="!isDrawerOpen">
-<div>
-<div class="p-space-lg bg-surface-container-low flex items-center justify-between">
-<div class="flex items-center gap-space-xs">
-<span class="font-data-mono text-data-mono font-bold text-secondary">ALERT A-104</span>
-<span class="px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm uppercase">CAP 1.2 XML Valid</span>
-</div>
-<button class="p-1 rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface" (click)="toggleDrawer(false)" type="button">
-<span class="material-symbols-outlined text-[24px]">close</span>
-</button>
-</div>
-<div class="p-space-md bg-error text-on-error flex items-start gap-space-sm shadow-inner">
-<span class="material-symbols-outlined text-[24px] shrink-0">warning</span>
+<!-- Shelter item 2 -->
+<div class="flex items-center justify-between p-space-xs rounded bg-surface-container-low">
 <div class="flex flex-col">
-<span class="font-headline-sm text-headline-sm uppercase tracking-wide">CRITICAL LEVEL 3 WARNING: IMMEDIATE EVACUATION</span>
-<span class="font-body-sm text-body-sm text-white/90">Issued by National Emergency Operations Centre • Approved by DG-DMC</span>
+<span class="font-headline-sm text-label-md text-on-surface">Kegalle High School Hall</span>
+<span class="font-body-sm text-[11px] text-on-surface-variant">Food rations deployed • 450/500</span>
 </div>
+<div class="flex items-center gap-2">
+<div class="w-16 bg-surface-container-highest rounded-full h-1.5 overflow-hidden">
+<div class="bg-error h-1.5 rounded-full" style="width: 90%"></div>
 </div>
-<div class="p-space-lg flex flex-col gap-space-lg">
-<div class="grid grid-cols-3 gap-space-xs p-space-sm bg-surface-container-low rounded-lg text-center">
-<div class="flex flex-col">
-<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Target Pop.</span>
-<span class="font-headline-md text-headline-md text-on-surface">~140,000</span>
-</div>
-<div class="flex flex-col">
-<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">SMS Broadcast</span>
-<span class="font-headline-md text-headline-md text-secondary">138,200</span>
-</div>
-<div class="flex flex-col">
-<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Cell Confirmed</span>
-<span class="font-headline-md text-headline-md text-on-surface">84.2%</span>
-</div>
-</div>
-<div class="flex flex-col gap-space-xs">
-<div class="flex items-center justify-between">
-<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Spatial Impact Map</span>
-<span class="font-data-mono text-data-mono text-secondary">Peradeniya / Gampola Gauge</span>
-</div>
-<div class="w-full h-36 bg-cover bg-center rounded-lg shadow-sm relative overflow-hidden flex items-end p-space-sm" data-location="Peradeniya, Kandy, Sri Lanka" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCFTjfWZAHWGRpOYg_Z6MUDuIuj3_d5L5Qtps3ooX7glLuSk_XdvcJVCYLwC4OANeIpT6fDOJC56tGr_DFfjt92aLVkWMjkI87kC5UBNVTNuTTEKz99j99mNfDzUNEAMV_MRf9ktOn8Calyzo2r1Z_gkAMmjOSsVTh53fZflyQ5uvrFJgFmp2fWkf8Qr13ljenHmYpprttjg2KXt1xpk-Lob2ZKh5m1tsfV6Mkae6TL92DlGsk2qhKRgw');">
-<div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
-<div class="relative z-10 flex items-center justify-between w-full text-white">
-<span class="font-label-sm text-label-sm flex items-center gap-1 font-semibold">
-<span class="w-2 h-2 rounded-full bg-error"></span> River Basin Inundation Zone
-              </span>
-<span class="font-data-mono text-data-mono text-xs">7.26° N, 80.59° E</span>
+<span class="font-data-mono text-label-sm text-error font-semibold">90%</span>
 </div>
 </div>
 </div>
-<div class="flex flex-col gap-space-xs">
-<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Official Broadcast Copy</span>
-<div class="p-space-md bg-surface-container rounded-lg font-body-md text-body-md text-on-surface leading-relaxed">
-<strong class="font-headline-sm text-headline-sm text-error">CRITICAL FLOOD WARNING:</strong> Due to heavy precipitation exceeding 175mm in the upper catchment of Mahaweli Ganga, water levels at Peradeniya gauge have exceeded 15.2m (Major Flood Level). Residents in low-lying areas of Gampola, Peradeniya, and Katugastota are advised to evacuate immediately to designated relief shelters.
+</div>
+</div>
+</div>
+</div>
+</ng-container>
+
+<!-- Selected Incident Popup Modal (For Live Map) -->
+<div *ngIf="selectedIncident && currentRoute === 'live-disaster-map'" class="fixed inset-0 bg-primary-container/60 backdrop-blur-sm z-[60] flex items-center justify-center p-space-md transition-opacity">
+  <div class="bg-surface-container-lowest rounded-xl shadow-2xl max-w-lg w-full flex flex-col overflow-hidden border-t-4" [ngClass]="selectedIncident.priority === 'CRITICAL' ? 'border-error' : 'border-secondary'">
+    <div class="p-space-lg flex flex-col gap-space-md">
+      <div class="flex items-start justify-between">
+        <div class="flex items-center gap-space-sm">
+          <div class="w-10 h-10 rounded-lg bg-primary-container text-on-primary flex items-center justify-center">
+            <span class="material-symbols-outlined text-[24px]">{{ getHazardIcon(selectedIncident.type) }}</span>
           </div>
-</div>
-<div class="flex flex-col gap-space-xs">
-<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Recommended Public Directives</span>
-<div class="space-y-space-xs font-body-sm text-body-sm">
-<div class="p-space-sm rounded bg-surface-container-low flex items-start gap-space-xs">
-<span class="material-symbols-outlined text-[18px] text-error shrink-0">directions_run</span>
-<span>Evacuate immediately along marked highland routes to nearest relief camps.</span>
-</div>
-<div class="p-space-sm rounded bg-surface-container-low flex items-start gap-space-xs">
-<span class="material-symbols-outlined text-[18px] text-error shrink-0">power_settings_new</span>
-<span>Disconnect main power supplies and cooking gas cylinders prior to vacating.</span>
-</div>
-<div class="p-space-sm rounded bg-surface-container-low flex items-start gap-space-xs">
-<span class="material-symbols-outlined text-[18px] text-error shrink-0">no_crash</span>
-<span>Strictly avoid crossing causeways, bridges, or inundated road segments.</span>
-</div>
-</div>
-</div>
-<div class="flex flex-col gap-space-xs">
-<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Dissemination Pipeline Status</span>
-<div class="p-space-sm bg-surface-container-low rounded-lg flex flex-col gap-space-xs font-body-sm text-body-sm">
-<div class="flex items-center justify-between">
-<span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-secondary">cell_tower</span> National Cell Broadcast</span>
-<span class="font-data-mono text-data-mono text-secondary font-semibold">100% Broadcasted</span>
-</div>
-<div class="flex items-center justify-between">
-<span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-secondary">volume_up</span> 14 Regional Sirens (Mahaweli)</span>
-<span class="font-data-mono text-data-mono text-secondary font-semibold">14/14 Sounded</span>
-</div>
-<div class="flex items-center justify-between">
-<span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-secondary">public</span> Sri Lanka Citizen Portal & Push</span>
-<span class="font-data-mono text-data-mono text-secondary font-semibold">Active Uplink</span>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="p-space-lg bg-surface-container-low flex flex-col gap-space-sm sticky bottom-0">
-<div class="flex items-center gap-space-sm">
-<button class="flex-1 py-2 rounded bg-primary text-on-primary font-headline-sm text-headline-sm flex items-center justify-center gap-1 hover:opacity-90" type="button">
-<span class="material-symbols-outlined text-[18px]">update</span>
-<span>Broadcast Update</span>
-</button>
-<button class="py-2 px-space-md rounded bg-surface-container text-on-surface font-headline-sm text-headline-sm hover:bg-surface-container-high" type="button">
-          Extend +2h
+          <div class="flex flex-col">
+            <div class="flex items-center gap-1.5">
+              <span class="font-headline-sm text-headline-sm text-on-surface">{{ selectedIncident.incidentId }}</span>
+              <span class="px-1.5 py-0.5 rounded text-on-secondary font-label-sm text-[10px]" [ngClass]="getPriorityBadgeClass(selectedIncident.priority)">{{ selectedIncident.priority }}</span>
+            </div>
+            <span class="font-label-sm text-label-sm text-on-surface-variant">{{ selectedIncident.type }} • {{ selectedIncident.district }}</span>
+          </div>
+        </div>
+        <button class="text-on-surface-variant hover:text-on-surface p-1 bg-surface-container hover:bg-surface-container-high rounded" type="button" (click)="selectedIncident = null">
+          <span class="material-symbols-outlined text-[20px]">close</span>
         </button>
-</div>
-<button class="w-full py-2 rounded bg-error-container text-on-error-container font-headline-sm text-headline-sm flex items-center justify-center gap-1 hover:bg-error hover:text-on-error transition-colors" type="button">
-<span class="material-symbols-outlined text-[18px]">emergency_home</span>
-<span>Revoke / Cancel Warning Siren</span>
-</button>
-</div>
-</div>
-<div class="fixed inset-0 bg-primary-container/60 backdrop-blur-sm z-50 flex items-center justify-center p-space-md transition-opacity" *ngIf="isIssueModalOpen">
-<div class="bg-surface-container-lowest rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden">
-<div class="px-space-lg py-space-md bg-surface-container-low flex items-center justify-between">
-<div class="flex items-center gap-space-sm">
-<span class="p-1.5 rounded-full bg-error text-on-error material-symbols-outlined text-[20px]">campaign</span>
-<div>
-<h3 class="font-headline-md text-headline-md text-on-surface">Issue New Emergency Alert</h3>
-<p class="font-label-sm text-label-sm text-on-surface-variant">Standard CAP-v1.2 Broadcast Authorization Form</p>
-</div>
-</div>
-<button class="p-1 rounded text-on-surface-variant hover:text-on-surface" (click)="closeModal()" type="button">
-<span class="material-symbols-outlined text-[20px]">close</span>
-</button>
-</div>
-<div class="p-space-lg flex-1 overflow-y-auto space-y-space-md">
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
-<div class="flex flex-col gap-1">
-<label class="font-label-sm text-label-sm text-on-surface font-semibold">Hazard Type</label>
-<select class="w-full px-space-md py-2 rounded bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container">
-<option>Flood (River Inundation)</option>
-<option>Landslide (NBRO Red Alert)</option>
-<option>Cyclone / Gale Wind</option>
-<option>Tsunami Threat Watch</option>
-<option>Extreme Heatwave / Drought</option>
-</select>
-</div>
-<div class="flex flex-col gap-1">
-<label class="font-label-sm text-label-sm text-on-surface font-semibold">Warning Level</label>
-<select class="w-full px-space-md py-2 rounded bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container">
-<option>Evacuate Immediately (Level 3)</option>
-<option>Warning (Level 2)</option>
-<option>Watch (Level 1)</option>
-<option>General Advisory</option>
-</select>
-</div>
-</div>
-<div class="flex flex-col gap-1">
-<label class="font-label-sm text-label-sm text-on-surface font-semibold">Target Districts (Multi-Select)</label>
-<div class="grid grid-cols-3 sm:grid-cols-4 gap-space-xs p-space-sm bg-surface-container-low rounded-lg font-body-sm text-body-sm">
-<label class="flex items-center gap-1.5 cursor-pointer">
-<input checked="" class="rounded text-secondary focus:ring-0" type="checkbox"/>
-<span>Kandy</span>
-</label>
-<label class="flex items-center gap-1.5 cursor-pointer">
-<input checked="" class="rounded text-secondary focus:ring-0" type="checkbox"/>
-<span>Kegalle</span>
-</label>
-<label class="flex items-center gap-1.5 cursor-pointer">
-<input class="rounded text-secondary focus:ring-0" type="checkbox"/>
-<span>Ratnapura</span>
-</label>
-<label class="flex items-center gap-1.5 cursor-pointer">
-<input class="rounded text-secondary focus:ring-0" type="checkbox"/>
-<span>Nuwara Eliya</span>
-</label>
-<label class="flex items-center gap-1.5 cursor-pointer">
-<input class="rounded text-secondary focus:ring-0" type="checkbox"/>
-<span>Matale</span>
-</label>
-<label class="flex items-center gap-1.5 cursor-pointer">
-<input class="rounded text-secondary focus:ring-0" type="checkbox"/>
-<span>Colombo</span>
-</label>
-<label class="flex items-center gap-1.5 cursor-pointer">
-<input class="rounded text-secondary focus:ring-0" type="checkbox"/>
-<span>Kalutara</span>
-</label>
-<label class="flex items-center gap-1.5 cursor-pointer">
-<input class="rounded text-secondary focus:ring-0" type="checkbox"/>
-<span>Galle</span>
-</label>
-</div>
-</div>
-<div class="flex flex-col gap-1">
-<div class="flex items-center justify-between">
-<label class="font-label-sm text-label-sm text-on-surface font-semibold">Alert Message Copy</label>
-<div class="flex items-center gap-1">
-<button class="px-2 py-0.5 rounded bg-primary text-on-primary font-label-sm text-label-sm font-semibold" type="button">EN</button>
-<button class="px-2 py-0.5 rounded bg-surface-container text-on-surface font-label-sm text-label-sm" type="button">සිං (SI)</button>
-<button class="px-2 py-0.5 rounded bg-surface-container text-on-surface font-label-sm text-label-sm" type="button">த (TA)</button>
-</div>
-</div>
-<textarea class="w-full p-space-md rounded bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container" placeholder="Type official alert message for immediate SMS and Cell Broadcast..." rows="3"></textarea>
-<span class="font-label-sm text-label-sm text-on-surface-variant text-right">0 / 160 Characters (Single SMS Segment)</span>
-</div>
-<div class="flex flex-col gap-1">
-<label class="font-label-sm text-label-sm text-on-surface font-semibold">Delivery Channels</label>
-<div class="grid grid-cols-2 sm:grid-cols-4 gap-space-xs font-body-sm text-body-sm">
-<label class="p-space-sm rounded bg-surface-container-low flex items-center gap-2 cursor-pointer">
-<input checked="" class="rounded text-secondary" type="checkbox"/>
-<span>Cell Broadcast</span>
-</label>
-<label class="p-space-sm rounded bg-surface-container-low flex items-center gap-2 cursor-pointer">
-<input checked="" class="rounded text-secondary" type="checkbox"/>
-<span>Bulk SMS</span>
-</label>
-<label class="p-space-sm rounded bg-surface-container-low flex items-center gap-2 cursor-pointer">
-<input checked="" class="rounded text-secondary" type="checkbox"/>
-<span>Siren Network</span>
-</label>
-<label class="p-space-sm rounded bg-surface-container-low flex items-center gap-2 cursor-pointer">
-<input checked="" class="rounded text-secondary" type="checkbox"/>
-<span>Citizen Portal</span>
-</label>
-</div>
-</div>
-<div class="p-space-md rounded bg-tertiary-fixed/30 flex items-start gap-space-sm">
-<input class="mt-1 rounded text-error" id="dualAuthCheck" type="checkbox"/>
-<label class="font-body-sm text-body-sm text-on-surface cursor-pointer" for="dualAuthCheck">
-<strong>Command Dual-Verification:</strong> I confirm this directive aligns with National DMC guidelines and meteorological sensor thresholds. Transmission is immediate across active cell towers.
-          </label>
-</div>
-</div>
-<div class="px-space-lg py-space-md bg-surface-container-low flex items-center justify-between">
-<button class="px-space-md py-2 rounded bg-surface-container text-on-surface font-headline-sm text-headline-sm hover:bg-surface-container-high" (click)="closeModal()" type="button">
-          Cancel
+      </div>
+
+      <!-- Live Sensor Readouts Matrix -->
+      <div class="grid grid-cols-2 gap-space-xs bg-surface-container-low p-space-sm rounded-lg mt-2">
+        <div class="flex flex-col col-span-2">
+          <span class="font-label-sm text-[11px] text-on-surface-variant uppercase">Spatial Coordinates / Location</span>
+          <span class="font-data-mono text-data-mono font-semibold text-on-surface">{{ selectedIncident.location?.coordinates?.[1] || 7.29 }}° N, {{ selectedIncident.location?.coordinates?.[0] || 80.63 }}° E</span>
+          <span class="font-body-sm text-[11px] text-secondary mt-0.5 flex items-start gap-1"><span class="material-symbols-outlined text-[14px]">location_on</span> {{ locationName }}</span>
+        </div>
+        <div class="flex flex-col mt-2">
+          <span class="font-label-sm text-[11px] text-on-surface-variant uppercase">Target Pop</span>
+          <span class="font-data-mono text-data-mono font-semibold text-on-surface">{{ selectedIncident.peopleAffected | number }}</span>
+        </div>
+        <div class="flex flex-col mt-2">
+          <span class="font-label-sm text-[11px] text-on-surface-variant uppercase">Reported By</span>
+          <span class="font-data-mono text-data-mono font-semibold text-on-surface">{{ selectedIncident.createdBy }}</span>
+        </div>
+      </div>
+
+      <!-- Personnel & Vessel Equipment -->
+      <div class="flex flex-col gap-1 mt-2">
+        <span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Required Assistance / Dispatched Assets</span>
+        <div class="flex items-center gap-2 flex-wrap text-label-sm text-on-surface font-body-sm">
+          <span *ngFor="let req of selectedIncident.requiredAssistance" class="px-2 py-0.5 rounded bg-surface-container flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-secondary">check_circle</span>{{ req }}</span>
+        </div>
+      </div>
+
+      <!-- Tactical Direct Action Buttons -->
+      <div class="flex flex-col gap-1.5 pt-4">
+        <div class="grid grid-cols-2 gap-1.5">
+          <button class="px-space-sm py-2 rounded bg-surface-container hover:bg-surface-container-high font-headline-sm text-label-sm text-on-surface flex items-center justify-center gap-1 transition-colors" type="button">
+            <span class="material-symbols-outlined text-[16px] text-secondary">map</span>
+            <span>View Map</span>
+          </button>
+          <button *ngIf="selectedIncident.status === 'ACTIVE'" class="px-space-sm py-2 rounded bg-surface-container hover:bg-error hover:text-on-error font-headline-sm text-label-sm text-on-surface flex items-center justify-center gap-1 transition-colors" type="button" (click)="closeSelectedIncident()">
+            <span class="material-symbols-outlined text-[16px]">check_circle</span>
+            <span>Close Incident</span>
+          </button>
+        </div>
+        <button class="w-full py-2 rounded bg-primary text-on-primary font-headline-sm text-label-sm flex items-center justify-center gap-1.5 shadow-sm hover:opacity-90 transition-opacity" type="button">
+          <span class="material-symbols-outlined text-[18px]">cell_tower</span>
+          <span>Broadcast Vicinity Evacuation Alert</span>
         </button>
-<button class="px-space-lg py-2 rounded bg-error text-on-error font-headline-sm text-headline-sm flex items-center gap-2 shadow-sm hover:opacity-95" type="button">
-<span class="material-symbols-outlined text-[18px]">cell_tower</span>
-<span>Issue Immediate Broadcast</span>
-</button>
+      </div>
+    </div>
+  </div>
 </div>
+
+<!-- Disaster Alerts Side Drawer -->
+<div class="fixed top-0 right-0 h-full w-full sm:w-[480px] bg-surface-container-lowest shadow-2xl z-50 transform transition-transform duration-300 ease-in-out flex flex-col justify-between overflow-y-auto" [class.translate-x-full]="!isDrawerOpen || currentRoute !== 'disaster-alerts'">
+  <div *ngIf="selectedIncident">
+    <div class="p-space-lg bg-surface-container-low flex items-center justify-between">
+      <div class="flex items-center gap-space-xs">
+        <span class="font-data-mono text-data-mono font-bold text-secondary">ALERT {{ selectedIncident.incidentId }}</span>
+        <span class="px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm uppercase">CAP 1.2 XML Valid</span>
+      </div>
+      <button class="p-1 rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface" (click)="toggleDrawer(false)" type="button">
+        <span class="material-symbols-outlined text-[24px]">close</span>
+      </button>
+    </div>
+    <div class="p-space-md flex items-start gap-space-sm shadow-inner" [ngClass]="selectedIncident.priority === 'CRITICAL' ? 'bg-error text-on-error' : 'bg-secondary text-on-secondary'">
+      <span class="material-symbols-outlined text-[24px] shrink-0">{{ getHazardIcon(selectedIncident.type) }}</span>
+      <div class="flex flex-col">
+        <span class="font-headline-sm text-headline-sm uppercase tracking-wide">{{ selectedIncident.priority }} LEVEL WARNING: {{ selectedIncident.type }}</span>
+        <span class="font-body-sm text-body-sm opacity-90">Issued by National Emergency Operations Centre • Approved by DG-DMC</span>
+      </div>
+    </div>
+    <div class="p-space-lg flex flex-col gap-space-lg">
+      <div class="grid grid-cols-3 gap-space-xs p-space-sm bg-surface-container-low rounded-lg text-center">
+        <div class="flex flex-col">
+          <span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Target Pop.</span>
+          <span class="font-headline-md text-headline-md text-on-surface">~{{ selectedIncident.peopleAffected || 'N/A' }}</span>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-label-sm text-label-sm text-on-surface-variant uppercase">SMS Broadcast</span>
+          <span class="font-headline-md text-headline-md text-secondary">{{ (selectedIncident.peopleAffected || 0) * 0.9 | number:'1.0-0' }}</span>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Cell Confirmed</span>
+          <span class="font-headline-md text-headline-md text-on-surface">84.2%</span>
+        </div>
+      </div>
+      
+      <!-- Spatial Impact Map -->
+      <div class="flex flex-col gap-space-xs">
+        <div class="flex items-center justify-between">
+          <span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Spatial Impact Map</span>
+          <span class="font-data-mono text-data-mono text-secondary">{{ selectedIncident.district }} Zone</span>
+        </div>
+        <div class="w-full h-36 bg-surface-container-low rounded-lg overflow-hidden border border-surface-container relative">
+          <iframe *ngIf="safeMapUrl" [src]="safeMapUrl" width="100%" height="100%" frameborder="0" style="border:0; pointer-events:none;" allowfullscreen="" loading="lazy"></iframe>
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none"></div>
+          <div class="absolute bottom-2 left-2 right-2 flex items-center justify-between text-white pointer-events-none">
+            <span class="font-label-sm text-label-sm flex items-center gap-1 font-semibold">
+              <span class="w-2 h-2 rounded-full" [ngClass]="selectedIncident.priority === 'CRITICAL' ? 'bg-error' : 'bg-secondary'"></span> {{ selectedIncident.type }} Impact Zone
+            </span>
+            <span class="font-data-mono text-data-mono text-xs">{{ selectedIncident.location?.coordinates?.[1] || 7.29 }}° N, {{ selectedIncident.location?.coordinates?.[0] || 80.63 }}° E</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Official Broadcast Copy -->
+      <div class="flex flex-col gap-space-xs">
+        <span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Official Broadcast Copy</span>
+        <div class="p-space-md bg-surface-container rounded-lg font-body-md text-body-md text-on-surface leading-relaxed border-l-4" [ngClass]="selectedIncident.priority === 'CRITICAL' ? 'border-error' : 'border-secondary'">
+          <strong class="font-headline-sm text-headline-sm" [ngClass]="selectedIncident.priority === 'CRITICAL' ? 'text-error' : 'text-secondary'">{{ selectedIncident.priority }} {{ selectedIncident.type | uppercase }} WARNING:</strong> 
+          {{ selectedIncident.description || 'No detailed broadcast copy provided.' }}
+        </div>
+      </div>
+      
+      <!-- Recommended Public Directives -->
+      <div class="flex flex-col gap-space-xs">
+        <span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Recommended Public Directives</span>
+        <div class="space-y-space-xs font-body-sm text-body-sm">
+          <div class="p-space-sm rounded bg-surface-container-low flex items-start gap-space-xs" *ngFor="let directive of selectedIncident.requiredAssistance">
+            <span class="material-symbols-outlined text-[18px] text-secondary shrink-0">check_circle</span>
+            <span>Requires {{ directive }}</span>
+          </div>
+          <div *ngIf="selectedIncident.priority === 'CRITICAL'" class="p-space-sm rounded bg-error-container text-on-error-container flex items-start gap-space-xs font-semibold">
+            <span class="material-symbols-outlined text-[18px] shrink-0">directions_run</span>
+            <span>Evacuate immediately along marked highland routes to nearest relief camps.</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Dissemination Pipeline Status -->
+      <div class="flex flex-col gap-space-xs">
+        <span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Dissemination Pipeline Status</span>
+        <div class="p-space-sm bg-surface-container-low rounded-lg flex flex-col gap-space-xs font-body-sm text-body-sm">
+          <div class="flex items-center justify-between">
+            <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-secondary">cell_tower</span> National Cell Broadcast</span>
+            <span class="font-data-mono text-data-mono text-secondary font-semibold">100% Broadcasted</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-secondary">volume_up</span> Regional Sirens ({{ selectedIncident.district }})</span>
+            <span class="font-data-mono text-data-mono text-secondary font-semibold">Active</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-secondary">public</span> Sri Lanka Citizen Portal & Push</span>
+            <span class="font-data-mono text-data-mono text-secondary font-semibold">Active Uplink</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="p-space-lg bg-surface-container-low flex flex-col gap-space-sm sticky bottom-0">
+    <div class="flex items-center gap-space-sm">
+      <button class="flex-1 py-2 rounded bg-primary text-on-primary font-headline-sm text-headline-sm flex items-center justify-center gap-1 hover:opacity-90 transition-opacity">
+        <span class="material-symbols-outlined text-[18px]">update</span>
+        <span>Broadcast Update</span>
+      </button>
+      <button class="py-2 px-space-md rounded bg-surface-container text-on-surface font-headline-sm text-headline-sm hover:bg-surface-container-high transition-colors">
+        Extend +2h
+      </button>
+    </div>
+    <button *ngIf="selectedIncident?.status === 'ACTIVE'" class="w-full py-2 rounded bg-error-container text-on-error-container font-headline-sm text-headline-sm flex items-center justify-center gap-1 hover:bg-error hover:text-on-error transition-colors" (click)="closeSelectedIncident()">
+      <span class="material-symbols-outlined text-[18px]">emergency_home</span>
+      <span>Revoke / Cancel Warning Siren</span>
+    </button>
+  </div>
 </div>
+
+<!-- Drawer Backdrop -->
+<div class="fixed inset-0 bg-primary-container/40 z-40 backdrop-blur-[2px] transition-opacity" *ngIf="isDrawerOpen && currentRoute === 'disaster-alerts'" (click)="toggleDrawer(false)"></div>
+
+
+<div *ngIf="currentRoute === 'disaster-alerts'" class="flex flex-col w-full gap-space-md animate-fade-in">
+  <div class="flex flex-col gap-space-lg mb-space-xl">
+    <div class="flex flex-wrap items-center justify-between gap-space-md">
+      <div class="flex flex-col">
+        <div class="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider mb-1">
+          <span>Early Warning Dissemination</span>
+          <span>•</span>
+          <span>Protocol CAP-v1.2</span>
+          <span>•</span>
+          <span class="text-error font-semibold flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-error animate-ping"></span>
+            DEFCON 2 ACTIVE
+          </span>
+        </div>
+        <h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight">Disaster Alerts Management</h1>
+        <p class="font-body-md text-body-md text-on-surface-variant mt-0.5">
+          Issue, broadcast and monitor multi-channel early warning advisories across districts in real time.
+        </p>
+      </div>
+      <div class="flex items-center gap-space-sm">
+        <button class="px-space-md py-2 rounded bg-surface-container-lowest text-on-surface font-headline-sm text-headline-sm flex items-center gap-1.5 shadow-sm hover:bg-surface-container-low transition-colors" type="button">
+          <span class="material-symbols-outlined text-[18px] text-on-surface-variant">history_edu</span>
+          <span>Export Audit Log</span>
+        </button>
+        <button class="px-space-md py-2 rounded bg-surface-container-lowest text-on-surface font-headline-sm text-headline-sm flex items-center gap-1.5 shadow-sm hover:bg-surface-container-low transition-colors" type="button">
+          <span class="material-symbols-outlined text-[18px] text-on-surface-variant">menu_book</span>
+          <span>Broadcast Protocols</span>
+        </button>
+        <button class="px-space-lg py-2 rounded bg-error text-on-error font-headline-sm text-headline-sm flex items-center gap-2 shadow-md hover:opacity-95 transition-opacity" (click)="openModal()" type="button">
+          <span class="material-symbols-outlined text-[20px]">campaign</span>
+          <span>+ Issue New Emergency Alert</span>
+        </button>
+      </div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-space-lg">
+      <div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col justify-between relative overflow-hidden">
+        <div class="absolute -right-4 -bottom-4 w-28 h-28 bg-error-container rounded-full opacity-30 pointer-events-none"></div>
+        <div class="flex items-center justify-between">
+          <span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wide">Active Broadcasts</span>
+          <span class="px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-error animate-ping"></span> Live Transmission
+          </span>
+        </div>
+        <div class="my-space-md flex items-baseline gap-space-xs">
+          <span class="font-display-lg text-display-lg text-on-surface">{{ activeCount }}</span>
+          <span class="font-headline-md text-headline-md text-on-surface-variant">Alerts</span>
+        </div>
+        <div class="flex items-center gap-space-sm pt-space-xs">
+          <span class="px-2 py-1 rounded bg-error-container text-on-error-container font-label-sm text-label-sm font-bold flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-error"></span> {{ criticalCount }} Critical
+          </span>
+          <span class="px-2 py-1 rounded bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm font-semibold">
+            {{ highCount }} High
+          </span>
+          <span class="px-2 py-1 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">
+            {{ mediumCount }} Medium
+          </span>
+        </div>
+      </div>
+      <div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col justify-between relative overflow-hidden">
+        <div class="absolute -right-4 -bottom-4 w-28 h-28 bg-secondary-fixed rounded-full opacity-40 pointer-events-none"></div>
+        <div class="flex items-center justify-between">
+          <span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wide">Population Reached</span>
+          <span class="px-2 py-0.5 rounded-full bg-surface-container-high text-secondary font-label-sm text-label-sm font-medium">Island-Wide</span>
+        </div>
+        <div class="my-space-md flex items-baseline gap-space-xs">
+          <span class="font-display-lg text-display-lg text-on-surface">1.42</span>
+          <span class="font-headline-md text-headline-md text-on-surface-variant">Million Citizens</span>
+        </div>
+        <div class="flex items-center gap-space-md text-on-surface-variant font-body-sm text-body-sm">
+          <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[15px] text-secondary">cell_tower</span> 820k Cell Broadcast</span>
+          <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[15px] text-secondary">sms</span> 492k SMS</span>
+          <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[15px] text-secondary">devices</span> 108k Push</span>
+        </div>
+      </div>
+      <div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col justify-between relative overflow-hidden">
+        <div class="absolute -right-4 -bottom-4 w-28 h-28 bg-surface-container rounded-full opacity-50 pointer-events-none"></div>
+        <div class="flex items-center justify-between">
+          <span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wide">Delivery Confirmation Rate</span>
+          <span class="font-data-mono text-data-mono text-secondary font-semibold">&lt; 45s SLA Met</span>
+        </div>
+        <div class="my-space-md flex items-center justify-between">
+          <div class="flex items-baseline gap-space-xs">
+            <span class="font-display-lg text-display-lg text-on-surface">98.4%</span>
+            <span class="font-body-sm text-body-sm text-on-surface-variant">acknowledged</span>
+          </div>
+          <svg class="w-12 h-12 -mr-1" viewBox="0 0 36 36">
+            <path class="text-surface-container" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3.5"></path>
+            <path class="text-secondary" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="98.4, 100" stroke-linecap="round" stroke-width="3.5"></path>
+          </svg>
+        </div>
+        <div class="w-full bg-surface-container-low rounded-full h-1.5 overflow-hidden">
+          <div class="bg-secondary h-1.5 rounded-full" style="width: 98.4%;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm mb-space-sm">
+    <div class="flex flex-col lg:flex-row gap-space-md items-stretch lg:items-center justify-between">
+      <div class="flex-1 relative">
+        <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-on-surface-variant">
+          <span class="material-symbols-outlined text-[20px]">search</span>
+        </span>
+        <input class="w-full pl-10 pr-4 py-2 bg-surface-container-low rounded text-on-surface placeholder:text-on-surface-variant font-body-md text-body-md focus:outline-none focus:bg-surface-container" placeholder="Search alert ID, keyword, district or GN division..." type="search"/>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-space-xs font-body-sm text-body-sm">
+        <div class="bg-surface-container-low px-space-sm py-1.5 rounded flex flex-col">
+          <span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Hazard Type</span>
+          <select class="bg-transparent font-headline-sm text-headline-sm text-on-surface border-none focus:outline-none cursor-pointer pt-0.5">
+            <option>All Hazards</option>
+            <option *ngFor="let t of hazardTypes" [value]="t">{{ t }}</option>
+          </select>
+        </div>
+        <div class="bg-surface-container-low px-space-sm py-1.5 rounded flex flex-col">
+          <span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Warning Level</span>
+          <select class="bg-transparent font-headline-sm text-headline-sm text-on-surface border-none focus:outline-none cursor-pointer pt-0.5">
+            <option>All Levels</option>
+            <option>Evacuate (Level 3)</option>
+            <option>Warning (Level 2)</option>
+            <option>Watch (Level 1)</option>
+          </select>
+        </div>
+        <div class="bg-surface-container-low px-space-sm py-1.5 rounded flex flex-col">
+          <span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Severity</span>
+          <select class="bg-transparent font-headline-sm text-headline-sm text-on-surface border-none focus:outline-none cursor-pointer pt-0.5">
+            <option>All Severities</option>
+            <option>Critical</option>
+            <option>High</option>
+            <option>Medium</option>
+          </select>
+        </div>
+        <div class="bg-surface-container-low px-space-sm py-1.5 rounded flex flex-col">
+          <span class="font-label-sm text-label-sm text-on-surface-variant uppercase">District</span>
+          <select class="bg-transparent font-headline-sm text-headline-sm text-on-surface border-none focus:outline-none cursor-pointer pt-0.5">
+            <option>All 25 Districts</option>
+            <option *ngFor="let d of districts" [value]="d">{{ d }}</option>
+          </select>
+        </div>
+        <div class="bg-surface-container-low px-space-sm py-1.5 rounded flex flex-col">
+          <span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Status</span>
+          <select class="bg-transparent font-headline-sm text-headline-sm text-on-surface border-none focus:outline-none cursor-pointer pt-0.5">
+            <option>Active ({{ activeCount }})</option>
+            <option>All Statuses</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+    <div class="px-space-lg py-space-md bg-surface-container-low flex items-center justify-between">
+      <div class="flex items-center gap-space-sm">
+        <span class="font-headline-md text-headline-md text-on-surface">Active Alert Transmissions</span>
+        <span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm font-semibold">{{ activeCount }} Broadcasts live</span>
+      </div>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-left">
+        <thead>
+          <tr class="bg-surface-container text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">
+            <th class="py-3 px-space-lg">Alert ID</th>
+            <th class="py-3 px-space-md">Hazard</th>
+            <th class="py-3 px-space-md">Priority</th>
+            <th class="py-3 px-space-md">District</th>
+            <th class="py-3 px-space-md">Status</th>
+            <th class="py-3 px-space-lg text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="font-body-md text-body-md text-on-surface">
+          <tr *ngFor="let item of incidents" class="hover:bg-surface-container-low transition-colors cursor-pointer border-b border-surface-container-low" (click)="selectIncident(item)">
+            <td class="py-3 px-space-lg font-data-mono text-data-mono font-bold text-secondary">
+              {{ item.incidentId }}
+            </td>
+            <td class="py-3 px-space-md">
+              <div class="flex items-center gap-1.5 font-headline-sm text-headline-sm text-on-surface">
+                <span class="p-1 rounded bg-secondary-fixed text-on-secondary-fixed material-symbols-outlined text-[18px]">{{ getHazardIcon(item.type) }}</span>
+                <span>{{ item.type }}</span>
+              </div>
+            </td>
+            <td class="py-3 px-space-md">
+              <span class="px-2 py-0.5 rounded font-label-sm text-label-sm font-bold tracking-wide" [ngClass]="getPriorityBadgeClass(item.priority)">
+                {{ item.priority }}
+              </span>
+            </td>
+            <td class="py-3 px-space-md">
+              <div class="flex flex-col">
+                <span class="font-headline-sm text-headline-sm">{{ item.district }}</span>
+              </div>
+            </td>
+            <td class="py-3 px-space-md">
+              <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full font-label-sm text-label-sm font-semibold" [ngClass]="item.status === 'ACTIVE' ? 'bg-surface-container-high text-on-surface' : 'bg-surface-container text-on-surface-variant'">
+                <span *ngIf="item.status === 'ACTIVE'" class="w-2 h-2 rounded-full bg-error animate-ping"></span>
+                {{ item.status }}
+              </span>
+            </td>
+            <td class="py-3 px-space-lg text-right">
+              <div class="flex items-center justify-end gap-1" (click)="$event.stopPropagation()">
+                <button class="p-1 rounded hover:bg-surface-container text-secondary" (click)="selectIncident(item)" title="View Details Drawer" type="button">
+                  <span class="material-symbols-outlined text-[20px]">visibility</span>
+                </button>
+                <button *ngIf="item.status === 'ACTIVE'" class="p-1 rounded hover:bg-error-container text-error" title="Close Incident" type="button" (click)="selectIncident(item); closeSelectedIncident()">
+                  <span class="material-symbols-outlined text-[20px]">check_circle</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
-<div class="fixed inset-0 bg-primary-container/40 z-40 backdrop-blur-[2px] transition-opacity" *ngIf="isDrawerOpen" (click)="toggleDrawer(false)"></div>
+
+<div *ngIf="currentRoute !== 'live-disaster-map' && currentRoute !== 'disaster-alerts'" class="flex flex-col items-center justify-center h-[60vh] text-center w-full">
+  <span class="material-symbols-outlined text-[64px] text-outline mb-4">construction</span>
+  <h2 class="font-headline-xl text-on-surface mb-2">Module Under Construction</h2>
+  <p class="text-on-surface-variant font-body-lg max-w-md">This section is currently being developed by another team member.</p>
+  <button class="mt-6 px-space-lg py-2 rounded bg-primary text-on-primary font-headline-sm hover:opacity-90 transition-opacity" (click)="navigateTo('live-disaster-map')">
+    Return to Live Map
+  </button>
 </div>
+
+    <!-- Issue Alert / Log Incident Modal (POST to Backend) -->
+    <div 
+      class="fixed inset-0 bg-primary-container/60 backdrop-blur-sm z-50 flex items-center justify-center p-space-md transition-opacity" 
+      [class.hidden]="!isIssueModalOpen"
+      id="issueAlertModal"
+    >
+      <div class="bg-surface-container-lowest rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden">
+        <!-- Modal Header -->
+        <div class="px-space-lg py-space-md bg-surface-container-low flex items-center justify-between">
+          <div class="flex items-center gap-space-sm">
+            <span class="p-1.5 rounded-full bg-error text-on-error material-symbols-outlined text-[20px]">campaign</span>
+            <div>
+              <h3 class="font-headline-md text-headline-md text-on-surface">Log & Broadcast New Incident / Alert</h3>
+            </div>
+          </div>
+          <button class="p-1 rounded text-on-surface-variant hover:text-on-surface" (click)="closeModal()" type="button">
+            <span class="material-symbols-outlined text-[20px]">close</span>
+          </button>
+        </div>
+
+        <!-- Modal Body Form -->
+        <div class="p-space-lg flex-1 overflow-y-auto space-y-space-md">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+            <!-- Hazard Type -->
+            <div class="flex flex-col gap-1">
+              <label class="font-label-sm text-label-sm text-on-surface font-semibold">Hazard / Incident Type</label>
+              <select [(ngModel)]="newIncident.type" class="w-full px-space-md py-2 rounded bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container">
+                <option *ngFor="let t of hazardTypes" [value]="t">{{ t }}</option>
+              </select>
+            </div>
+
+            <!-- Priority -->
+            <div class="flex flex-col gap-1">
+              <label class="font-label-sm text-label-sm text-on-surface font-semibold">Priority Level</label>
+              <select [(ngModel)]="newIncident.priority" class="w-full px-space-md py-2 rounded bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container">
+                <option value="CRITICAL">CRITICAL (Immediate Evacuation)</option>
+                <option value="HIGH">HIGH (Urgent Response)</option>
+                <option value="MEDIUM">MEDIUM (Active Watch)</option>
+                <option value="LOW">LOW (Advisory)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+            <!-- District -->
+            <div class="flex flex-col gap-1">
+              <label class="font-label-sm text-label-sm text-on-surface font-semibold">District</label>
+              <select [(ngModel)]="newIncident.district" class="w-full px-space-md py-2 rounded bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container">
+                <option *ngFor="let d of districts" [value]="d">{{ d }}</option>
+              </select>
+            </div>
+
+            <!-- People Affected -->
+            <div class="flex flex-col gap-1">
+              <label class="font-label-sm text-label-sm text-on-surface font-semibold">People Affected</label>
+              <input [(ngModel)]="newIncident.peopleAffected" type="number" class="w-full px-space-md py-2 rounded bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container" placeholder="e.g. 50" />
+            </div>
+          </div>
+
+          <!-- Description / Alert Copy -->
+          <div class="flex flex-col gap-1">
+            <label class="font-label-sm text-label-sm text-on-surface font-semibold">Incident Situation Description / Message</label>
+            <textarea 
+              [(ngModel)]="newIncident.description" 
+              class="w-full p-space-md rounded bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container" 
+              placeholder="Describe ground situation, affected Grama Niladhari divisions, and critical immediate actions..." 
+              rows="3"
+            ></textarea>
+          </div>
+
+          <!-- Required Assistance Multi-Selection -->
+          <div class="flex flex-col gap-1">
+            <label class="font-label-sm text-label-sm text-on-surface font-semibold">Required Response & Assistance</label>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-space-xs font-body-sm text-body-sm">
+              <label *ngFor="let opt of assistanceOptions" class="p-space-sm rounded bg-surface-container-low flex items-center gap-2 cursor-pointer hover:bg-surface-container">
+                <input 
+                  type="checkbox" 
+                  [checked]="isAssistanceSelected(opt)" 
+                  (change)="toggleAssistanceSelection(opt)" 
+                  class="rounded text-secondary"
+                />
+                <span>{{ opt }}</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Operator / Officer Name -->
+          <div class="flex flex-col gap-1">
+            <label class="font-label-sm text-label-sm text-on-surface font-semibold">Reporting Officer</label>
+            <input [(ngModel)]="newIncident.createdBy" type="text" class="w-full px-space-md py-2 rounded bg-surface-container-low font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container" />
+          </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="px-space-lg py-space-md bg-surface-container-low flex items-center justify-between">
+          <button class="px-space-md py-2 rounded bg-surface-container text-on-surface font-headline-sm text-headline-sm hover:bg-surface-container-high" (click)="closeModal()" type="button">
+            Cancel
+          </button>
+          <button 
+            class="px-space-lg py-2 rounded bg-error text-on-error font-headline-sm text-headline-sm flex items-center gap-2 shadow-sm hover:opacity-95" 
+            type="button" 
+            (click)="submitIncident()"
+            [disabled]="isSubmitting"
+          >
+            <span class="material-symbols-outlined text-[18px]">cell_tower</span>
+            <span>{{ isSubmitting ? 'Logging to DB...' : 'Save & Broadcast Live Incident' }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+</main></div>
