@@ -21,13 +21,20 @@ export class AuthController {
     return this.authService.login(loginDto);
   }
 
-  @Get('me')
+  @Get('profile')
   @UseGuards(JwtAuthGuard)
   async getProfile(@CurrentUser() user: any) {
-    return this.authService.getProfile(user._id || user.id);
+    return this.authService.getProfile(user._id || user.id || user.sub);
+  }
+
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  async getMe(@CurrentUser() user: any) {
+    return this.authService.getProfile(user._id || user.id || user.sub);
   }
 
   @Post('seed-users')
+  @HttpCode(HttpStatus.OK)
   async seedUsers() {
     return this.authService.seedUsers();
   }

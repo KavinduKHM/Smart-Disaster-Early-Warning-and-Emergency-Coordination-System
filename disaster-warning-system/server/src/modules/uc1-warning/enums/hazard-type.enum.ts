@@ -1,0 +1,9 @@
+export enum HazardType {
+  FLOOD = 'FLOOD',
+  LANDSLIDE = 'LANDSLIDE',
+  TSUNAMI = 'TSUNAMI',
+  CYCLONE = 'CYCLONE',
+  EARTHQUAKE = 'EARTHQUAKE',
+  DROUGHT = 'DROUGHT',
+  OTHER = 'OTHER',
+}

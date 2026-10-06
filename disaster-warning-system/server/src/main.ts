@@ -29,7 +29,10 @@ async function bootstrap() {
 
   const port = process.env.PORT || 3000;
   await app.listen(port);
-  console.log(`Server running on http://localhost:${port}/api`);
+  console.log(`=======================================================`);
+  console.log(`Disaster Early Warning System Server running on port ${port}`);
+  console.log(`API Base URL: http://localhost:${port}/api`);
+  console.log(`=======================================================`);
 }
 
 bootstrap();
