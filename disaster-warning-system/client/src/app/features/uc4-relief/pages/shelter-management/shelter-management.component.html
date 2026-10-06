@@ -1,0 +1,130 @@
+<div class="page">
+
+  <h1>Shelter Management</h1>
+
+  <div class="card">
+
+    <h2>Register Emergency Shelter</h2>
+
+    <form
+      (ngSubmit)="createShelter()"
+    >
+
+      <input
+        type="text"
+        placeholder="Shelter Name"
+        [(ngModel)]="newShelter.name"
+        name="name"
+        required
+      />
+
+      <input
+        type="text"
+        placeholder="District"
+        [(ngModel)]="newShelter.district"
+        name="district"
+        required
+      />
+
+      <input
+        type="text"
+        placeholder="Address"
+        [(ngModel)]="newShelter.address"
+        name="address"
+        required
+      />
+
+      <input
+        type="number"
+        placeholder="Capacity"
+        [(ngModel)]="newShelter.capacity"
+        name="capacity"
+        required
+      />
+
+      <input
+        type="text"
+        placeholder="Manager Name"
+        [(ngModel)]="newShelter.managerName"
+        name="managerName"
+      />
+
+      <input
+        type="text"
+        placeholder="Manager Contact"
+        [(ngModel)]="newShelter.managerContact"
+        name="managerContact"
+      />
+
+      <button type="submit">
+        Register Shelter
+      </button>
+
+    </form>
+
+  </div>
+
+
+  <div class="card">
+
+    <h2>Registered Shelters</h2>
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>District</th>
+          <th>Capacity</th>
+          <th>Occupancy</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <tr
+          *ngFor="let shelter of shelters"
+        >
+
+          <td>
+            {{ shelter.name }}
+          </td>
+
+          <td>
+            {{ shelter.district }}
+          </td>
+
+          <td>
+            {{ shelter.capacity }}
+          </td>
+
+          <td>
+            {{ shelter.currentOccupancy }}
+            /
+            {{ shelter.capacity }}
+          </td>
+
+          <td>
+            {{ shelter.status }}
+          </td>
+
+          <td>
+            <button
+              *ngIf="shelter.status !== 'CLOSED'"
+              (click)="closeShelter(shelter._id)"
+            >
+              Close
+            </button>
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
