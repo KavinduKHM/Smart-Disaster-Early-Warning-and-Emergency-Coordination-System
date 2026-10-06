@@ -19,3 +19,31 @@
 </nav>
 
 <router-outlet></router-outlet>
+<!-- Router Container -->
+<router-outlet></router-outlet>
+
+<!-- Global Toast Notification Container -->
+<div class="fixed bottom-5 right-5 z-50 flex flex-col space-y-3 max-w-sm w-full pointer-events-none">
+  <div
+    *ngFor="let toast of (toasts$ | async)"
+    (click)="removeToast(toast.id)"
+    [ngClass]="{
+      'bg-slate-900 border-emerald-500/60 text-emerald-300': toast.type === 'success',
+      'bg-slate-900 border-red-500/60 text-red-300': toast.type === 'error',
+      'bg-slate-900 border-amber-500/60 text-amber-300': toast.type === 'warning',
+      'bg-slate-900 border-blue-500/60 text-blue-300': toast.type === 'info'
+    }"
+    class="pointer-events-auto p-4 rounded-xl border backdrop-blur-md shadow-2xl flex items-start space-x-3 cursor-pointer transition-all animate-bounce-once"
+  >
+    <div class="text-lg">
+      <span *ngIf="toast.type === 'success'">✅</span>
+      <span *ngIf="toast.type === 'error'">🚨</span>
+      <span *ngIf="toast.type === 'warning'">⚠️</span>
+      <span *ngIf="toast.type === 'info'">ℹ️</span>
+    </div>
+    <div class="flex-1 text-xs">
+      <p class="font-bold text-white">{{ toast.title }}</p>
+      <p class="text-slate-300 mt-0.5 leading-snug">{{ toast.message }}</p>
+    </div>
+  </div>
+</div>
