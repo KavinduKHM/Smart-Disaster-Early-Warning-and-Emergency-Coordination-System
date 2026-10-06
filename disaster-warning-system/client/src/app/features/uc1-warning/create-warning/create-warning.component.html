@@ -1,0 +1,373 @@
+<div class="space-y-6 max-w-5xl mx-auto">
+  <!-- Stepper Progress Bar -->
+  <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl">
+    <div class="flex items-center justify-between">
+      <div
+        *ngFor="let s of [1, 2, 3, 4, 5]"
+        (click)="goToStep(s)"
+        [ngClass]="{
+          'text-red-400 font-bold': currentStep === s,
+          'text-emerald-400': currentStep > s,
+          'text-slate-500': currentStep < s
+        }"
+        class="flex items-center space-x-2 cursor-pointer text-xs"
+      >
+        <div
+          [ngClass]="{
+            'bg-red-600 text-white shadow-lg shadow-red-600/40 ring-2 ring-red-500/50': currentStep === s,
+            'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30': currentStep > s,
+            'bg-slate-800 text-slate-400': currentStep < s
+          }"
+          class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all"
+        >
+          <span *ngIf="currentStep <= s">{{ s }}</span>
+          <span *ngIf="currentStep > s">✓</span>
+        </div>
+        <span class="hidden md:inline">
+          <ng-container [ngSwitch]="s">
+            <span *ngSwitchCase="1">Select Hazard</span>
+            <span *ngSwitchCase="2">Target Area</span>
+            <span *ngSwitchCase="3">Warning Details</span>
+            <span *ngSwitchCase="4">Channels</span>
+            <span *ngSwitchCase="5">Broadcast</span>
+          </ng-container>
+        </span>
+        <div *ngIf="s < 5" class="w-8 h-px bg-slate-800 hidden md:block"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 1: Select Hazard -->
+  <div *ngIf="currentStep === 1" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
+    <div>
+      <h3 class="text-base font-bold text-white tracking-tight">Step 1: Select Triggering Hazard</h3>
+      <p class="text-xs text-slate-400 mt-1">Link this warning to an active environment hazard registered in the system</p>
+    </div>
+
+    <div class="space-y-4">
+      <div>
+        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Hazard Event</label>
+        <select
+          [(ngModel)]="selectedHazardId"
+          (change)="onHazardSelect()"
+          class="w-full px-4 py-3 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-red-500 text-sm"
+        >
+          <option *ngFor="let h of hazards" [value]="h._id || h.id">
+            [{{ h.type }}] {{ h.title }} — {{ h.district }} (Severity: {{ h.severity }})
+          </option>
+        </select>
+      </div>
+
+      <!-- Hazard Details Preview Card -->
+      <div *ngIf="selectedHazard" class="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-2 text-xs">
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-slate-200 text-sm">{{ selectedHazard.title }}</span>
+          <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+            {{ selectedHazard.severity }} SEVERITY
+          </span>
+        </div>
+        <p class="text-slate-400">{{ selectedHazard.description }}</p>
+        <div class="flex space-x-4 text-[11px] text-slate-500 pt-2 border-t border-slate-800">
+          <span>District: <strong class="text-slate-300">{{ selectedHazard.district }}</strong></span>
+          <span *ngIf="selectedHazard.riverBasin">River Basin: <strong class="text-slate-300">{{ selectedHazard.riverBasin }}</strong></span>
+          <span>Location: <strong class="text-slate-300">{{ selectedHazard.location.coordinates[1] }}, {{ selectedHazard.location.coordinates[0] }}</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-end">
+      <button
+        (click)="goToStep(2)"
+        class="px-6 py-2.5 bg-red-600 hover:bg-red-500 text-white font-semibold rounded-xl text-xs transition-all flex items-center space-x-2"
+      >
+        <span>Next: Target Area</span>
+        <span>→</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- STEP 2: Target Area (Districts & River Basins + Map Preview) -->
+  <div *ngIf="currentStep === 2" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
+    <div>
+      <h3 class="text-base font-bold text-white tracking-tight">Step 2: Define Target Geographic Zone</h3>
+      <p class="text-xs text-slate-400 mt-1">Select affected Sri Lankan districts and river basins for localized notification dispatch</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- District & River Basin Selector Column -->
+      <div class="lg:col-span-2 space-y-5">
+        <!-- District Multi-Select -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+            Affected Districts ({{ selectedDistricts.length }} Selected)
+          </label>
+          <div class="flex flex-wrap gap-1.5 max-h-48 overflow-y-auto p-3 bg-slate-950 border border-slate-800 rounded-xl">
+            <button
+              *ngFor="let d of allDistricts"
+              type="button"
+              (click)="toggleDistrict(d)"
+              [ngClass]="{
+                'bg-red-600/30 text-red-300 border-red-500': selectedDistricts.includes(d),
+                'bg-slate-900 text-slate-400 border-slate-800 hover:border-slate-700': !selectedDistricts.includes(d)
+              }"
+              class="px-2.5 py-1 text-xs rounded-lg border transition-all flex items-center space-x-1"
+            >
+              <span>{{ d }}</span>
+              <span *ngIf="selectedDistricts.includes(d)" class="text-red-400 font-bold">✓</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- River Basin Multi-Select -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+            Affected River Basins ({{ selectedRiverBasins.length }} Selected)
+          </label>
+          <div class="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto p-3 bg-slate-950 border border-slate-800 rounded-xl">
+            <button
+              *ngFor="let rb of allRiverBasins"
+              type="button"
+              (click)="toggleRiverBasin(rb)"
+              [ngClass]="{
+                'bg-blue-600/30 text-blue-300 border-blue-500': selectedRiverBasins.includes(rb),
+                'bg-slate-900 text-slate-400 border-slate-800 hover:border-slate-700': !selectedRiverBasins.includes(rb)
+              }"
+              class="px-2.5 py-1 text-xs rounded-lg border transition-all flex items-center space-x-1"
+            >
+              <span>{{ rb }}</span>
+              <span *ngIf="selectedRiverBasins.includes(rb)" class="text-blue-400 font-bold">✓</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Map Preview Component -->
+      <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col justify-between items-center text-center relative overflow-hidden">
+        <div class="w-full text-left">
+          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Geographic Map Target Preview</span>
+        </div>
+
+        <!-- SVG Map Representation -->
+        <div class="my-4 relative w-44 h-64 flex items-center justify-center bg-slate-900/60 rounded-xl border border-slate-800/80">
+          <svg viewBox="0 0 100 160" class="w-36 h-56">
+            <!-- Simulated Sri Lanka Map Silhouette -->
+            <path d="M50 10 C65 25 80 50 82 85 C84 120 70 145 50 152 C30 145 16 120 18 85 C20 50 35 25 50 10 Z" fill="#1e293b" stroke="#334155" stroke-width="1.5" />
+            <!-- Highlighted Target Zone Circle -->
+            <circle cx="48" cy="88" r="22" fill="#ef4444" fill-opacity="0.3" stroke="#f87171" stroke-width="1.5" class="animate-pulse" />
+            <circle cx="48" cy="88" r="8" fill="#ef4444" />
+          </svg>
+        </div>
+
+        <div class="text-[11px] text-slate-400 w-full bg-slate-900/80 p-2 rounded-lg border border-slate-800">
+          Targeted Districts: <span class="text-red-400 font-semibold">{{ selectedDistricts.join(', ') || 'None' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-between pt-4 border-t border-slate-800">
+      <button (click)="goToStep(1)" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl text-xs hover:bg-slate-700">← Back</button>
+      <button (click)="goToStep(3)" class="px-6 py-2.5 bg-red-600 hover:bg-red-500 text-white font-semibold rounded-xl text-xs">Next: Warning Details →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: Warning Details -->
+  <div *ngIf="currentStep === 3" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
+    <div>
+      <h3 class="text-base font-bold text-white tracking-tight">Step 3: Warning Level & Instructions</h3>
+      <p class="text-xs text-slate-400 mt-1">Specify severity level, public advisory message, and emergency instructions</p>
+    </div>
+
+    <div class="space-y-6">
+      <!-- Warning Level Grid -->
+      <div>
+        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Warning Level</label>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+          <div
+            *ngFor="let wl of warningLevels"
+            (click)="warningLevel = wl.level"
+            [ngClass]="{
+              'ring-2 ring-red-500 border-transparent shadow-lg': warningLevel === wl.level,
+              'border-slate-800 bg-slate-950 hover:border-slate-700': warningLevel !== wl.level
+            }"
+            class="p-4 rounded-xl border cursor-pointer transition-all space-y-1"
+          >
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-sm" [ngClass]="wl.color.split(' ')[2]">{{ wl.level }}</span>
+              <span *ngIf="warningLevel === wl.level" class="w-2 h-2 rounded-full bg-red-500"></span>
+            </div>
+            <p class="text-[11px] text-slate-400 leading-tight">{{ wl.desc }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Public Advisory Message -->
+      <div>
+        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Public Advisory Message</label>
+        <textarea
+          [(ngModel)]="message"
+          rows="3"
+          placeholder="Clear, concise message sent to citizens..."
+          class="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white text-xs focus:outline-none focus:border-red-500"
+        ></textarea>
+      </div>
+
+      <!-- Emergency Instructions -->
+      <div>
+        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Emergency Action Instructions</label>
+        <textarea
+          [(ngModel)]="emergencyInstructions"
+          rows="3"
+          placeholder="Safety instructions, evacuation routes, helpline contacts..."
+          class="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white text-xs focus:outline-none focus:border-red-500"
+        ></textarea>
+      </div>
+    </div>
+
+    <div class="flex justify-between pt-4 border-t border-slate-800">
+      <button (click)="goToStep(2)" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl text-xs hover:bg-slate-700">← Back</button>
+      <button (click)="goToStep(4)" class="px-6 py-2.5 bg-red-600 hover:bg-red-500 text-white font-semibold rounded-xl text-xs">Next: Notification Channels →</button>
+    </div>
+  </div>
+
+  <!-- STEP 4: Notification Channels & Device Mockup Preview -->
+  <div *ngIf="currentStep === 4" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
+    <div>
+      <h3 class="text-base font-bold text-white tracking-tight">Step 4: Select Alert Channels & Device Preview</h3>
+      <p class="text-xs text-slate-400 mt-1">Select dispatch channels and preview how citizens will view the emergency alert</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- Channel Selection Options -->
+      <div class="space-y-4">
+        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">Multi-Channel Delivery Methods</label>
+        <div
+          *ngFor="let ch of channels"
+          (click)="toggleChannel(ch.key)"
+          [ngClass]="{
+            'border-red-500/60 bg-red-500/10': ch.selected,
+            'border-slate-800 bg-slate-950 hover:border-slate-700': !ch.selected
+          }"
+          class="p-4 rounded-xl border cursor-pointer transition-all flex items-start space-x-3"
+        >
+          <input type="checkbox" [checked]="ch.selected" class="mt-1 accent-red-600 rounded" />
+          <div>
+            <p class="font-bold text-sm text-slate-100">{{ ch.label }}</p>
+            <p class="text-xs text-slate-400 mt-0.5">{{ ch.desc }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Smartphone Device Mockup Preview -->
+      <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col items-center justify-center">
+        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider self-start mb-4">Smartphone Push Banner Mockup</span>
+
+        <div class="w-64 bg-slate-900 border-4 border-slate-700 rounded-3xl p-3 shadow-2xl relative space-y-3">
+          <!-- Phone Notch -->
+          <div class="w-24 h-4 bg-slate-800 rounded-full mx-auto"></div>
+
+          <!-- Alert Banner Container -->
+          <div class="bg-gradient-to-r from-red-600 to-red-700 p-3 rounded-2xl text-white shadow-lg space-y-1">
+            <div class="flex items-center justify-between text-[10px]">
+              <span class="font-bold uppercase tracking-wider flex items-center">
+                <span class="w-1.5 h-1.5 rounded-full bg-white animate-ping mr-1"></span>
+                EMERGENCY ALERT
+              </span>
+              <span class="opacity-80">NOW</span>
+            </div>
+            <p class="text-xs font-bold">{{ warningLevel }}: {{ selectedHazard?.title || 'Disaster Warning' }}</p>
+            <p class="text-[11px] leading-snug opacity-95 line-clamp-3">{{ message }}</p>
+          </div>
+
+          <!-- Dummy Apps Grid -->
+          <div class="grid grid-cols-4 gap-2 pt-4 opacity-30">
+            <div class="w-8 h-8 rounded-lg bg-slate-700 mx-auto"></div>
+            <div class="w-8 h-8 rounded-lg bg-slate-700 mx-auto"></div>
+            <div class="w-8 h-8 rounded-lg bg-slate-700 mx-auto"></div>
+            <div class="w-8 h-8 rounded-lg bg-slate-700 mx-auto"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-between pt-4 border-t border-slate-800">
+      <button (click)="goToStep(3)" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl text-xs hover:bg-slate-700">← Back</button>
+      <button (click)="goToStep(5)" class="px-6 py-2.5 bg-red-600 hover:bg-red-500 text-white font-semibold rounded-xl text-xs">Next: Review & Broadcast →</button>
+    </div>
+  </div>
+
+  <!-- STEP 5: Final Review & Broadcast Trigger -->
+  <div *ngIf="currentStep === 5" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
+    <div>
+      <h3 class="text-base font-bold text-white tracking-tight">Step 5: Final Review & Multi-Channel Broadcast</h3>
+      <p class="text-xs text-slate-400 mt-1">Review warning details carefully before broadcasting to targeted emergency channels</p>
+    </div>
+
+    <div class="bg-slate-950 border border-slate-800 rounded-xl p-6 space-y-4">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+        <div>
+          <span class="px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider bg-red-500/20 text-red-400 border border-red-500/30">
+            {{ warningLevel }} LEVEL
+          </span>
+          <h4 class="text-lg font-bold text-white mt-2">{{ selectedHazard?.title }}</h4>
+        </div>
+        <div class="text-right text-xs text-slate-400">
+          <p>Linked Hazard ID: <strong class="text-slate-200">{{ selectedHazardId }}</strong></p>
+          <p>Target Districts: <strong class="text-slate-200">{{ selectedDistricts.length }}</strong></p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+        <div>
+          <span class="text-slate-400 block mb-1">Targeted Districts:</span>
+          <div class="flex flex-wrap gap-1">
+            <span *ngFor="let d of selectedDistricts" class="px-2 py-0.5 bg-slate-800 text-slate-200 rounded border border-slate-700 text-[11px]">{{ d }}</span>
+          </div>
+        </div>
+
+        <div>
+          <span class="text-slate-400 block mb-1">Targeted River Basins:</span>
+          <div class="flex flex-wrap gap-1">
+            <span *ngFor="let rb of selectedRiverBasins" class="px-2 py-0.5 bg-slate-800 text-slate-200 rounded border border-slate-700 text-[11px]">{{ rb }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-xs space-y-2 pt-2 border-t border-slate-800">
+        <div>
+          <span class="text-slate-400 block">Advisory Message:</span>
+          <p class="text-slate-200 font-medium bg-slate-900 p-3 rounded-lg border border-slate-800/80 mt-1">{{ message }}</p>
+        </div>
+
+        <div>
+          <span class="text-slate-400 block">Emergency Instructions:</span>
+          <p class="text-slate-200 font-medium bg-slate-900 p-3 rounded-lg border border-slate-800/80 mt-1">{{ emergencyInstructions }}</p>
+        </div>
+      </div>
+
+      <div class="pt-2 border-t border-slate-800 text-xs flex items-center justify-between">
+        <span class="text-slate-400">Selected Dispatch Channels:</span>
+        <div class="flex space-x-2">
+          <span *ngFor="let ch of getSelectedChannels()" class="px-2.5 py-1 bg-red-500/20 text-red-300 border border-red-500/30 rounded font-bold">
+            {{ ch }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Final Broadcast Trigger Button -->
+    <div class="flex justify-between pt-4 border-t border-slate-800">
+      <button (click)="goToStep(4)" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl text-xs hover:bg-slate-700">← Back</button>
+      <button
+        (click)="submitIssueWarning()"
+        [disabled]="issuing"
+        class="px-8 py-3 bg-gradient-to-r from-red-600 via-red-700 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white font-bold rounded-xl text-sm shadow-xl shadow-red-600/40 flex items-center space-x-2"
+      >
+        <svg *ngIf="issuing" class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span>{{ issuing ? 'Broadcasting Alert...' : '🚀 ISSUE & BROADCAST DISASTER ALERT NOW' }}</span>
+      </button>
+    </div>
+  </div>
+</div>
