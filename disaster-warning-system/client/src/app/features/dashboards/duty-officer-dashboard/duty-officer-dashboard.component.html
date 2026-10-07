@@ -28,25 +28,25 @@
         
         <a 
           routerLink="/duty-officer/reports"
-          class="px-3.5 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 rounded-xl transition-all shadow-md flex items-center gap-1.5">
+          class="px-3.5 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-blue-500/20 flex items-center gap-1.5">
           <span>📋</span> Hazard Report Management
         </a>
 
         <button 
           (click)="openPdfModal()"
-          class="px-3 py-2 text-xs font-semibold text-emerald-400 hover:text-white bg-emerald-500/10 hover:bg-emerald-600 rounded-xl transition-all border border-emerald-500/20 flex items-center gap-1">
+          class="px-3 py-2 text-xs font-semibold text-emerald-400 hover:text-white bg-emerald-500/10 hover:bg-emerald-600 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95 border border-emerald-500/20 flex items-center gap-1">
           <span>🖨️</span> PDF Report
         </button>
 
         <a 
           routerLink="/settings"
-          class="px-3 py-2 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-xl transition-all border border-slate-700 flex items-center gap-1">
+          class="px-3 py-2 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95 border border-slate-700 flex items-center gap-1">
           <span>⚙️</span> Settings
         </a>
 
         <button 
           (click)="logout()" 
-          class="px-4 py-2 text-xs font-semibold text-rose-400 hover:text-white bg-rose-500/10 hover:bg-rose-600 rounded-xl transition-all border border-rose-500/20">
+          class="px-4 py-2 text-xs font-semibold text-rose-400 hover:text-white bg-rose-500/10 hover:bg-rose-600 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95 border border-rose-500/20">
           Sign Out
         </button>
       </div>
@@ -64,51 +64,51 @@
       <div 
         (click)="activeTabFilter = 'PENDING'"
         [class.ring-2]="activeTabFilter === 'PENDING'"
-        class="p-5 rounded-2xl bg-slate-900 border border-slate-800 hover:border-amber-500/80 shadow-xl cursor-pointer transition-all group">
+        class="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 hover:border-amber-500/80 shadow-xl hover:shadow-amber-500/10 hover:-translate-y-1 active:scale-[0.98] cursor-pointer transition-all duration-300 ease-out group">
         <div class="flex items-center justify-between">
-          <span class="text-xs text-slate-400 uppercase font-mono font-bold group-hover:text-amber-400">Pending Triage</span>
-          <span class="p-2 rounded-xl bg-amber-500/10 text-amber-400 text-sm">⏳</span>
+          <span class="text-xs text-slate-400 uppercase font-mono font-bold group-hover:text-amber-400 transition-colors">Pending Triage</span>
+          <span class="p-2 rounded-xl bg-amber-500/10 text-amber-400 text-sm group-hover:scale-110 transition-transform">⏳</span>
         </div>
-        <div class="text-3xl font-bold text-amber-400 mt-2">{{ stats.pending }}</div>
-        <span class="text-[11px] text-slate-500 mt-1 block">Awaiting Verification • Click Filter</span>
+        <div class="text-3xl font-bold text-amber-400 mt-2 tracking-tight">{{ stats.pending }}</div>
+        <span class="text-[11px] text-slate-500 mt-1 block font-medium">Awaiting Verification • Click Filter</span>
       </div>
 
       <!-- Verified Incidents Card -->
       <div 
         (click)="activeTabFilter = 'VERIFIED'"
         [class.ring-2]="activeTabFilter === 'VERIFIED'"
-        class="p-5 rounded-2xl bg-slate-900 border border-slate-800 hover:border-emerald-500/80 shadow-xl cursor-pointer transition-all group">
+        class="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 hover:border-emerald-500/80 shadow-xl hover:shadow-emerald-500/10 hover:-translate-y-1 active:scale-[0.98] cursor-pointer transition-all duration-300 ease-out group">
         <div class="flex items-center justify-between">
-          <span class="text-xs text-slate-400 uppercase font-mono font-bold group-hover:text-emerald-400">Verified Incidents</span>
-          <span class="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 text-sm">✅</span>
+          <span class="text-xs text-slate-400 uppercase font-mono font-bold group-hover:text-emerald-400 transition-colors">Verified Incidents</span>
+          <span class="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 text-sm group-hover:scale-110 transition-transform">✅</span>
         </div>
-        <div class="text-3xl font-bold text-emerald-400 mt-2">{{ stats.verified }}</div>
-        <span class="text-[11px] text-slate-500 mt-1 block">Public Active Warnings • Click Filter</span>
+        <div class="text-3xl font-bold text-emerald-400 mt-2 tracking-tight">{{ stats.verified }}</div>
+        <span class="text-[11px] text-slate-500 mt-1 block font-medium">Public Active Warnings • Click Filter</span>
       </div>
 
       <!-- Critical Hazards Card -->
       <div 
         (click)="activeTabFilter = 'VERIFIED'"
-        class="p-5 rounded-2xl bg-slate-900 border border-slate-800 hover:border-rose-500/80 shadow-xl cursor-pointer transition-all group">
+        class="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 hover:border-rose-500/80 shadow-xl hover:shadow-rose-500/10 hover:-translate-y-1 active:scale-[0.98] cursor-pointer transition-all duration-300 ease-out group">
         <div class="flex items-center justify-between">
-          <span class="text-xs text-slate-400 uppercase font-mono font-bold group-hover:text-rose-400">Critical Hazards</span>
-          <span class="p-2 rounded-xl bg-rose-500/10 text-rose-400 text-sm">🚨</span>
+          <span class="text-xs text-slate-400 uppercase font-mono font-bold group-hover:text-rose-400 transition-colors">Critical Hazards</span>
+          <span class="p-2 rounded-xl bg-rose-500/10 text-rose-400 text-sm group-hover:scale-110 transition-transform">🚨</span>
         </div>
-        <div class="text-3xl font-bold text-rose-400 mt-2">{{ stats.critical }}</div>
-        <span class="text-[11px] text-slate-500 mt-1 block">Requires High Urgency Action</span>
+        <div class="text-3xl font-bold text-rose-400 mt-2 tracking-tight">{{ stats.critical }}</div>
+        <span class="text-[11px] text-slate-500 mt-1 block font-medium">Requires High Urgency Action</span>
       </div>
 
       <!-- Rejected Reports Card -->
       <div 
         (click)="activeTabFilter = 'REJECTED'"
         [class.ring-2]="activeTabFilter === 'REJECTED'"
-        class="p-5 rounded-2xl bg-slate-900 border border-slate-800 hover:border-slate-600 shadow-xl cursor-pointer transition-all group">
+        class="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 hover:border-slate-600 shadow-xl hover:-translate-y-1 active:scale-[0.98] cursor-pointer transition-all duration-300 ease-out group">
         <div class="flex items-center justify-between">
-          <span class="text-xs text-slate-400 uppercase font-mono font-bold group-hover:text-slate-300">Rejected / Invalid</span>
-          <span class="p-2 rounded-xl bg-slate-800 text-slate-400 text-sm">🚫</span>
+          <span class="text-xs text-slate-400 uppercase font-mono font-bold group-hover:text-slate-300 transition-colors">Rejected / Invalid</span>
+          <span class="p-2 rounded-xl bg-slate-800 text-slate-400 text-sm group-hover:scale-110 transition-transform">🚫</span>
         </div>
-        <div class="text-3xl font-bold text-slate-400 mt-2">{{ stats.rejected }}</div>
-        <span class="text-[11px] text-slate-500 mt-1 block">Dismissed Reports • Click Filter</span>
+        <div class="text-3xl font-bold text-slate-400 mt-2 tracking-tight">{{ stats.rejected }}</div>
+        <span class="text-[11px] text-slate-500 mt-1 block font-medium">Dismissed Reports • Click Filter</span>
       </div>
 
     </div>
@@ -298,15 +298,15 @@
         <div 
           *ngFor="let rep of filteredReports"
           (click)="openVerificationModal(rep)"
-          class="bg-slate-950 p-5 rounded-2xl border border-slate-800 hover:border-slate-700 hover:border-blue-500/50 shadow-lg flex flex-col justify-between space-y-4 transition-all group cursor-pointer">
+          class="bg-slate-950/90 p-5 rounded-2xl border border-slate-800 hover:border-blue-500/40 shadow-xl hover:shadow-2xl hover:shadow-blue-500/10 hover:-translate-y-1.5 active:scale-[0.99] flex flex-col justify-between space-y-4 transition-all duration-300 ease-out group cursor-pointer">
           
           <div class="space-y-3">
             <!-- Header Row -->
             <div class="flex items-center justify-between">
-              <span class="text-xs font-mono font-bold text-blue-400">
+              <span class="text-xs font-mono font-bold text-blue-400 group-hover:text-blue-300 transition-colors">
                 #{{ getReportNumber(rep) }}
               </span>
-              <span class="px-2.5 py-1 rounded-full text-[10px] font-bold border uppercase tracking-wider" [ngClass]="getStatusBadgeClass(rep.status)">
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-bold border uppercase tracking-wider shadow-sm group-hover:scale-105 transition-transform" [ngClass]="getStatusBadgeClass(rep.status)">
                 {{ rep.status }}
               </span>
             </div>
@@ -322,7 +322,7 @@
             </div>
 
             <!-- Metadata Box: Reported By, Role, Time & GPS -->
-            <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800/90 space-y-2 text-xs">
+            <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800/90 space-y-2 text-xs group-hover:border-slate-700 transition-colors">
               <div class="flex items-center justify-between gap-2">
                 <div class="truncate">
                   <span class="text-[9px] font-mono text-slate-500 uppercase block">Reported By</span>
@@ -355,12 +355,12 @@
             </div>
 
             <!-- Photo Thumbnail Preview if available -->
-            <div *ngIf="rep.photos && rep.photos.length > 0" class="w-full h-32 rounded-xl overflow-hidden border border-slate-800 bg-slate-900">
-              <img [src]="rep.photos[0]" alt="Evidence photo" class="w-full h-full object-cover" />
+            <div *ngIf="rep.photos && rep.photos.length > 0" class="w-full h-32 rounded-xl overflow-hidden border border-slate-800 bg-slate-900 relative">
+              <img [src]="rep.photos[0]" alt="Evidence photo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" />
             </div>
 
             <!-- Description -->
-            <p class="text-xs text-slate-300 line-clamp-3 bg-slate-900/60 p-3 rounded-xl border border-slate-800/80">
+            <p class="text-xs text-slate-300 line-clamp-3 bg-slate-900/60 p-3 rounded-xl border border-slate-800/80 group-hover:bg-slate-900/90 transition-colors">
               "{{ rep.description }}"
             </p>
 
@@ -380,8 +380,8 @@
             </span>
 
             <button 
-              (click)="openVerificationModal(rep)"
-              class="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow transition-all flex items-center gap-1">
+              (click)="openVerificationModal(rep); $event.stopPropagation()"
+              class="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-95 text-white font-bold text-xs shadow-md hover:shadow-blue-500/20 transition-all duration-200 flex items-center gap-1">
               <span>🔍</span> {{ rep.status === 'PENDING' ? 'Review & Verify' : 'View Details' }}
             </button>
           </div>
@@ -544,7 +544,7 @@
       <div class="p-4 bg-slate-800 border-t border-slate-700 flex items-center justify-between gap-3">
         <button 
           (click)="closeVerificationModal()"
-          class="px-4 py-2 rounded-xl bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold text-xs transition-colors">
+          class="px-4 py-2 rounded-xl bg-slate-700 hover:bg-slate-600 active:scale-95 text-slate-200 font-bold text-xs transition-all duration-200">
           Close
         </button>
 
@@ -552,14 +552,14 @@
           <button 
             (click)="confirmRejectReport()"
             [disabled]="isSubmittingVerification"
-            class="px-4 py-2 rounded-xl bg-rose-600/20 hover:bg-rose-600/40 text-rose-300 border border-rose-500/30 font-bold text-xs transition-all flex items-center gap-1">
+            class="px-4 py-2 rounded-xl bg-rose-600/20 hover:bg-rose-600/40 active:scale-95 text-rose-300 border border-rose-500/30 font-bold text-xs transition-all duration-200 flex items-center gap-1">
             <span>🚫</span> Reject Report
           </button>
 
           <button 
             (click)="confirmVerifyReport()"
             [disabled]="isSubmittingVerification"
-            class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg transition-all flex items-center gap-1.5">
+            class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-bold text-xs shadow-lg hover:shadow-emerald-500/20 transition-all duration-200 flex items-center gap-1.5">
             <span *ngIf="isSubmittingVerification" class="animate-spin">🔄</span>
             <span>{{ isSubmittingVerification ? 'Processing...' : '✅ Approve & Verify Incident' }}</span>
           </button>
