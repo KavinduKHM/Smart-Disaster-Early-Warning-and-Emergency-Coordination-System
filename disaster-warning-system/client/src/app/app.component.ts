@@ -2,6 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { IncidentService } from './core/services/incident.service';
 import { Incident, CreateIncidentPayload } from './core/models/incident.model';
+import { Observable } from 'rxjs';
+import { NotificationService, ToastMessage } from './core/services/notification.service';
 
 @Component({
   selector: 'app-root',
@@ -9,6 +11,9 @@ import { Incident, CreateIncidentPayload } from './core/models/incident.model';
 })
 export class AppComponent implements OnInit, OnDestroy {
   title = 'Disaster Management Centre - District Officer Command';
+
+  // Toast Notifications
+  toasts$: Observable<ToastMessage[]>;
 
   // Incidents Data
   incidents: Incident[] = [];
@@ -72,7 +77,13 @@ export class AppComponent implements OnInit, OnDestroy {
   currentTime = '';
   private timerInterval: any;
 
-  constructor(private incidentService: IncidentService, private sanitizer: DomSanitizer) {}
+  constructor(
+    private incidentService: IncidentService,
+    private sanitizer: DomSanitizer,
+    private notificationService: NotificationService
+  ) {
+    this.toasts$ = this.notificationService.toasts$;
+  }
 
   ngOnInit(): void {
     this.updateClock();
@@ -240,6 +251,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
   closeModal(): void {
     this.isIssueModalOpen = false;
+  removeToast(id: string): void {
+    this.notificationService.removeToast(id);
+  }
   }
 
   toggleAssistanceSelection(item: string): void {

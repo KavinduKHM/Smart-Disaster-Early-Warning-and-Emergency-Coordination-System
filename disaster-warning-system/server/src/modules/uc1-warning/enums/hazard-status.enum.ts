@@ -1,0 +1,6 @@
+export enum HazardStatus {
+  ACTIVE = 'ACTIVE',
+  MONITORING = 'MONITORING',
+  RESOLVED = 'RESOLVED',
+  ARCHIVED = 'ARCHIVED',
+}

@@ -11,12 +11,12 @@ import * as bcrypt from 'bcryptjs';
 import { User, UserDocument } from './schemas/user.schema';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { UserRole } from './enums/user-role.enum';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel(User.name)
-    private readonly userModel: Model<UserDocument>,
+    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -27,14 +27,17 @@ export class AuthService {
     }
 
     const hashedPassword = await bcrypt.hash(dto.password, 10);
+    const role = dto.role || UserRole.CITIZEN;
 
     const newUser = new this.userModel({
       name: dto.name,
       email: dto.email.toLowerCase(),
       password: hashedPassword,
-      role: dto.role || 'CITIZEN',
-      district: dto.district || 'Kandy',
+      role,
+      district: dto.district || 'Colombo',
+      riverBasin: dto.riverBasin || '',
       phone: dto.phone || '',
+      pushToken: dto.pushToken || '',
       badgeId: dto.badgeId || '',
     });
 
@@ -46,19 +49,23 @@ export class AuthService {
       name: savedUser.name,
       role: savedUser.role,
       district: savedUser.district,
+      riverBasin: savedUser.riverBasin,
     };
 
-    const token = this.jwtService.sign(payload);
+    const accessToken = this.jwtService.sign(payload);
 
     return {
-      accessToken: token,
+      message: 'Registration successful',
+      accessToken,
       user: {
         id: savedUser._id,
         name: savedUser.name,
         email: savedUser.email,
         role: savedUser.role,
         district: savedUser.district,
+        riverBasin: savedUser.riverBasin,
         phone: savedUser.phone,
+        pushToken: savedUser.pushToken,
         badgeId: savedUser.badgeId,
       },
     };
@@ -81,19 +88,23 @@ export class AuthService {
       name: user.name,
       role: user.role,
       district: user.district,
+      riverBasin: user.riverBasin,
     };
 
-    const token = this.jwtService.sign(payload);
+    const accessToken = this.jwtService.sign(payload);
 
     return {
-      accessToken: token,
+      message: 'Login successful',
+      accessToken,
       user: {
         id: user._id,
         name: user.name,
         email: user.email,
         role: user.role,
         district: user.district,
+        riverBasin: user.riverBasin,
         phone: user.phone,
+        pushToken: user.pushToken,
         badgeId: user.badgeId,
       },
     };
@@ -117,54 +128,50 @@ export class AuthService {
 
     const defaultUsers = [
       {
-        name: 'Amara Perera',
+        name: 'DMC Officer Perera',
+        email: 'dmc@disaster.lk',
+        password: passwordHash,
+        role: UserRole.DMC_OFFICER,
+        district: 'Colombo',
+        riverBasin: 'Kelani River Basin',
+        phone: '0119998877',
+        badgeId: 'DMC-OFF-001',
+      },
+      {
+        name: 'System Admin',
+        email: 'admin@disaster.lk',
+        password: passwordHash,
+        role: UserRole.ADMIN,
+        district: 'Colombo',
+        phone: '0110000000',
+        badgeId: 'ADMIN-001',
+      },
+      {
+        name: 'Citizen Amara',
         email: 'citizen@disaster.lk',
         password: passwordHash,
-        role: 'CITIZEN',
+        role: UserRole.CITIZEN,
         district: 'Kandy',
+        riverBasin: 'Mahaweli River Basin',
         phone: '0771234567',
+        pushToken: 'push_token_citizen_1',
       },
       {
-        name: 'Kamal Silva',
+        name: 'Volunteer Nimal',
         email: 'volunteer@disaster.lk',
         password: passwordHash,
-        role: 'VOLUNTEER',
-        district: 'Badulla',
+        role: UserRole.VOLUNTEER,
+        district: 'Galle',
+        riverBasin: 'Gin River Basin',
         phone: '0719876543',
-      },
-      {
-        name: 'Duty Officer Ruwan',
-        email: 'officer@dmc.gov.lk',
-        password: passwordHash,
-        role: 'DUTY_OFFICER',
-        district: 'Colombo',
-        phone: '0112345678',
-        badgeId: 'DMC-OFF-101',
-      },
-      {
-        name: 'DMC Director Jayasinghe',
-        email: 'dmc@disaster.gov.lk',
-        password: passwordHash,
-        role: 'DMC_OFFICER',
-        district: 'Colombo',
-        phone: '0119998877',
-        badgeId: 'DMC-DIR-001',
-      },
-      {
-        name: 'District Officer Nimal',
-        email: 'district@kandy.gov.lk',
-        password: passwordHash,
-        role: 'DISTRICT_OFFICER',
-        district: 'Kandy',
-        phone: '0812233445',
-        badgeId: 'DIST-KANDY-01',
+        pushToken: 'push_token_volunteer_1',
       },
     ];
 
     await this.userModel.insertMany(defaultUsers);
     return {
-      message: 'Default system users seeded successfully! All users have password: "password123"',
-      users: defaultUsers.map(u => ({ email: u.email, role: u.role, name: u.name })),
+      message: 'Default system users seeded successfully! Password for all: "password123"',
+      users: defaultUsers.map((u) => ({ email: u.email, role: u.role, name: u.name })),
     };
   }
 }

@@ -1,3 +1,4 @@
+import { ValidationPipe } from '@nestjs/common';
 import * as dns from 'dns';
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
@@ -23,13 +24,25 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true,
       transform: true,
+    }),
+  );
+
+  app.enableCors();
+
+  await app.listen(process.env.PORT || 3000);
+}
+
+bootstrap();
       transformOptions: { enableImplicitConversion: true },
     }),
   );
 
   const port = process.env.PORT || 3000;
   await app.listen(port);
-  console.log(`Server running on http://localhost:${port}/api`);
+  console.log(`=======================================================`);
+  console.log(`Disaster Early Warning System Server running on port ${port}`);
+  console.log(`API Base URL: http://localhost:${port}/api`);
+  console.log(`=======================================================`);
 }
 
 bootstrap();

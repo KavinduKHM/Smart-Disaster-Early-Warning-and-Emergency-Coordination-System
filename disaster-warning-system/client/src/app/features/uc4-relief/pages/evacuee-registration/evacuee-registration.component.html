@@ -1,0 +1,161 @@
+<div class="page">
+
+  <h1>Evacuee Registration</h1>
+
+  <div class="card">
+
+    <label>Select Shelter</label>
+
+    <select
+      [(ngModel)]="selectedShelterId"
+      (change)="loadEvacuees()"
+    >
+
+      <option value="">
+        Select shelter
+      </option>
+
+      <option
+        *ngFor="let shelter of shelters"
+        [value]="shelter._id"
+      >
+        {{ shelter.name }}
+        -
+        {{ shelter.currentOccupancy }}
+        /
+        {{ shelter.capacity }}
+      </option>
+
+    </select>
+
+  </div>
+
+
+  <div
+    class="card"
+    *ngIf="selectedShelterId"
+  >
+
+    <h2>Register Evacuee</h2>
+
+    <form
+      (ngSubmit)="registerEvacuee()"
+    >
+
+      <input
+        type="text"
+        placeholder="Full Name"
+        [(ngModel)]="evacuee.fullName"
+        name="fullName"
+        required
+      />
+
+      <input
+        type="text"
+        placeholder="National ID"
+        [(ngModel)]="evacuee.nationalId"
+        name="nationalId"
+        required
+      />
+
+      <input
+        type="number"
+        placeholder="Age"
+        [(ngModel)]="evacuee.age"
+        name="age"
+      />
+
+      <select
+        [(ngModel)]="evacuee.gender"
+        name="gender"
+      >
+        <option value="">
+          Select Gender
+        </option>
+
+        <option value="Male">
+          Male
+        </option>
+
+        <option value="Female">
+          Female
+        </option>
+
+        <option value="Other">
+          Other
+        </option>
+      </select>
+
+      <input
+        type="text"
+        placeholder="Phone"
+        [(ngModel)]="evacuee.phone"
+        name="phone"
+      />
+
+      <textarea
+        placeholder="Special Needs"
+        [(ngModel)]="evacuee.specialNeeds"
+        name="specialNeeds"
+      ></textarea>
+
+      <button type="submit">
+        Register Evacuee
+      </button>
+
+    </form>
+
+  </div>
+
+
+  <div class="card">
+
+    <h2>Registered Evacuees</h2>
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>NIC</th>
+          <th>Age</th>
+          <th>Gender</th>
+          <th>Special Needs</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <tr
+          *ngFor="let person of evacuees"
+        >
+
+          <td>
+            {{ person.fullName }}
+          </td>
+
+          <td>
+            {{ person.nationalId }}
+          </td>
+
+          <td>
+            {{ person.age }}
+          </td>
+
+          <td>
+            {{ person.gender }}
+          </td>
+
+          <td>
+            {{ person.specialNeeds || 'None' }}
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>

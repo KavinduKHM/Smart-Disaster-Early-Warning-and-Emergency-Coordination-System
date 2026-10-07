@@ -1,27 +1,25 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
-
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
+import { PassportModule } from '@nestjs/passport';
 import { User, UserSchema } from './schemas/user.schema';
+import { AuthService } from './auth.service';
+import { AuthController } from './auth.controller';
 import { JwtStrategy } from './strategies/jwt.strategy';
-import { JwtAuthGuard, OptionalJwtAuthGuard } from './guards/jwt-auth.guard';
+import { jwtConstants } from './auth.constants';
+import { RolesGuard } from './guards/roles.guard';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
-    JwtModule.registerAsync({
-      useFactory: () => ({
-        secret: process.env.JWT_SECRET || 'disaster_warning_secret_key',
-        signOptions: { expiresIn: '7d' },
-      }),
+    JwtModule.register({
+      secret: jwtConstants.secret,
+      signOptions: { expiresIn: '7d' },
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, JwtAuthGuard, OptionalJwtAuthGuard],
-  exports: [AuthService, JwtModule, JwtAuthGuard, OptionalJwtAuthGuard, MongooseModule],
+  providers: [AuthService, JwtStrategy, RolesGuard],
+  exports: [AuthService, JwtStrategy, PassportModule, JwtModule, MongooseModule],
 })
 export class AuthModule {}
