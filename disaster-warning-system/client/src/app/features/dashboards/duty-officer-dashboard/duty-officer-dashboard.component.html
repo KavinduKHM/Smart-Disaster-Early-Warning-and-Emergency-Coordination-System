@@ -166,15 +166,25 @@
           </div>
         </div>
 
-        <!-- Embedded Google Map Frame -->
+        <!-- Interactive Multi-Pin Map Container (Plotting ALL Incidents Simultaneously) -->
         <div class="w-full h-80 rounded-xl overflow-hidden border border-slate-700 bg-slate-950 relative shadow-inner">
+          
+          <!-- Leaflet Interactive Map showing ALL incident markers simultaneously -->
+          <div 
+            id="sriLankaMultiPinMap" 
+            [class.hidden]="!useLeafletMap"
+            class="w-full h-full z-10">
+          </div>
+
+          <!-- Fallback Google Maps iframe -->
           <iframe 
-            *ngIf="mapEmbedUrl"
+            *ngIf="!useLeafletMap && mapEmbedUrl"
             [src]="mapEmbedUrl"
             class="w-full h-full border-0"
             loading="lazy"
             allowfullscreen>
           </iframe>
+
         </div>
 
         <!-- Verified Incident Location Pins Carousel / Chips -->

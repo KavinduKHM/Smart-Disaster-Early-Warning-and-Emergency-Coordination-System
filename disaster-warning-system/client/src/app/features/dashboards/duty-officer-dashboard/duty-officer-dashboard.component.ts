@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { AuthService, UserProfile } from '../../../core/services/auth.service';
 import { ReportService, GroundReport } from '../../../core/services/report.service';
+
+declare var L: any;
 
 interface DistrictAnalytics {
   district: string;
@@ -15,7 +17,7 @@ interface DistrictAnalytics {
   selector: 'app-duty-officer-dashboard',
   templateUrl: './duty-officer-dashboard.component.html'
 })
-export class DutyOfficerDashboardComponent implements OnInit {
+export class DutyOfficerDashboardComponent implements OnInit, AfterViewInit {
   user: UserProfile | null = null;
   reports: GroundReport[] = [];
   warnings: any[] = [];
@@ -41,9 +43,12 @@ export class DutyOfficerDashboardComponent implements OnInit {
     'Polonnaruwa', 'Jaffna', 'Batticaloa', 'Trincomalee', 'Hambantota'
   ];
 
-  // Map state
+  // Leaflet & Google Map state
   selectedReportForMap: GroundReport | null = null;
   mapEmbedUrl: SafeResourceUrl | null = null;
+  private leafletMap: any = null;
+  private markersGroup: any = null;
+  useLeafletMap: boolean = true;
 
   // Verification Modal state
   selectedReportForVerification: GroundReport | null = null;
@@ -66,6 +71,12 @@ export class DutyOfficerDashboardComponent implements OnInit {
   ngOnInit(): void {
     this.user = this.authService.currentUserValue;
     this.loadData();
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.initLeafletMap();
+    }, 500);
   }
 
   loadData(): void {
@@ -145,16 +156,20 @@ export class DutyOfficerDashboardComponent implements OnInit {
     });
   }
 
+  get reportsWithCoords(): GroundReport[] {
+    return this.reports.filter(r => this.getCoords(r) !== null);
+  }
+
   get verifiedReportsWithCoords(): GroundReport[] {
-    return this.reports.filter(r => r.status === 'VERIFIED' && (r.latitude || r.location?.coordinates));
+    return this.reports.filter(r => r.status === 'VERIFIED' && this.getCoords(r) !== null);
   }
 
   updateOverallMapUrl(): void {
-    const verified = this.verifiedReportsWithCoords;
+    const valid = this.reportsWithCoords;
     let mapQuery = 'Sri Lanka';
 
-    if (verified.length > 0) {
-      const first = verified[0];
+    if (valid.length > 0) {
+      const first = valid[0];
       const coords = this.getCoords(first);
       if (coords) {
         mapQuery = `${coords.lat},${coords.lng}`;
@@ -163,13 +178,119 @@ export class DutyOfficerDashboardComponent implements OnInit {
       }
     }
 
-    const rawUrl = `https://maps.google.com/maps?q=${mapQuery}&z=9&output=embed`;
+    const rawUrl = `https://maps.google.com/maps?q=${mapQuery}&z=8&output=embed`;
     this.mapEmbedUrl = this.sanitizer.bypassSecurityTrustResourceUrl(rawUrl);
+
+    setTimeout(() => {
+      this.initLeafletMap();
+    }, 200);
+  }
+
+  initLeafletMap(): void {
+    if (typeof L === 'undefined') {
+      this.useLeafletMap = false;
+      return;
+    }
+
+    const container = document.getElementById('sriLankaMultiPinMap');
+    if (!container) return;
+
+    if (this.leafletMap) {
+      this.leafletMap.remove();
+      this.leafletMap = null;
+    }
+
+    try {
+      // Center map over Sri Lanka [lat: 7.8731, lng: 80.7718] zoom level 8
+      this.leafletMap = L.map('sriLankaMultiPinMap').setView([7.8731, 80.7718], 8);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(this.leafletMap);
+
+      this.markersGroup = L.layerGroup().addTo(this.leafletMap);
+      this.renderAllIncidentMarkers();
+    } catch (e) {
+      console.warn('Leaflet initialization warning:', e);
+      this.useLeafletMap = false;
+    }
+  }
+
+  renderAllIncidentMarkers(): void {
+    if (!this.leafletMap || !this.markersGroup || typeof L === 'undefined') return;
+
+    this.markersGroup.clearLayers();
+
+    const validReports = this.reportsWithCoords;
+
+    for (const rep of validReports) {
+      const coords = this.getCoords(rep);
+      if (!coords) continue;
+
+      let pinColor = '#3b82f6'; // Low / Blue
+      if (rep.severity === 'CRITICAL') pinColor = '#ef4444'; // Red
+      else if (rep.severity === 'HIGH') pinColor = '#f97316'; // Orange
+      else if (rep.severity === 'MEDIUM') pinColor = '#f59e0b'; // Amber
+      else if (rep.status === 'PENDING') pinColor = '#8b5cf6'; // Purple for Pending
+
+      const iconHtml = `
+        <div style="
+          background-color: ${pinColor};
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          border: 2px solid #ffffff;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 15px;
+          color: white;
+          cursor: pointer;
+        ">
+          ⚠️
+        </div>
+      `;
+
+      const customIcon = L.divIcon({
+        className: 'custom-leaflet-pin',
+        html: iconHtml,
+        iconSize: [30, 30],
+        iconAnchor: [15, 15]
+      });
+
+      const repNum = this.getReportNumber(rep);
+      const locStr = rep.address || rep.district + ' District';
+
+      const popupHtml = `
+        <div style="font-family: sans-serif; padding: 4px; max-width: 220px; color: #0f172a;">
+          <div style="font-weight: bold; font-size: 13px; color: #1e293b;">#${repNum} • ${rep.hazardType}</div>
+          <div style="font-size: 11px; color: #475569; margin-top: 2px;">📍 ${locStr}</div>
+          <div style="font-size: 10px; margin-top: 4px; font-weight: bold; color: ${pinColor}; uppercase;">
+            Status: ${rep.status} ${rep.severity ? '• ' + rep.severity : ''}
+          </div>
+          <div style="font-size: 11px; color: #334155; margin-top: 6px; background: #f1f5f9; padding: 6px; rounded: 6px;">
+            "${rep.description.substring(0, 75)}..."
+          </div>
+        </div>
+      `;
+
+      const marker = L.marker([coords.lat, coords.lng], { icon: customIcon })
+        .bindPopup(popupHtml);
+
+      this.markersGroup.addLayer(marker);
+    }
   }
 
   selectReportForMap(report: GroundReport): void {
     this.selectedReportForMap = report;
     const coords = this.getCoords(report);
+
+    if (coords && this.leafletMap) {
+      this.leafletMap.flyTo([coords.lat, coords.lng], 14, { duration: 1.2 });
+    }
+
     let mapQuery = '';
     if (coords) {
       mapQuery = `${coords.lat},${coords.lng}`;
