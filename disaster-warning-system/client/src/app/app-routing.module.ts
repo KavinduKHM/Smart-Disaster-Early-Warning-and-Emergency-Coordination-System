@@ -7,11 +7,17 @@ import { RescueTeamDashboardComponent } from './features/dashboards/rescue-team-
 import { DutyOfficerDashboardComponent } from './features/dashboards/duty-officer-dashboard/duty-officer-dashboard.component';
 import { DmcOfficerDashboardComponent } from './features/dashboards/dmc-officer-dashboard/dmc-officer-dashboard.component';
 import { DistrictOfficerDashboardComponent } from './features/dashboards/district-officer-dashboard/district-officer-dashboard.component';
+import { UserSettingsComponent } from './features/settings/user-settings.component';
 import { AuthGuard } from './core/guards/auth.guard';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
+  { 
+    path: 'settings', 
+    component: UserSettingsComponent, 
+    canActivate: [AuthGuard] 
+  },
   { 
     path: 'citizen/home', 
     component: CitizenHomeComponent, 

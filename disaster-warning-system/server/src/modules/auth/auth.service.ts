@@ -12,6 +12,8 @@ import { User, UserDocument } from './schemas/user.schema';
 import { RescueTeam, RescueTeamDocument } from '../uc3-rescue/rescue-teams/schemas/rescue-team.schema';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -150,6 +152,93 @@ export class AuthService {
       throw new NotFoundException('User profile not found');
     }
     return user;
+  }
+
+  async updateProfile(userId: string, dto: UpdateProfileDto) {
+    const user = await this.userModel.findById(userId).exec();
+    if (!user) {
+      throw new NotFoundException('User profile not found');
+    }
+
+    if (dto.name !== undefined) user.name = dto.name;
+    if (dto.phone !== undefined) user.phone = dto.phone;
+    if (dto.district !== undefined) user.district = dto.district;
+    if (dto.address !== undefined) user.address = dto.address;
+    if (dto.latitude !== undefined) user.latitude = dto.latitude;
+    if (dto.longitude !== undefined) user.longitude = dto.longitude;
+    if (dto.organization !== undefined) user.organization = dto.organization;
+    if (dto.teamType !== undefined) user.teamType = dto.teamType;
+    if (dto.membersCount !== undefined) user.membersCount = dto.membersCount;
+
+    const savedUser = await user.save();
+
+    // If RESCUE_TEAM user, also sync rescue team location & details
+    if (user.role === 'RESCUE_TEAM' && user.teamId) {
+      await this.rescueTeamModel.updateOne(
+        { teamId: user.teamId },
+        {
+          $set: {
+            name: savedUser.name,
+            district: savedUser.district,
+            organization: savedUser.organization,
+            type: savedUser.teamType,
+            members: savedUser.membersCount,
+            location: {
+              type: 'Point',
+              coordinates: [savedUser.longitude || 80.6337, savedUser.latitude || 7.2906],
+            },
+          },
+        },
+      ).exec();
+    }
+
+    const payload = {
+      sub: savedUser._id,
+      email: savedUser.email,
+      name: savedUser.name,
+      role: savedUser.role,
+      district: savedUser.district,
+      teamId: savedUser.teamId,
+    };
+
+    const token = this.jwtService.sign(payload);
+
+    return {
+      accessToken: token,
+      user: {
+        id: savedUser._id,
+        name: savedUser.name,
+        email: savedUser.email,
+        role: savedUser.role,
+        district: savedUser.district,
+        phone: savedUser.phone,
+        address: savedUser.address,
+        latitude: savedUser.latitude,
+        longitude: savedUser.longitude,
+        badgeId: savedUser.badgeId,
+        teamId: savedUser.teamId,
+        organization: savedUser.organization,
+        teamType: savedUser.teamType,
+        membersCount: savedUser.membersCount,
+      },
+    };
+  }
+
+  async changePassword(userId: string, dto: ChangePasswordDto) {
+    const user = await this.userModel.findById(userId).exec();
+    if (!user) {
+      throw new NotFoundException('User profile not found');
+    }
+
+    const isMatch = await bcrypt.compare(dto.currentPassword, user.password);
+    if (!isMatch) {
+      throw new UnauthorizedException('Current password is incorrect');
+    }
+
+    user.password = await bcrypt.hash(dto.newPassword, 10);
+    await user.save();
+
+    return { message: 'Password updated successfully' };
   }
 
   async findAllUsers() {

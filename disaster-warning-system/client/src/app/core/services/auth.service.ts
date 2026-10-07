@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 
@@ -10,6 +10,9 @@ export interface UserProfile {
   role: 'CITIZEN' | 'RESCUE_TEAM' | 'DUTY_OFFICER' | 'DMC_OFFICER' | 'DISTRICT_OFFICER';
   district: string;
   phone?: string;
+  address?: string;
+  latitude?: number;
+  longitude?: number;
   badgeId?: string;
   teamId?: string;
   organization?: string;
@@ -45,12 +48,16 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
+  getAuthHeaders(): HttpHeaders {
+    return new HttpHeaders({
+      Authorization: `Bearer ${this.token}`
+    });
+  }
+
   login(credentials: { email: string; password: string }): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap((res) => {
-        localStorage.setItem('disaster_token', res.accessToken);
-        localStorage.setItem('disaster_user', JSON.stringify(res.user));
-        this.currentUserSubject.next(res.user);
+        this.saveAuthSession(res);
         this.redirectUserByRole(res.user.role);
       })
     );
@@ -59,12 +66,32 @@ export class AuthService {
   register(payload: any): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/register`, payload).pipe(
       tap((res) => {
-        localStorage.setItem('disaster_token', res.accessToken);
-        localStorage.setItem('disaster_user', JSON.stringify(res.user));
-        this.currentUserSubject.next(res.user);
+        this.saveAuthSession(res);
         this.redirectUserByRole(res.user.role);
       })
     );
+  }
+
+  updateProfile(payload: any): Observable<AuthResponse> {
+    return this.http.put<AuthResponse>(`${this.apiUrl}/profile`, payload, { headers: this.getAuthHeaders() }).pipe(
+      tap((res) => {
+        this.saveAuthSession(res);
+      })
+    );
+  }
+
+  changePassword(payload: any): Observable<{ message: string }> {
+    return this.http.put<{ message: string }>(`${this.apiUrl}/change-password`, payload, { headers: this.getAuthHeaders() });
+  }
+
+  private saveAuthSession(res: AuthResponse): void {
+    if (res.accessToken) {
+      localStorage.setItem('disaster_token', res.accessToken);
+    }
+    if (res.user) {
+      localStorage.setItem('disaster_user', JSON.stringify(res.user));
+      this.currentUserSubject.next(res.user);
+    }
   }
 
   logout(): void {
