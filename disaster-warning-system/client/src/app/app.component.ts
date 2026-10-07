@@ -251,9 +251,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
   closeModal(): void {
     this.isIssueModalOpen = false;
+  }
+
   removeToast(id: string): void {
     this.notificationService.removeToast(id);
-  }
   }
 
   toggleAssistanceSelection(item: string): void {

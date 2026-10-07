@@ -1,4 +1,3 @@
-import { ValidationPipe } from '@nestjs/common';
 import * as dns from 'dns';
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
@@ -24,15 +23,6 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true,
       transform: true,
-    }),
-  );
-
-  app.enableCors();
-
-  await app.listen(process.env.PORT || 3000);
-}
-
-bootstrap();
       transformOptions: { enableImplicitConversion: true },
     }),
   );
@@ -46,3 +36,4 @@ bootstrap();
 }
 
 bootstrap();
+

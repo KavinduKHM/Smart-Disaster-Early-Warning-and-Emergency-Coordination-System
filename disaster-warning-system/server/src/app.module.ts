@@ -1,8 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-
-import { MongooseModule } from '@nestjs/mongoose';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import * as dotenv from 'dotenv';
 import { SharedModule } from './modules/shared/shared.module';
@@ -29,12 +27,10 @@ const mongoUri =
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-
       useFactory: (configService: ConfigService) => ({
-        uri: configService.get<string>('MONGODB_URI'),
+        uri: configService.get<string>('MONGODB_URI') || mongoUri,
       }),
     }),
-    MongooseModule.forRoot(mongoUri),
     SharedModule,
     AuthModule,
     WarningModule,
@@ -54,3 +50,4 @@ const mongoUri =
   ],
 })
 export class AppModule {}
+
