@@ -7,6 +7,8 @@ export interface GroundReport {
   _id: string;
   reportId?: string;
   reportNumber?: string;
+  reportedBy?: string;
+  reporterType?: string;
   hazardType: string;
   severity?: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
   description: string;
@@ -23,6 +25,8 @@ export interface GroundReport {
   status: 'PENDING' | 'VERIFIED' | 'REJECTED' | 'RESOLVED' | 'ARCHIVED';
   verificationRemarks?: string;
   verificationNotes?: string;
+  verifiedBy?: string;
+  verifiedAt?: string;
   createdAt: string;
 }
 
