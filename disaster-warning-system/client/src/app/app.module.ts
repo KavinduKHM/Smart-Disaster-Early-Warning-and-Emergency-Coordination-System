@@ -1,12 +1,10 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { AppRoutingModule } from './app-routing.module';
 
 // Feature Components
 import { LoginComponent } from './features/auth/login/login.component';
@@ -27,20 +25,8 @@ import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
     CreateWarningComponent,
     ActiveWarningsComponent,
   ],
-
   imports: [
     BrowserModule,
-    AppRoutingModule,
-    HttpClientModule
-  ],
-
-  providers: [],
-
-  bootstrap: [
-    AppComponent
-  ]
-})
-export class AppModule {}
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,

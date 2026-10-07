@@ -3,9 +3,9 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+import { OnEvent } from '@nestjs/event-emitter';
 
 import {
   Shelter,
@@ -56,6 +56,34 @@ export class ReliefService {
     @InjectModel(ReliefNeed.name)
     private readonly reliefNeedModel: Model<ReliefNeedDocument>,
   ) {}
+
+  /**
+   * Cross-Functional Integration Event:
+   * Listens to UC1 Warning Broadcasts and auto-creates Emergency Relief Need requests for targeted districts
+   */
+  @OnEvent('warning.broadcast')
+  @OnEvent('warning.escalated')
+  async handleWarningBroadcast(warning: any) {
+    try {
+      const targetDistricts: string[] = warning.affectedDistricts || [];
+      console.log(`[UC4 ReliefService] Received Disaster Warning Broadcast (${warning.warningId}). Alerting shelters in districts:`, targetDistricts);
+
+      // Auto-create a high-priority ReliefNeed for shelters in affected districts
+      for (const district of targetDistricts) {
+        await this.reliefNeedModel.create({
+          shelterName: `District Emergency Hub - ${district}`,
+          district: district,
+          itemType: 'EMERGENCY_RATIONS_AND_DRINKING_WATER',
+          requestedQuantity: 500,
+          urgencyLevel: warning.warningLevel === 'Emergency' ? 'CRITICAL' : 'HIGH',
+          status: 'OPEN',
+          notes: `Auto-generated from UC1 Warning ${warning.warningId} (${warning.warningLevel}): ${warning.message}`,
+        });
+      }
+    } catch (err) {
+      console.error('[UC4 ReliefService] Error handling warning.broadcast event:', err);
+    }
+  }
 
   // ================================
   // DASHBOARD

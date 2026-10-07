@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { OnEvent } from '@nestjs/event-emitter';
 import { Hazard, HazardDocument } from '../schemas/hazard.schema';
 import { CreateHazardDto } from '../dto/create-hazard.dto';
 import { UpdateHazardDto } from '../dto/update-hazard.dto';
@@ -12,6 +13,46 @@ export class HazardService {
     @InjectModel(Hazard.name)
     private readonly hazardModel: Model<HazardDocument>,
   ) {}
+
+  /**
+   * Cross-Functional Integration Event:
+   * Listens to Duty-Officer-verified ground reports from UC2 and populates UC1 Hazard Registry
+   */
+  @OnEvent('ground-report.verified')
+  async handleGroundReportVerified(report: any) {
+    try {
+      const existing = await this.hazardModel.findOne({
+        $or: [
+          { title: { $regex: new RegExp(report.reportId, 'i') } },
+          { description: { $regex: new RegExp(report.reportId, 'i') } },
+        ],
+      });
+
+      if (!existing) {
+        const hazardTypeStr = report.hazardType || 'FLOOD';
+        const coords = report.location?.coordinates || [80.6337, 7.2906];
+
+        await this.hazardModel.create({
+          type: hazardTypeStr,
+          title: `[VERIFIED REPORT]: ${report.reportId} - ${hazardTypeStr}`,
+          description: `Automatically created from verified Ground Report ${report.reportId}. Remarks: ${report.verificationRemarks || 'Verified by Duty Officer.'}`,
+          status: HazardStatus.ACTIVE,
+          severity: 'HIGH',
+          district: report.district || 'Kandy',
+          riverBasin: 'Mahaweli',
+          location: {
+            type: 'Point',
+            coordinates: coords,
+          },
+          reportedBy: report.verifiedBy || report.reportedBy,
+          isDeleted: false,
+        });
+        console.log(`[UC1 HazardService] Automatically created official Hazard from verified UC2 Report: ${report.reportId}`);
+      }
+    } catch (err) {
+      console.error('[UC1 HazardService] Error handling ground-report.verified event:', err);
+    }
+  }
 
   /**
    * Create a new Hazard record with GeoJSON location
