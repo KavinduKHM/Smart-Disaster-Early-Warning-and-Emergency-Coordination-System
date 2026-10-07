@@ -1,87 +1,481 @@
-<div class="min-h-screen bg-slate-900 text-slate-100 font-sans">
+<div class="min-h-screen bg-slate-950 text-slate-100 font-sans flex flex-col">
+  
   <!-- Top Navigation Header -->
-  <header class="bg-slate-800 border-b border-slate-700 shadow-lg px-6 py-4 flex flex-wrap items-center justify-between gap-4">
-    <div class="flex items-center space-x-3">
-      <div class="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-lg border border-blue-500/30">
-        👮🏻‍♂️
+  <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 shadow-xl px-6 py-4 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+      
+      <!-- Brand Title -->
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-lg shadow-lg shadow-blue-600/30">
+          👮🏻‍♂️
+        </div>
+        <div>
+          <h1 class="text-lg font-bold tracking-tight text-white flex items-center gap-2">
+            Duty Officer Operational Triage Desk
+          </h1>
+          <p class="text-xs text-slate-400">UC2 Ground Hazard Verification & Incident Severity Triage</p>
+        </div>
       </div>
-      <div>
-        <h1 class="text-xl font-bold tracking-tight text-white">Duty Officer Operational Desk</h1>
-        <p class="text-xs text-slate-400">Hazard Report Verification & Emergency Incident Triage</p>
-      </div>
-    </div>
 
-    <div class="flex items-center space-x-4">
-      <div class="text-right text-xs">
-        <p class="font-semibold text-white">{{ user?.name || 'Duty Officer' }}</p>
-        <span class="inline-block px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 font-mono text-[11px] border border-blue-500/30 mt-0.5">
-          Badge: {{ user?.badgeId || 'OFF-001' }} | {{ user?.district || 'Colombo' }} District
-        </span>
+      <!-- Officer Profile & Actions -->
+      <div class="flex items-center space-x-4">
+        <div class="text-right text-xs">
+          <p class="font-bold text-white">{{ user?.name || 'Duty Officer' }}</p>
+          <span class="inline-block px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 font-mono text-[11px] border border-blue-500/30 mt-0.5">
+            Badge: {{ user?.badgeId || 'OFF-101' }} • {{ user?.district || 'Colombo' }} District
+          </span>
+        </div>
+        
+        <a 
+          routerLink="/settings"
+          class="px-3 py-2 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-xl transition-all border border-slate-700 flex items-center gap-1">
+          <span>⚙️</span> Settings
+        </a>
+
+        <button 
+          (click)="logout()" 
+          class="px-4 py-2 text-xs font-semibold text-rose-400 hover:text-white bg-rose-500/10 hover:bg-rose-600 rounded-xl transition-all border border-rose-500/20">
+          Sign Out
+        </button>
       </div>
-      <a 
-        routerLink="/settings"
-        class="px-3 py-2 text-xs font-semibold text-slate-300 hover:text-white bg-slate-700 hover:bg-slate-600 rounded-lg transition-all border border-slate-600 flex items-center gap-1">
-        <span>⚙️</span> Settings
-      </a>
-      <button 
-        (click)="logout()" 
-        class="px-4 py-2 text-xs font-semibold text-rose-400 hover:text-white bg-rose-500/10 hover:bg-rose-600 rounded-lg transition-all duration-200 border border-rose-500/20">
-        Sign Out
-      </button>
+
     </div>
   </header>
 
   <!-- Main Content Shell -->
-  <main class="max-w-7xl mx-auto px-6 py-8">
-    <!-- Status Banner -->
-    <div class="bg-slate-800/80 rounded-2xl p-6 border border-slate-700/60 shadow-xl mb-8 flex flex-wrap items-center justify-between gap-4 backdrop-blur">
-      <div>
-        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-400 border border-blue-500/30 mb-2">
-          <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse mr-2"></span>
-          24/7 COMMAND DUTY: ACTIVE
-        </span>
-        <h2 class="text-2xl font-bold text-white">Officer {{ user?.name }}</h2>
-        <p class="text-slate-400 text-sm mt-1">Responsible for ground hazard incident triage & report verification.</p>
-      </div>
-      <div class="flex space-x-3">
-        <div class="px-4 py-3 bg-slate-900/60 rounded-xl border border-slate-700/50 text-center">
-          <div class="text-xl font-bold text-blue-400">UC2 Module</div>
-          <div class="text-[11px] text-slate-400 uppercase font-mono">Report Verification</div>
+  <main class="flex-1 max-w-7xl w-full mx-auto px-6 py-8 space-y-8">
+    
+    <!-- Top KPI Stats Grid -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      
+      <!-- Pending Verification Card -->
+      <div 
+        (click)="activeTabFilter = 'PENDING'"
+        [class.ring-2]="activeTabFilter === 'PENDING'"
+        class="p-5 rounded-2xl bg-slate-900 border border-slate-800 hover:border-amber-500/80 shadow-xl cursor-pointer transition-all group">
+        <div class="flex items-center justify-between">
+          <span class="text-xs text-slate-400 uppercase font-mono font-bold group-hover:text-amber-400">Pending Triage</span>
+          <span class="p-2 rounded-xl bg-amber-500/10 text-amber-400 text-sm">⏳</span>
         </div>
+        <div class="text-3xl font-bold text-amber-400 mt-2">{{ stats.pending }}</div>
+        <span class="text-[11px] text-slate-500 mt-1 block">Awaiting Verification • Click Filter</span>
       </div>
+
+      <!-- Verified Incidents Card -->
+      <div 
+        (click)="activeTabFilter = 'VERIFIED'"
+        [class.ring-2]="activeTabFilter === 'VERIFIED'"
+        class="p-5 rounded-2xl bg-slate-900 border border-slate-800 hover:border-emerald-500/80 shadow-xl cursor-pointer transition-all group">
+        <div class="flex items-center justify-between">
+          <span class="text-xs text-slate-400 uppercase font-mono font-bold group-hover:text-emerald-400">Verified Incidents</span>
+          <span class="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 text-sm">✅</span>
+        </div>
+        <div class="text-3xl font-bold text-emerald-400 mt-2">{{ stats.verified }}</div>
+        <span class="text-[11px] text-slate-500 mt-1 block">Public Active Warnings • Click Filter</span>
+      </div>
+
+      <!-- Critical Hazards Card -->
+      <div 
+        (click)="activeTabFilter = 'VERIFIED'"
+        class="p-5 rounded-2xl bg-slate-900 border border-slate-800 hover:border-rose-500/80 shadow-xl cursor-pointer transition-all group">
+        <div class="flex items-center justify-between">
+          <span class="text-xs text-slate-400 uppercase font-mono font-bold group-hover:text-rose-400">Critical Hazards</span>
+          <span class="p-2 rounded-xl bg-rose-500/10 text-rose-400 text-sm">🚨</span>
+        </div>
+        <div class="text-3xl font-bold text-rose-400 mt-2">{{ stats.critical }}</div>
+        <span class="text-[11px] text-slate-500 mt-1 block">Requires High Urgency Action</span>
+      </div>
+
+      <!-- Rejected Reports Card -->
+      <div 
+        (click)="activeTabFilter = 'REJECTED'"
+        [class.ring-2]="activeTabFilter === 'REJECTED'"
+        class="p-5 rounded-2xl bg-slate-900 border border-slate-800 hover:border-slate-600 shadow-xl cursor-pointer transition-all group">
+        <div class="flex items-center justify-between">
+          <span class="text-xs text-slate-400 uppercase font-mono font-bold group-hover:text-slate-300">Rejected / Invalid</span>
+          <span class="p-2 rounded-xl bg-slate-800 text-slate-400 text-sm">🚫</span>
+        </div>
+        <div class="text-3xl font-bold text-slate-400 mt-2">{{ stats.rejected }}</div>
+        <span class="text-[11px] text-slate-500 mt-1 block">Dismissed Reports • Click Filter</span>
+      </div>
+
     </div>
 
-    <!-- Grid for Duty Officer features -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50 flex flex-col items-center justify-center text-center min-h-[220px]">
-        <div class="w-12 h-12 rounded-2xl bg-blue-500/10 text-blue-400 flex items-center justify-center text-2xl mb-3">
-          🔍
+    <!-- MIDDLE SECTION: LIVE CHART & MAP GRID -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- LEFT COLUMN: Live Verified Incidents Chart by Area (5 Cols) -->
+      <div class="lg:col-span-5 bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-6">
+        <div class="border-b border-slate-800 pb-4">
+          <h2 class="text-sm font-bold text-white uppercase font-mono tracking-wider flex items-center gap-2">
+            <span>📊</span> Live Incident Breakdown by Area
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">Verified ground hazard reports aggregated across districts</p>
         </div>
-        <h3 class="text-lg font-semibold text-white">UC2 - Citizen Report Verification</h3>
-        <p class="text-xs text-slate-400 mt-2 max-w-xs">
-          Review incoming citizen ground hazard reports, photos, and GPS coordinates to verify or reject incidents.
-        </p>
+
+        <!-- District Analytics Meter Bars -->
+        <div *ngIf="districtAnalytics.length > 0; else emptyAnalytics" class="space-y-4 max-h-[380px] overflow-y-auto pr-1">
+          <div *ngFor="let item of districtAnalytics" class="space-y-1.5">
+            <div class="flex items-center justify-between text-xs font-mono">
+              <span class="font-bold text-slate-200">{{ item.district }} District</span>
+              <span class="text-slate-400">
+                <span class="text-emerald-400 font-bold">{{ item.verified }} Verified</span> • {{ item.total }} Total
+              </span>
+            </div>
+            
+            <!-- Progress Meter Bar -->
+            <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden flex">
+              <div 
+                class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-full transition-all duration-500"
+                [style.width.%]="item.percentage > 0 ? item.percentage : 5">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #emptyAnalytics>
+          <div class="p-8 text-center text-slate-500 text-xs italic bg-slate-950/50 rounded-xl border border-slate-800">
+            No verified district data available yet.
+          </div>
+        </ng-template>
+
+        <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400 font-mono">
+          <span>Overall System Total: {{ stats.total }}</span>
+          <span class="text-emerald-400">Verified Rate: {{ (stats.verified / (stats.total || 1) * 100) | number:'1.0-0' }}%</span>
+        </div>
       </div>
 
-      <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50 flex flex-col items-center justify-center text-center min-h-[220px]">
-        <div class="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-2xl mb-3">
-          🏷️
+      <!-- RIGHT COLUMN: Interactive Sri Lanka Map & Warning Pins (7 Cols) -->
+      <div class="lg:col-span-7 bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+          <div>
+            <h2 class="text-sm font-bold text-white uppercase font-mono tracking-wider flex items-center gap-2">
+              <span>🗺️</span> Verified Incidents & Warning Map (Sri Lanka)
+            </h2>
+            <p class="text-xs text-slate-400 mt-0.5">Live map displaying verified hazard locations & active disaster warning signs</p>
+          </div>
+
+          <!-- Warnings Badge Summary -->
+          <div class="flex items-center gap-2">
+            <span *ngIf="warnings && warnings.length > 0" class="px-3 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs font-bold animate-pulse flex items-center gap-1">
+              <span>⚠️</span> {{ warnings.length }} Active Disaster Warnings
+            </span>
+            <span *ngIf="!warnings || warnings.length === 0" class="px-3 py-1 rounded-full bg-slate-800 text-slate-400 text-xs font-mono">
+              No Active DMC Broadcast Warnings
+            </span>
+          </div>
         </div>
-        <h3 class="text-lg font-semibold text-white">Severity & Urgency Triage</h3>
-        <p class="text-xs text-slate-400 mt-2 max-w-xs">
-          Categorize verified hazard reports by urgency levels (Critical, High, Medium, Low) for district escalation.
-        </p>
+
+        <!-- Embedded Google Map Frame -->
+        <div class="w-full h-80 rounded-xl overflow-hidden border border-slate-700 bg-slate-950 relative shadow-inner">
+          <iframe 
+            *ngIf="mapEmbedUrl"
+            [src]="mapEmbedUrl"
+            class="w-full h-full border-0"
+            loading="lazy"
+            allowfullscreen>
+          </iframe>
+        </div>
+
+        <!-- Verified Incident Location Pins Carousel / Chips -->
+        <div class="space-y-2">
+          <span class="text-[11px] font-mono uppercase font-bold text-slate-400 block">Click Incident Pin Card to Focus Map Location:</span>
+          
+          <div *ngIf="verifiedReportsWithCoords.length > 0; else noMapIncidents" class="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
+            <button 
+              *ngFor="let rep of verifiedReportsWithCoords"
+              (click)="selectReportForMap(rep)"
+              [class.bg-blue-600]="selectedReportForMap?._id === rep._id"
+              [class.bg-slate-800]="selectedReportForMap?._id !== rep._id"
+              class="px-3 py-2 rounded-xl border border-slate-700 hover:border-blue-500 text-left shrink-0 transition-all">
+              <div class="flex items-center gap-1.5 text-xs font-bold text-white">
+                <span>⚠️</span>
+                <span>{{ getReportNumber(rep) }}</span>
+                <span class="px-1.5 py-0.2 rounded text-[10px]" [ngClass]="getSeverityBadgeClass(rep.severity)">
+                  {{ rep.severity || 'MEDIUM' }}
+                </span>
+              </div>
+              <div class="text-[11px] text-slate-300 mt-0.5 truncate max-w-[160px]">
+                {{ rep.address || rep.district + ' District' }}
+              </div>
+            </button>
+          </div>
+
+          <ng-template #noMapIncidents>
+            <div class="p-3 text-xs text-slate-500 italic bg-slate-950/40 rounded-xl border border-slate-800 text-center">
+              No verified incidents with exact GPS coordinates yet.
+            </div>
+          </ng-template>
+        </div>
+
       </div>
 
-      <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50 flex flex-col items-center justify-center text-center min-h-[220px]">
-        <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-2xl mb-3">
-          📊
-        </div>
-        <h3 class="text-lg font-semibold text-white">Incident Stream & Analytics</h3>
-        <p class="text-xs text-slate-400 mt-2 max-w-xs">
-          Real-time stream of reports by district and verification status.
-        </p>
-      </div>
     </div>
+
+    <!-- BOTTOM SECTION: UC2 GROUND HAZARD REPORT VERIFICATION DESK -->
+    <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-6">
+      
+      <!-- Section Header & Filter Controls -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+        <div>
+          <h2 class="text-base font-bold text-white flex items-center gap-2">
+            <span>📋</span> UC2 Ground Hazard Verification Desk
+          </h2>
+          <p class="text-xs text-slate-400 mt-0.5">Inspect citizen ground evidence photos, verify validity, & categorize severity</p>
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="flex flex-wrap items-center gap-3">
+          
+          <!-- Status Tab Buttons -->
+          <div class="flex bg-slate-950 p-1 rounded-xl border border-slate-800">
+            <button 
+              (click)="activeTabFilter = 'PENDING'"
+              [ngClass]="activeTabFilter === 'PENDING' ? 'bg-amber-500/20 text-amber-400' : 'text-slate-400'"
+              class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all">
+              ⏳ Pending ({{ stats.pending }})
+            </button>
+
+            <button 
+              (click)="activeTabFilter = 'VERIFIED'"
+              [ngClass]="activeTabFilter === 'VERIFIED' ? 'bg-emerald-500/20 text-emerald-400' : 'text-slate-400'"
+              class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all">
+              ✅ Verified ({{ stats.verified }})
+            </button>
+
+            <button 
+              (click)="activeTabFilter = 'REJECTED'"
+              [ngClass]="activeTabFilter === 'REJECTED' ? 'bg-rose-500/20 text-rose-400' : 'text-slate-400'"
+              class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all">
+              🚫 Rejected
+            </button>
+
+            <button 
+              (click)="activeTabFilter = 'ALL'"
+              [ngClass]="activeTabFilter === 'ALL' ? 'bg-slate-800 text-white' : 'text-slate-400'"
+              class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all">
+              All
+            </button>
+          </div>
+
+          <!-- District Filter Dropdown -->
+          <select 
+            [(ngModel)]="selectedDistrictFilter"
+            class="px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-200 text-xs font-mono focus:outline-none">
+            <option *ngFor="let dist of districtsList" [value]="dist">
+              {{ dist === 'ALL' ? '🌍 All Districts' : dist + ' District' }}
+            </option>
+          </select>
+
+        </div>
+      </div>
+
+      <!-- Hazard Reports Cards Grid -->
+      <div *ngIf="filteredReports.length > 0; else emptyReports" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <div 
+          *ngFor="let rep of filteredReports"
+          class="bg-slate-950 p-5 rounded-2xl border border-slate-800 hover:border-slate-700 shadow-lg flex flex-col justify-between space-y-4 transition-all group">
+          
+          <div class="space-y-3">
+            <!-- Header Row -->
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono font-bold text-blue-400">
+                #{{ getReportNumber(rep) }}
+              </span>
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-bold border uppercase tracking-wider" [ngClass]="getStatusBadgeClass(rep.status)">
+                {{ rep.status }}
+              </span>
+            </div>
+
+            <!-- Hazard Type & District -->
+            <div>
+              <h3 class="text-sm font-bold text-white group-hover:text-blue-300 transition-colors">
+                {{ rep.hazardType }}
+              </h3>
+              <p class="text-xs text-slate-400 mt-0.5 flex items-center gap-1">
+                <span>📍</span> {{ rep.address || rep.locationName || (rep.district + ' District') }}
+              </p>
+            </div>
+
+            <!-- Photo Thumbnail Preview if available -->
+            <div *ngIf="rep.photos && rep.photos.length > 0" class="w-full h-32 rounded-xl overflow-hidden border border-slate-800 bg-slate-900">
+              <img [src]="rep.photos[0]" alt="Evidence photo" class="w-full h-full object-cover" />
+            </div>
+
+            <!-- Description -->
+            <p class="text-xs text-slate-300 line-clamp-3 bg-slate-900/60 p-3 rounded-xl border border-slate-800/80">
+              "{{ rep.description }}"
+            </p>
+
+            <!-- Verified Severity if verified -->
+            <div *ngIf="rep.severity" class="flex items-center justify-between text-xs pt-1">
+              <span class="text-slate-400 font-mono text-[11px]">Assigned Severity:</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold border" [ngClass]="getSeverityBadgeClass(rep.severity)">
+                {{ rep.severity }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Footer Action Button -->
+          <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between">
+            <span class="text-[10px] font-mono text-slate-500">
+              {{ rep.createdAt | date:'shortTime' }} • {{ rep.district }}
+            </span>
+
+            <button 
+              (click)="openVerificationModal(rep)"
+              class="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow transition-all flex items-center gap-1">
+              <span>🔍</span> {{ rep.status === 'PENDING' ? 'Review & Verify' : 'View Details' }}
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+      <ng-template #emptyReports>
+        <div class="p-12 text-center text-slate-500 text-xs italic bg-slate-950/40 rounded-2xl border border-slate-800 space-y-2">
+          <div class="text-2xl">📭</div>
+          <p>No hazard reports found matching the selected filter criteria.</p>
+        </div>
+      </ng-template>
+
+    </div>
+
   </main>
+
+  <!-- VERIFICATION MODAL POPUP (DUTY OFFICER TRIAGE) -->
+  <div *ngIf="selectedReportForVerification" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slate-900 max-w-2xl w-full rounded-2xl border border-slate-700 shadow-2xl overflow-hidden animate-in fade-in duration-200">
+      
+      <!-- Modal Header -->
+      <div class="p-5 bg-slate-800 border-b border-slate-700 flex items-center justify-between">
+        <div>
+          <span class="text-xs font-mono text-blue-400 font-bold block">INCIDENT TRIAGE DESK</span>
+          <h2 class="text-base font-bold text-white flex items-center gap-2">
+            <span>🚨</span> Incident #{{ getReportNumber(selectedReportForVerification) }} Details
+          </h2>
+        </div>
+        <button (click)="closeVerificationModal()" class="text-slate-400 hover:text-white text-lg font-bold">✕</button>
+      </div>
+
+      <!-- Banners -->
+      <div *ngIf="actionSuccessMessage" class="mx-5 mt-4 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold">
+        ✅ {{ actionSuccessMessage }}
+      </div>
+      <div *ngIf="actionErrorMessage" class="mx-5 mt-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-semibold">
+        ⚠️ {{ actionErrorMessage }}
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-5 space-y-5 max-h-[75vh] overflow-y-auto">
+        
+        <!-- Grid: Details & Map -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          
+          <!-- Left Details -->
+          <div class="space-y-3 bg-slate-950 p-4 rounded-xl border border-slate-800">
+            <div>
+              <span class="text-[10px] font-mono text-slate-500 uppercase">Hazard Type</span>
+              <div class="text-sm font-bold text-white">{{ selectedReportForVerification.hazardType }}</div>
+            </div>
+
+            <div>
+              <span class="text-[10px] font-mono text-slate-500 uppercase">District & Location</span>
+              <div class="text-xs text-slate-300 font-medium">
+                {{ selectedReportForVerification.address || selectedReportForVerification.locationName || (selectedReportForVerification.district + ' District') }}
+              </div>
+            </div>
+
+            <div>
+              <span class="text-[10px] font-mono text-slate-500 uppercase">Description</span>
+              <div class="text-xs text-slate-200 mt-0.5">
+                "{{ selectedReportForVerification.description }}"
+              </div>
+            </div>
+
+            <div *ngIf="selectedReportForVerification.photos && selectedReportForVerification.photos.length > 0">
+              <span class="text-[10px] font-mono text-slate-500 uppercase block mb-1">Ground Evidence Photo</span>
+              <div class="w-full h-32 rounded-lg overflow-hidden border border-slate-700 bg-slate-900">
+                <img [src]="selectedReportForVerification.photos[0]" alt="Evidence" class="w-full h-full object-cover" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Interactive Map Preview -->
+          <div class="space-y-2">
+            <span class="text-[10px] font-mono text-slate-500 uppercase block">Exact Location Pin</span>
+            <div class="w-full h-56 rounded-xl overflow-hidden border border-slate-700 bg-slate-950">
+              <iframe 
+                *ngIf="verificationMapUrl"
+                [src]="verificationMapUrl"
+                class="w-full h-full border-0"
+                loading="lazy">
+              </iframe>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- TRIAGE VERIFICATION FORM -->
+        <div class="p-4 rounded-xl bg-slate-800/80 border border-slate-700 space-y-4">
+          <h3 class="text-xs font-bold text-blue-400 uppercase font-mono">Duty Officer Verification Decision</h3>
+
+          <!-- Severity Selection -->
+          <div>
+            <label class="block text-xs font-mono font-bold uppercase text-slate-300 mb-1">Assign Hazard Severity Level</label>
+            <select 
+              [(ngModel)]="verificationForm.severity"
+              class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs font-bold focus:ring-2 focus:ring-blue-500 focus:outline-none">
+              <option value="CRITICAL">🔴 CRITICAL - Extreme Public Danger (Immediate Alert)</option>
+              <option value="HIGH">🟠 HIGH - Significant Infrastructure / Life Risk</option>
+              <option value="MEDIUM">🟡 MEDIUM - Moderate Ground Obstruction</option>
+              <option value="LOW">🔵 LOW - Minor Hazard Advisory</option>
+            </select>
+          </div>
+
+          <!-- Verification Remarks -->
+          <div>
+            <label class="block text-xs font-mono font-bold uppercase text-slate-300 mb-1">Verification Remarks / Audit Notes</label>
+            <textarea 
+              rows="2"
+              [(ngModel)]="verificationForm.remarks"
+              placeholder="e.g. Field confirmed by local police/citizen officer report."
+              class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </textarea>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="p-4 bg-slate-800 border-t border-slate-700 flex items-center justify-between gap-3">
+        <button 
+          (click)="closeVerificationModal()"
+          class="px-4 py-2 rounded-xl bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold text-xs transition-colors">
+          Close
+        </button>
+
+        <div class="flex items-center gap-3">
+          <button 
+            (click)="confirmRejectReport()"
+            [disabled]="isSubmittingVerification"
+            class="px-4 py-2 rounded-xl bg-rose-600/20 hover:bg-rose-600/40 text-rose-300 border border-rose-500/30 font-bold text-xs transition-all flex items-center gap-1">
+            <span>🚫</span> Reject Report
+          </button>
+
+          <button 
+            (click)="confirmVerifyReport()"
+            [disabled]="isSubmittingVerification"
+            class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg transition-all flex items-center gap-1.5">
+            <span *ngIf="isSubmittingVerification" class="animate-spin">🔄</span>
+            <span>{{ isSubmittingVerification ? 'Processing...' : '✅ Approve & Verify Incident' }}</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
 </div>

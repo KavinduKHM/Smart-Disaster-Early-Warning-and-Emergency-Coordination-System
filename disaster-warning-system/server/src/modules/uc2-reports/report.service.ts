@@ -182,6 +182,9 @@ export class ReportService {
     report.verificationRemarks = dto.remarks || 'Verified based on field confirmation.';
     report.verifiedBy = verifiedBy;
     report.verifiedAt = new Date();
+    if (dto.severity) {
+      report.severity = dto.severity as any;
+    }
 
     await report.save();
 

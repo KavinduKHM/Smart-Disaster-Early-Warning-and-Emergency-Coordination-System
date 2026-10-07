@@ -71,6 +71,18 @@ export class ReportService {
     return this.http.post<GroundReport>(`${this.apiUrl}/reports`, payload, { headers: this.getAuthHeaders() });
   }
 
+  verifyReport(id: string, payload: { severity?: string; remarks?: string }): Observable<GroundReport> {
+    return this.http.patch<GroundReport>(`${this.apiUrl}/reports/${id}/verify`, payload, { headers: this.getAuthHeaders() });
+  }
+
+  rejectReport(id: string, payload: { remarks: string }): Observable<GroundReport> {
+    return this.http.patch<GroundReport>(`${this.apiUrl}/reports/${id}/reject`, payload, { headers: this.getAuthHeaders() });
+  }
+
+  getWarnings(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/warnings`, { headers: this.getAuthHeaders() });
+  }
+
   getShelters(district?: string): Observable<ReliefShelter[]> {
     const url = district ? `${this.apiUrl}/relief/shelters?district=${district}` : `${this.apiUrl}/relief/shelters`;
     return this.http.get<ReliefShelter[]>(url, { headers: this.getAuthHeaders() });
