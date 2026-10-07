@@ -22,6 +22,7 @@ export class CitizenHomeComponent implements OnInit {
   isLoading: boolean = true;
   isSafeBeaconActive: boolean = false;
   selectedReport: GroundReport | null = null;
+  activeCardFilter: 'VERIFIED' | 'PENDING' | 'MY_REPORTS' | 'SHELTERS' | null = null;
 
   constructor(
     private authService: AuthService,
@@ -79,6 +80,23 @@ export class CitizenHomeComponent implements OnInit {
       },
       error: (err) => console.error('Error loading shelters:', err)
     });
+  }
+
+  // Filtered computed getters matching exact user requirements:
+  get verifiedIncidentsList(): GroundReport[] {
+    return this.districtReports.filter(r => r.status === 'VERIFIED');
+  }
+
+  get myPendingReportsList(): GroundReport[] {
+    return this.myReports.filter(r => r.status === 'PENDING');
+  }
+
+  openCardFilterModal(type: 'VERIFIED' | 'PENDING' | 'MY_REPORTS' | 'SHELTERS'): void {
+    this.activeCardFilter = type;
+  }
+
+  closeCardFilterModal(): void {
+    this.activeCardFilter = null;
   }
 
   openReportModal(report: GroundReport): void {
