@@ -50,6 +50,10 @@ export class DutyOfficerDashboardComponent implements OnInit, AfterViewInit {
   private markersGroup: any = null;
   useLeafletMap: boolean = true;
 
+  // PDF Modal state
+  showPdfModal: boolean = false;
+  pdfGeneratedDate: Date = new Date();
+
   // Verification Modal state
   selectedReportForVerification: GroundReport | null = null;
   verificationMapUrl: SafeResourceUrl | null = null;
@@ -61,6 +65,19 @@ export class DutyOfficerDashboardComponent implements OnInit, AfterViewInit {
   isSubmittingVerification: boolean = false;
   actionSuccessMessage: string = '';
   actionErrorMessage: string = '';
+
+  openPdfModal(): void {
+    this.pdfGeneratedDate = new Date();
+    this.showPdfModal = true;
+  }
+
+  closePdfModal(): void {
+    this.showPdfModal = false;
+  }
+
+  downloadPrintPdf(): void {
+    window.print();
+  }
 
   constructor(
     private authService: AuthService,

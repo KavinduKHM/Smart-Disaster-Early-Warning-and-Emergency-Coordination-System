@@ -27,6 +27,18 @@
         </div>
         
         <a 
+          routerLink="/duty-officer/reports"
+          class="px-3.5 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 rounded-xl transition-all shadow-md flex items-center gap-1.5">
+          <span>📄</span> Full Desk Page
+        </a>
+
+        <button 
+          (click)="openPdfModal()"
+          class="px-3 py-2 text-xs font-semibold text-emerald-400 hover:text-white bg-emerald-500/10 hover:bg-emerald-600 rounded-xl transition-all border border-emerald-500/20 flex items-center gap-1">
+          <span>🖨️</span> PDF Report
+        </button>
+
+        <a 
           routerLink="/settings"
           class="px-3 py-2 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-xl transition-all border border-slate-700 flex items-center gap-1">
           <span>⚙️</span> Settings
@@ -483,6 +495,126 @@
             <span>{{ isSubmittingVerification ? 'Processing...' : '✅ Approve & Verify Incident' }}</span>
           </button>
         </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PDF REPORT GENERATION & PREVIEW MODAL -->
+  <div *ngIf="showPdfModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-slate-900 max-w-4xl w-full rounded-2xl border border-slate-700 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      
+      <!-- Modal Header -->
+      <div class="p-5 bg-slate-800 border-b border-slate-700 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-2">
+          <span class="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 text-lg">📄</span>
+          <div>
+            <h2 class="text-base font-bold text-white">Official Ground Hazard Incident Report (PDF Document)</h2>
+            <p class="text-xs text-slate-400">Generated according to active filter criteria</p>
+          </div>
+        </div>
+        
+        <div class="flex items-center gap-3">
+          <button 
+            (click)="downloadPrintPdf()"
+            class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg transition-all flex items-center gap-1.5">
+            <span>📥</span> Download / Print PDF Report
+          </button>
+          <button (click)="closePdfModal()" class="text-slate-400 hover:text-white font-bold text-lg">✕</button>
+        </div>
+      </div>
+
+      <!-- PRINTABLE PDF REPORT CONTAINER -->
+      <div id="printablePdfDocument" class="p-8 bg-white text-slate-900 overflow-y-auto font-sans space-y-6">
+        
+        <!-- Official Document Header -->
+        <div class="border-b-2 border-slate-900 pb-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-xl bg-slate-900 text-white font-bold text-xl flex items-center justify-center">
+              🛡️
+            </div>
+            <div>
+              <h1 class="text-lg font-extrabold uppercase tracking-tight text-slate-900">Disaster Management Centre (SL-DEWS)</h1>
+              <p class="text-xs font-semibold text-slate-600">National Early Warning & Ground Emergency Operational Desk</p>
+              <p class="text-[10px] text-slate-500">Government of Sri Lanka • Official Ground Hazard Triage Document</p>
+            </div>
+          </div>
+
+          <div class="text-right text-xs font-mono">
+            <div class="font-bold text-slate-900">DOC REF: DMC-REP-{{ pdfGeneratedDate | date:'yyyyMMdd' }}-{{ filteredReports.length }}</div>
+            <div class="text-slate-600">Date: {{ pdfGeneratedDate | date:'medium' }}</div>
+            <div class="text-slate-600">Duty Officer: {{ user?.name }} ({{ user?.badgeId || 'OFF-101' }})</div>
+          </div>
+        </div>
+
+        <!-- Filter Criteria & Summary Stats Box -->
+        <div class="bg-slate-100 p-4 rounded-xl border border-slate-300 grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+          <div>
+            <span class="text-slate-500 font-mono text-[10px] uppercase block">Status Filter</span>
+            <span class="font-bold text-slate-900 uppercase">{{ activeTabFilter }}</span>
+          </div>
+
+          <div>
+            <span class="text-slate-500 font-mono text-[10px] uppercase block">District Filter</span>
+            <span class="font-bold text-slate-900 uppercase">{{ selectedDistrictFilter }}</span>
+          </div>
+
+          <div>
+            <span class="text-slate-500 font-mono text-[10px] uppercase block">Total Incidents Included</span>
+            <span class="font-bold text-blue-700 text-sm">{{ filteredReports.length }}</span>
+          </div>
+
+          <div>
+            <span class="text-slate-500 font-mono text-[10px] uppercase block">Critical Hazards</span>
+            <span class="font-bold text-rose-600 text-sm">{{ stats.critical }}</span>
+          </div>
+        </div>
+
+        <!-- Structured Data Table -->
+        <div class="space-y-2">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-800 font-mono">Detailed Filtered Incident Log</h3>
+          
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-slate-900 text-white font-mono text-[11px]">
+                <th class="p-2.5 border border-slate-700">Ref #</th>
+                <th class="p-2.5 border border-slate-700">Hazard Category</th>
+                <th class="p-2.5 border border-slate-700">District & Address</th>
+                <th class="p-2.5 border border-slate-700">Status</th>
+                <th class="p-2.5 border border-slate-700">Severity</th>
+                <th class="p-2.5 border border-slate-700">Description & Audit Remarks</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let rep of filteredReports; let i = index" [class.bg-slate-50]="i % 2 === 1" class="border-b border-slate-200">
+                <td class="p-2.5 font-mono font-bold text-slate-900 whitespace-nowrap">#{{ getReportNumber(rep) }}</td>
+                <td class="p-2.5 font-bold text-slate-800">{{ rep.hazardType }}</td>
+                <td class="p-2.5 text-slate-700">{{ rep.address || rep.district + ' District' }}</td>
+                <td class="p-2.5 font-bold uppercase text-slate-800">{{ rep.status }}</td>
+                <td class="p-2.5 font-bold text-slate-900">{{ rep.severity || 'HIGH' }}</td>
+                <td class="p-2.5 text-slate-600 max-w-xs">
+                  <div>"{{ rep.description }}"</div>
+                  <div *ngIf="rep.verificationRemarks" class="text-[10px] italic text-slate-500 mt-1">Audit: {{ rep.verificationRemarks }}</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Document Authorization Footer -->
+        <div class="pt-8 border-t border-slate-300 flex items-center justify-between text-xs text-slate-600">
+          <div>
+            <p class="font-bold text-slate-900">Disaster Management Centre Operational Command Desk</p>
+            <p class="text-[11px]">Sri Lanka Disaster Early Warning & Emergency Coordination System (SL-DEWS)</p>
+          </div>
+
+          <div class="text-center space-y-1">
+            <div class="w-40 border-b border-slate-900"></div>
+            <div class="font-bold text-slate-900 text-[11px]">Authorized Duty Command Officer</div>
+            <div class="text-[10px] text-slate-500">Official Seal & Signature</div>
+          </div>
+        </div>
+
       </div>
 
     </div>

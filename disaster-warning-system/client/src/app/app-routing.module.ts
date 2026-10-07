@@ -5,6 +5,7 @@ import { RegisterComponent } from './features/auth/pages/register/register.compo
 import { CitizenHomeComponent } from './features/dashboards/citizen-home/citizen-home.component';
 import { RescueTeamDashboardComponent } from './features/dashboards/rescue-team-dashboard/rescue-team-dashboard.component';
 import { DutyOfficerDashboardComponent } from './features/dashboards/duty-officer-dashboard/duty-officer-dashboard.component';
+import { DutyOfficerReportsComponent } from './features/dashboards/duty-officer-dashboard/duty-officer-reports.component';
 import { DmcOfficerDashboardComponent } from './features/dashboards/dmc-officer-dashboard/dmc-officer-dashboard.component';
 import { DistrictOfficerDashboardComponent } from './features/dashboards/district-officer-dashboard/district-officer-dashboard.component';
 import { UserSettingsComponent } from './features/settings/user-settings.component';
@@ -35,6 +36,11 @@ const routes: Routes = [
     component: DutyOfficerDashboardComponent, 
     canActivate: [AuthGuard], 
     data: { roles: ['DUTY_OFFICER'] } 
+  },
+  { 
+    path: 'duty-officer/reports', 
+    component: DutyOfficerReportsComponent, 
+    canActivate: [AuthGuard] 
   },
   { 
     path: 'dmc-officer/dashboard', 

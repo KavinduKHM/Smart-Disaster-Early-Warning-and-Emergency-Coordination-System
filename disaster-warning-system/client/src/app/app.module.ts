@@ -13,6 +13,7 @@ import { DutyOfficerDashboardComponent } from './features/dashboards/duty-office
 import { DmcOfficerDashboardComponent } from './features/dashboards/dmc-officer-dashboard/dmc-officer-dashboard.component';
 import { DistrictOfficerDashboardComponent } from './features/dashboards/district-officer-dashboard/district-officer-dashboard.component';
 import { UserSettingsComponent } from './features/settings/user-settings.component';
+import { DutyOfficerReportsComponent } from './features/dashboards/duty-officer-dashboard/duty-officer-reports.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { UserSettingsComponent } from './features/settings/user-settings.compone
     DutyOfficerDashboardComponent,
     DmcOfficerDashboardComponent,
     DistrictOfficerDashboardComponent,
-    UserSettingsComponent
+    UserSettingsComponent,
+    DutyOfficerReportsComponent
   ],
   imports: [
     BrowserModule,
