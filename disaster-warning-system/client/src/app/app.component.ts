@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { IncidentService } from './core/services/incident.service';
+import { RescueService, RescueTeam, RescueAssignment } from './core/services/rescue.service';
 import { Incident, CreateIncidentPayload } from './core/models/incident.model';
 import { Observable } from 'rxjs';
 import { NotificationService, ToastMessage } from './core/services/notification.service';
@@ -22,6 +23,16 @@ export class AppComponent implements OnInit, OnDestroy {
   errorMessage: string | null = null;
   successMessage: string | null = null;
 
+  // UC3 Rescue Data
+  rescueTeams: RescueTeam[] = [];
+  activeAssignments: RescueAssignment[] = [];
+  isRescueLoading = false;
+
+  // Rescue Operations Modals/Drawers
+  isDispatchModalOpen = false;
+  selectedRescueIncident: Incident | null = null;
+  selectedTeamIdToDispatch: string = '';
+
   // Selected Incident for Detail Drawer
   selectedIncident: Incident | null = null;
   isDrawerOpen = false;
@@ -29,7 +40,7 @@ export class AppComponent implements OnInit, OnDestroy {
   locationName: string = 'Resolving location...';
 
   // Navigation State
-  currentRoute: string = 'live-disaster-map';
+  currentRoute: string = 'rescue-operations'; // Set default for UC3 Demo
 
   // Modal State
   isIssueModalOpen = false;
@@ -79,8 +90,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(
     private incidentService: IncidentService,
+    private rescueService: RescueService,
     private sanitizer: DomSanitizer,
-    private notificationService: NotificationService
+    public notificationService: NotificationService
   ) {
     this.toasts$ = this.notificationService.toasts$;
   }
@@ -89,6 +101,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.updateClock();
     this.timerInterval = setInterval(() => this.updateClock(), 1000);
     this.loadIncidents();
+    this.loadRescueData();
   }
 
   ngOnDestroy(): void {
@@ -100,6 +113,24 @@ export class AppComponent implements OnInit, OnDestroy {
   updateClock(): void {
     const now = new Date();
     this.currentTime = now.toLocaleTimeString('en-US', { hour12: false });
+  }
+
+  loadRescueData(): void {
+    this.isRescueLoading = true;
+    this.rescueService.getTeams().subscribe({
+      next: (teams) => {
+        this.rescueTeams = Array.isArray(teams) ? teams : [];
+        this.isRescueLoading = false;
+      },
+      error: (err) => console.error('Failed to load rescue teams', err)
+    });
+
+    this.rescueService.getAssignments().subscribe({
+      next: (assignments) => {
+        this.activeAssignments = Array.isArray(assignments) ? assignments : [];
+      },
+      error: (err) => console.error('Failed to load assignments', err)
+    });
   }
 
   loadIncidents(): void {
@@ -333,6 +364,63 @@ export class AppComponent implements OnInit, OnDestroy {
       error: (err) => {
         console.error('Failed to close incident:', err);
         alert('Failed to update incident status.');
+      }
+    });
+  }
+
+  // --- UC3 Rescue Operations Logic ---
+  openDispatchModal(incident: Incident): void {
+    this.selectedRescueIncident = incident;
+    this.selectedTeamIdToDispatch = '';
+    this.isDispatchModalOpen = true;
+  }
+
+  closeDispatchModal(): void {
+    this.isDispatchModalOpen = false;
+    this.selectedRescueIncident = null;
+    this.selectedTeamIdToDispatch = '';
+  }
+
+  dispatchRescueTeam(): void {
+    if (!this.selectedRescueIncident || !this.selectedTeamIdToDispatch) {
+      alert('Please select a rescue team to dispatch.');
+      return;
+    }
+    this.isSubmitting = true;
+    this.rescueService.createAssignment(
+      this.selectedRescueIncident.incidentId, 
+      this.selectedTeamIdToDispatch, 
+      'District Officer Console'
+    ).subscribe({
+      next: (assignment) => {
+        this.isSubmitting = false;
+        this.closeDispatchModal();
+        this.loadRescueData(); // Refresh assignments
+        this.loadIncidents(); // Refresh incident status
+        this.notificationService.showSuccess('Team Dispatched', `Successfully dispatched to Incident ${this.selectedRescueIncident?.incidentId}`);
+      },
+      error: (err) => {
+        console.error(err);
+        this.isSubmitting = false;
+        alert('Failed to dispatch team. Check console.');
+      }
+    });
+  }
+
+  updateAssignmentStatus(assignmentId: string, statusEndpoint: string, notes?: string): void {
+    this.rescueService.updateAssignmentStatus(assignmentId, statusEndpoint, 'Field Command Node', notes).subscribe({
+      next: (res) => {
+        this.loadRescueData();
+        if (statusEndpoint === 'complete') {
+          this.loadIncidents(); // Incident will be auto-resolved by backend!
+          this.notificationService.showSuccess('Mission Accomplished', 'Rescue operation completed and incident resolved.');
+        } else {
+          this.notificationService.showInfo('Status Updated', `Assignment status updated to: ${statusEndpoint.toUpperCase()}`);
+        }
+      },
+      error: (err) => {
+        console.error(err);
+        alert(`Failed to update assignment status to ${statusEndpoint}`);
       }
     });
   }

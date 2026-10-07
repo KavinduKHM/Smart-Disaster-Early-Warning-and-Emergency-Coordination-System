@@ -2,16 +2,53 @@
 <span class="p-1.5 rounded bg-error text-on-error material-symbols-outlined text-[28px]">public</span>
 <div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-on-surface">Disaster Management Centre</span><span class="font-label-sm text-label-sm text-on-surface-variant">Govt of Sri Lanka • Early Warning System</span></div></div><div class="px-space-lg py-space-sm bg-surface-container"><div class="flex items-center justify-between"><span class="font-label-sm text-label-sm uppercase text-on-surface-variant">Active Command Node</span><span class="px-space-xs py-0.5 rounded-full bg-secondary text-on-secondary font-label-sm text-label-sm">National HQ</span></div></div>
 <nav class="flex flex-col p-space-sm gap-space-xs">
-<a class="flex items-center justify-between px-space-md py-space-sm rounded transition-colors cursor-pointer" [class.bg-primary-container]="currentRoute === 'dmc-operations-dashboard'" [class.text-on-primary]="currentRoute === 'dmc-operations-dashboard'" [class.font-headline-sm]="currentRoute === 'dmc-operations-dashboard'" [class.text-on-surface-variant]="currentRoute !== 'dmc-operations-dashboard'" [class.hover:bg-surface-container-high]="currentRoute !== 'dmc-operations-dashboard'" [class.hover:text-on-surface]="currentRoute !== 'dmc-operations-dashboard'" (click)="navigateTo('dmc-operations-dashboard')"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">grid_view</span><span class="font-body-md text-body-md">DMC Operations Dashboard</span></div></a>
 <a class="flex items-center justify-between px-space-md py-space-sm rounded transition-colors cursor-pointer" [class.bg-primary-container]="currentRoute === 'live-disaster-map'" [class.text-on-primary]="currentRoute === 'live-disaster-map'" [class.font-headline-sm]="currentRoute === 'live-disaster-map'" [class.text-on-surface-variant]="currentRoute !== 'live-disaster-map'" [class.hover:bg-surface-container-high]="currentRoute !== 'live-disaster-map'" [class.hover:text-on-surface]="currentRoute !== 'live-disaster-map'" (click)="navigateTo('live-disaster-map')"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">public</span><span class="font-body-md text-body-md">Live Disaster Map</span></div><span class="flex items-center gap-1 px-space-xs py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm"><span class="w-1.5 h-1.5 rounded-full bg-error animate-ping"></span>LIVE</span></a>
-<a class="flex items-center justify-between px-space-md py-space-sm rounded transition-colors cursor-pointer" [class.bg-primary-container]="currentRoute === 'disaster-alerts'" [class.text-on-primary]="currentRoute === 'disaster-alerts'" [class.font-headline-sm]="currentRoute === 'disaster-alerts'" [class.text-on-surface-variant]="currentRoute !== 'disaster-alerts'" [class.hover:bg-surface-container-high]="currentRoute !== 'disaster-alerts'" [class.hover:text-on-surface]="currentRoute !== 'disaster-alerts'" (click)="navigateTo('disaster-alerts')"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">warning</span><span class="font-body-md text-body-md">Disaster Alerts</span></div><span class="px-space-xs py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm">12</span></a>
-<a class="flex items-center justify-between px-space-md py-space-sm rounded transition-colors cursor-pointer" [class.bg-primary-container]="currentRoute === 'hazard-reports'" [class.text-on-primary]="currentRoute === 'hazard-reports'" [class.font-headline-sm]="currentRoute === 'hazard-reports'" [class.text-on-surface-variant]="currentRoute !== 'hazard-reports'" [class.hover:bg-surface-container-high]="currentRoute !== 'hazard-reports'" [class.hover:text-on-surface]="currentRoute !== 'hazard-reports'" (click)="navigateTo('hazard-reports')"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">report</span><span class="font-body-md text-body-md">Hazard Reports</span></div><span class="px-space-xs py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">28</span></a>
-<a class="flex items-center justify-between px-space-md py-space-sm rounded transition-colors cursor-pointer" [class.bg-primary-container]="currentRoute === 'emergency-incidents'" [class.text-on-primary]="currentRoute === 'emergency-incidents'" [class.font-headline-sm]="currentRoute === 'emergency-incidents'" [class.text-on-surface-variant]="currentRoute !== 'emergency-incidents'" [class.hover:bg-surface-container-high]="currentRoute !== 'emergency-incidents'" [class.hover:text-on-surface]="currentRoute !== 'emergency-incidents'" (click)="navigateTo('emergency-incidents')"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">e911_emergency</span><span class="font-body-md text-body-md">Emergency Incidents</span></div><span class="px-space-xs py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm">{{ incidents.length }}</span></a>
-<a class="flex items-center justify-between px-space-md py-space-sm rounded transition-colors cursor-pointer" [class.bg-primary-container]="currentRoute === 'rescue-operations'" [class.text-on-primary]="currentRoute === 'rescue-operations'" [class.font-headline-sm]="currentRoute === 'rescue-operations'" [class.text-on-surface-variant]="currentRoute !== 'rescue-operations'" [class.hover:bg-surface-container-high]="currentRoute !== 'rescue-operations'" [class.hover:text-on-surface]="currentRoute !== 'rescue-operations'" (click)="navigateTo('rescue-operations')"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">minor_crash</span><span class="font-body-md text-body-md">Rescue Operations</span></div><span class="px-space-xs py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm">5 Active</span></a>
-<a class="flex items-center justify-between px-space-md py-space-sm rounded transition-colors cursor-pointer" [class.bg-primary-container]="currentRoute === 'shelters-resources'" [class.text-on-primary]="currentRoute === 'shelters-resources'" [class.font-headline-sm]="currentRoute === 'shelters-resources'" [class.text-on-surface-variant]="currentRoute !== 'shelters-resources'" [class.hover:bg-surface-container-high]="currentRoute !== 'shelters-resources'" [class.hover:text-on-surface]="currentRoute !== 'shelters-resources'" (click)="navigateTo('shelters-resources')"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">night_shelter</span><span class="font-body-md text-body-md">Shelters & Resources</span></div></a>
-<a class="flex items-center justify-between px-space-md py-space-sm rounded transition-colors cursor-pointer" [class.bg-primary-container]="currentRoute === 'reports-analytics'" [class.text-on-primary]="currentRoute === 'reports-analytics'" [class.font-headline-sm]="currentRoute === 'reports-analytics'" [class.text-on-surface-variant]="currentRoute !== 'reports-analytics'" [class.hover:bg-surface-container-high]="currentRoute !== 'reports-analytics'" [class.hover:text-on-surface]="currentRoute !== 'reports-analytics'" (click)="navigateTo('reports-analytics')"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">analytics</span><span class="font-body-md text-body-md">Reports & Analytics</span></div></a><div class="my-space-xs mx-space-md h-px bg-surface-container-high"></div>
-<a class="flex items-center justify-between px-space-md py-space-sm rounded transition-colors cursor-pointer" [class.bg-primary-container]="currentRoute === 'citizen-public-portal'" [class.text-on-primary]="currentRoute === 'citizen-public-portal'" [class.font-headline-sm]="currentRoute === 'citizen-public-portal'" [class.text-on-surface-variant]="currentRoute !== 'citizen-public-portal'" [class.hover:bg-surface-container-high]="currentRoute !== 'citizen-public-portal'" [class.hover:text-on-surface]="currentRoute !== 'citizen-public-portal'" (click)="navigateTo('citizen-public-portal')"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">campaign</span><span class="font-body-md text-body-md">Citizen Public Portal</span></div></a>
-<a class="flex items-center justify-between px-space-md py-space-sm rounded transition-colors cursor-pointer" [class.bg-primary-container]="currentRoute === 'rescue-field-mode'" [class.text-on-primary]="currentRoute === 'rescue-field-mode'" [class.font-headline-sm]="currentRoute === 'rescue-field-mode'" [class.text-on-surface-variant]="currentRoute !== 'rescue-field-mode'" [class.hover:bg-surface-container-high]="currentRoute !== 'rescue-field-mode'" [class.hover:text-on-surface]="currentRoute !== 'rescue-field-mode'" (click)="navigateTo('rescue-field-mode')"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">emergency</span><span class="font-body-md text-body-md">Rescue Field Mode</span></div></a></nav></div><div class="flex flex-col bg-surface-container-low p-space-md gap-space-sm"><div class="p-space-sm bg-surface-container rounded flex flex-col gap-1"><div class="flex items-center justify-between"><span class="font-label-sm text-label-sm text-on-surface-variant">Telemetry Uplink</span><span class="flex items-center gap-1 font-data-mono text-data-mono text-on-surface"><span class="w-2 h-2 rounded-full" [ngClass]="errorMessage ? 'bg-error' : 'bg-secondary'"></span>{{ errorMessage ? 'Offline' : '12ms' }}</span></div><div class="flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant"><span>GNSS NavSync</span><span class="text-on-surface font-label-sm text-label-sm">GPS Active</span></div></div><div class="flex items-center justify-between pt-space-xs"><div class="flex items-center gap-space-sm"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-on-surface leading-tight">Maj. D. Silva</span><span class="font-label-sm text-label-sm text-on-surface-variant">National Coord.</span></div></div><div class="flex items-center gap-1"><button class="p-1 text-on-surface-variant hover:text-on-surface" type="button" (click)="loadIncidents()"><span class="material-symbols-outlined text-[20px]">refresh</span></button><button class="p-1 text-on-surface-variant hover:text-error" type="button"><span class="material-symbols-outlined text-[20px]">logout</span></button></div></div></div></aside><div class="pl-80"><header class="fixed top-0 left-80 right-0 h-16 bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-lg"><div class="flex items-center gap-space-md"><button class="lg:hidden p-1 text-on-surface-variant hover:text-on-surface" type="button"><span class="material-symbols-outlined">menu</span></button><div class="flex items-center gap-space-xs bg-surface-container-low px-space-sm py-1 rounded"><span class="material-symbols-outlined text-[18px] text-on-surface-variant">location_on</span><select [(ngModel)]="filterDistrict" (change)="applyFilters()" class="bg-transparent font-headline-sm text-headline-sm text-on-surface border-none focus:outline-none cursor-pointer"><option value="ALL">National Command (All-Island)</option><option *ngFor="let d of districts" [value]="d">{{ d }}</option></select></div><div class="flex items-center gap-space-xs font-data-mono text-data-mono px-space-sm py-1 bg-surface-container rounded"><span class="w-2 h-2 rounded-full bg-secondary"></span><span class="text-on-surface font-semibold">SLST {{ currentTime }}</span><span class="text-on-surface-variant font-label-sm text-label-sm">UTC+05:30</span></div></div><div class="flex-1 max-w-md mx-space-lg"><div class="relative"><span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><span class="material-symbols-outlined text-on-surface-variant text-[18px]">search</span></span><input [(ngModel)]="searchQuery" (input)="applyFilters()" class="w-full pl-9 pr-4 py-1.5 rounded bg-surface-container-low font-body-sm text-body-sm text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:bg-surface-container" placeholder="Search disaster alerts, coordinates, shelters, or units..." type="search"/></div></div><div class="flex items-center gap-space-sm"><button class="px-space-md py-1.5 rounded bg-error text-on-error font-headline-sm text-headline-sm flex items-center gap-1 shadow-sm hover:opacity-95 transition-opacity" (click)="openModal()" type="button"><span class="material-symbols-outlined text-[18px]">emergency_home</span><span>Issue Alert</span></button><button class="px-space-md py-1.5 rounded bg-primary text-on-primary font-headline-sm text-headline-sm flex items-center gap-1 hover:opacity-90 transition-opacity" (click)="openModal()" type="button"><span class="material-symbols-outlined text-[18px]">add</span><span>Log Incident</span></button><div class="h-6 w-px bg-surface-container-high mx-space-xs"></div><button class="p-2 text-on-surface-variant hover:text-on-surface rounded hover:bg-surface-container-low" type="button"><span class="material-symbols-outlined text-[20px]">volume_up</span></button><button class="relative p-2 text-on-surface-variant hover:text-on-surface rounded hover:bg-surface-container-low" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1 right-1 w-4 h-4 rounded-full bg-error text-on-error font-label-sm text-label-sm flex items-center justify-center font-bold">3</span></button><div class="flex items-center gap-space-xs pl-space-xs"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><span class="px-space-xs py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm font-semibold">DMC HQ</span></div></div></header><main class="relative pt-16 bg-surface min-h-screen w-full px-space-lg py-space-lg">
+<a class="flex items-center justify-between px-space-md py-space-sm rounded transition-colors cursor-pointer" [class.bg-primary-container]="currentRoute === 'disaster-alerts'" [class.text-on-primary]="currentRoute === 'disaster-alerts'" [class.font-headline-sm]="currentRoute === 'disaster-alerts'" [class.text-on-surface-variant]="currentRoute !== 'disaster-alerts'" [class.hover:bg-surface-container-high]="currentRoute !== 'disaster-alerts'" [class.hover:text-on-surface]="currentRoute !== 'disaster-alerts'" (click)="navigateTo('disaster-alerts')"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">warning</span><span class="font-body-md text-body-md">Disaster Alerts</span></div></a>
+<a class="flex items-center justify-between px-space-md py-space-sm rounded transition-colors cursor-pointer" [class.bg-primary-container]="currentRoute === 'rescue-operations'" [class.text-on-primary]="currentRoute === 'rescue-operations'" [class.font-headline-sm]="currentRoute === 'rescue-operations'" [class.text-on-surface-variant]="currentRoute !== 'rescue-operations'" [class.hover:bg-surface-container-high]="currentRoute !== 'rescue-operations'" [class.hover:text-on-surface]="currentRoute !== 'rescue-operations'" (click)="navigateTo('rescue-operations')"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">support_agent</span><span class="font-body-md text-body-md">Rescue Operations</span></div><span class="px-space-xs py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm">Active</span></a>
+</nav>
+</div>
+<div class="flex flex-col bg-surface-container-low p-space-md gap-space-sm border-t border-surface-container-high">
+  <div class="flex items-center justify-between">
+    <div class="flex items-center gap-space-sm">
+      <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+        <span class="material-symbols-outlined text-on-primary text-[18px]">person</span>
+      </div>
+      <div class="flex flex-col">
+        <span class="font-headline-sm text-headline-sm text-on-surface leading-tight">Maj. D. Silva</span>
+        <span class="font-label-sm text-label-sm text-on-surface-variant">District Officer</span>
+      </div>
+    </div>
+    <button class="p-1 text-on-surface-variant hover:text-error transition-colors" type="button">
+      <span class="material-symbols-outlined text-[20px]">logout</span>
+    </button>
+  </div>
+</div>
+</aside>
+
+<div class="pl-80">
+<header class="fixed top-0 left-80 right-0 h-16 bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-lg">
+  <div class="flex items-center gap-space-md">
+    <button class="lg:hidden p-1 text-on-surface-variant hover:text-on-surface" type="button">
+      <span class="material-symbols-outlined">menu</span>
+    </button>
+    <div class="font-headline-md text-on-surface tracking-tight hidden md:block">Sri Lanka Emergency Response</div>
+  </div>
+  
+  <div class="flex items-center gap-space-sm">
+    <button class="px-space-md py-1.5 rounded bg-error text-on-error font-headline-sm text-headline-sm flex items-center gap-1 shadow-sm hover:opacity-95 transition-opacity" (click)="openModal()" type="button">
+      <span class="material-symbols-outlined text-[18px]">emergency_home</span><span>Issue Alert</span>
+    </button>
+    <button class="px-space-md py-1.5 rounded bg-primary text-on-primary font-headline-sm text-headline-sm flex items-center gap-1 hover:opacity-90 transition-opacity" (click)="openModal()" type="button">
+      <span class="material-symbols-outlined text-[18px]">add</span><span>Log Incident</span>
+    </button>
+    <div class="h-6 w-px bg-surface-container-high mx-space-xs"></div>
+    <button class="relative p-2 text-on-surface-variant hover:text-on-surface rounded hover:bg-surface-container-low transition-colors" type="button">
+      <span class="material-symbols-outlined text-[20px]">notifications</span>
+      <span class="absolute top-1 right-1 w-4 h-4 rounded-full bg-error text-on-error font-label-sm text-[10px] flex items-center justify-center font-bold border border-surface-container-lowest">3</span>
+    </button>
+  </div>
+</header>
+<main class="relative pt-16 bg-surface min-h-screen w-full p-space-lg">
 <ng-container *ngIf="currentRoute === 'live-disaster-map'">
 <div class="flex flex-col w-full">
 <!-- Operational Sub-Header Bar -->
@@ -750,7 +787,185 @@
   </div>
 </div>
 
-<div *ngIf="currentRoute !== 'live-disaster-map' && currentRoute !== 'disaster-alerts'" class="flex flex-col items-center justify-center h-[60vh] text-center w-full">
+<div *ngIf="currentRoute === 'rescue-operations'" class="flex flex-col w-full h-full gap-space-lg animate-fade-in">
+  <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between bg-surface-container-low p-space-lg rounded-2xl shadow-sm border border-surface-container">
+    <div class="flex items-center gap-space-md">
+      <div class="p-3 bg-primary-container text-on-primary-container rounded-xl">
+        <span class="material-symbols-outlined text-[32px]">support_agent</span>
+      </div>
+      <div class="flex flex-col gap-1">
+        <h2 class="font-headline-lg text-on-surface">Rescue Operations Command</h2>
+        <p class="font-body-sm text-on-surface-variant">Coordinate field assets, dispatch rescue teams, and monitor mission status (UC3)</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-space-lg mt-4 lg:mt-0">
+      <div class="flex flex-col items-end">
+        <div class="font-display-sm text-primary font-bold">{{ activeAssignments.length }}</div>
+        <div class="font-label-sm text-on-surface-variant uppercase tracking-wider">Active Missions</div>
+      </div>
+      <div class="w-px h-10 bg-surface-container-high hidden lg:block"></div>
+      <div class="flex flex-col items-end">
+        <div class="font-display-sm text-secondary font-bold">{{ rescueTeams.length }}</div>
+        <div class="font-label-sm text-on-surface-variant uppercase tracking-wider">Teams Available</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+    <!-- Left Column: Incidents Awaiting Dispatch -->
+    <div class="lg:col-span-5 flex flex-col gap-space-md">
+      <div class="flex items-center justify-between pb-2 border-b border-surface-container">
+        <h3 class="font-headline-md text-on-surface flex items-center gap-2">
+          <span class="material-symbols-outlined text-error">emergency</span> Open Emergencies
+        </h3>
+        <span class="text-xs bg-surface-container-high text-on-surface px-2 py-0.5 rounded-full font-bold">Awaiting Dispatch</span>
+      </div>
+      
+      <div *ngIf="!incidents || incidents.length === 0" class="p-space-xl bg-surface-container-low border-2 border-surface-container border-dashed rounded-2xl text-center flex flex-col items-center">
+        <span class="material-symbols-outlined text-[48px] text-on-surface-variant mb-3">check_circle</span>
+        <p class="font-body-lg text-on-surface-variant">No active emergencies require dispatch.</p>
+      </div>
+
+      <div class="flex flex-col gap-space-sm">
+        <ng-container *ngFor="let incident of incidents">
+          <!-- Only show if ACTIVE -->
+          <div *ngIf="incident.status === 'ACTIVE'" class="bg-surface-container-lowest border-l-4 rounded-xl shadow-sm p-space-md flex flex-col gap-space-sm transition-all hover:-translate-y-1 hover:shadow-md border border-surface-container-low" [ngClass]="getPriorityBadgeClass(incident.priority)">
+            <div class="flex items-start justify-between">
+              <div class="flex items-center gap-3">
+                <div class="p-2 bg-surface-container-low rounded-lg">
+                  <span class="material-symbols-outlined" [ngClass]="incident.priority === 'CRITICAL' ? 'text-error' : 'text-on-surface'">{{ getHazardIcon(incident.type) }}</span>
+                </div>
+                <div>
+                  <div class="font-data-mono font-bold text-on-surface text-sm">{{ incident.incidentId }}</div>
+                  <div class="font-label-sm text-on-surface-variant uppercase">{{ incident.type }} • {{ incident.district }}</div>
+                </div>
+              </div>
+              <span class="px-2.5 py-1 rounded-sm text-[10px] font-black tracking-widest uppercase shadow-sm" [ngClass]="getPriorityBadgeClass(incident.priority)">{{ incident.priority }}</span>
+            </div>
+            <p class="font-body-sm text-on-surface-variant line-clamp-2 mt-2 bg-surface-container-low p-2 rounded">{{ incident.description }}</p>
+            <div class="flex items-center gap-4 mt-1 text-xs text-on-surface-variant font-medium">
+              <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px]">group</span> {{ incident.peopleAffected }} affected</span>
+              <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px]">schedule</span> {{ incident.createdAt | date:'shortTime' }}</span>
+            </div>
+            <button class="mt-3 w-full py-2.5 rounded-lg bg-primary text-on-primary font-headline-sm hover:bg-primary/90 flex items-center justify-center gap-2 shadow-sm transition-colors" (click)="openDispatchModal(incident)">
+              <span class="material-symbols-outlined text-[18px]">send</span> Dispatch Rescue Team
+            </button>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- Right Column: Active Assignments -->
+    <div class="lg:col-span-7 flex flex-col gap-space-md">
+      <div class="flex items-center justify-between pb-2 border-b border-surface-container">
+        <h3 class="font-headline-md text-on-surface flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary">radar</span> Active Rescue Missions
+        </h3>
+        <button class="text-primary hover:text-primary-container text-sm font-bold uppercase tracking-wider flex items-center gap-1 transition-colors" (click)="loadRescueData()">
+          <span class="material-symbols-outlined text-[16px]">refresh</span> Refresh
+        </button>
+      </div>
+
+      <div *ngIf="!activeAssignments || activeAssignments.length === 0" class="p-space-xl bg-surface-container-low border-2 border-surface-container border-dashed rounded-2xl text-center flex flex-col items-center justify-center min-h-[300px]">
+        <span class="material-symbols-outlined text-[64px] text-on-surface-variant mb-4 opacity-50">flight_takeoff</span>
+        <h4 class="font-headline-md text-on-surface mb-2">No Active Missions</h4>
+        <p class="font-body-lg text-on-surface-variant max-w-sm">Dispatch a rescue team to an open emergency to start a new mission.</p>
+      </div>
+
+      <div class="flex flex-col gap-space-md">
+        <div *ngFor="let assignment of activeAssignments" class="bg-surface-container-lowest rounded-2xl shadow-sm border border-surface-container overflow-hidden group">
+          <!-- Card Header -->
+          <div class="bg-surface-container-low px-space-lg py-space-md flex flex-wrap items-center justify-between border-b border-surface-container gap-4">
+            <div class="flex items-center gap-4">
+              <div class="p-3 bg-primary-container text-on-primary-container rounded-xl shadow-inner">
+                <span class="material-symbols-outlined text-[24px]">local_shipping</span>
+              </div>
+              <div class="flex flex-col">
+                <div class="font-headline-sm text-on-surface text-lg">{{ assignment.rescueTeam?.name || 'Unknown Team' }}</div>
+                <div class="font-label-sm text-on-surface-variant uppercase tracking-wider">Responding to: <span class="text-secondary font-bold">{{ assignment.incident?.incidentId || 'Unknown Incident' }}</span></div>
+              </div>
+            </div>
+            <div class="flex flex-col items-end gap-1">
+              <span class="px-3.5 py-1.5 rounded-full font-label-sm font-bold uppercase tracking-widest border shadow-sm" [ngClass]="{
+                'bg-surface-container border-surface-container-high text-on-surface': assignment.status === 'ASSIGNED',
+                'bg-secondary-container border-secondary text-on-secondary-container': assignment.status === 'ACCEPTED',
+                'bg-tertiary-container border-tertiary text-on-tertiary-container': assignment.status === 'EN_ROUTE',
+                'bg-error-container border-error text-on-error-container animate-pulse': assignment.status === 'ON_SITE',
+                'bg-primary-container border-primary text-on-primary-container': assignment.status === 'COMPLETED'
+              }">
+                {{ assignment.status.replace('_', ' ') }}
+              </span>
+              <span class="text-[10px] text-on-surface-variant font-data-mono">Assigned: {{ assignment.assignedAt | date:'shortTime' }}</span>
+            </div>
+          </div>
+          
+          <!-- Card Body (Timeline / Actions) -->
+          <div class="p-space-lg flex flex-col gap-space-md">
+            
+            <!-- Progress Tracker -->
+            <div class="relative flex items-center justify-between w-full mb-2">
+              <div class="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-surface-container-high rounded-full z-0"></div>
+              
+              <div class="relative z-10 flex flex-col items-center gap-1 w-1/4">
+                <div class="w-6 h-6 rounded-full flex items-center justify-center font-bold text-[10px] transition-colors" [ngClass]="assignment.status !== 'ASSIGNED' ? 'bg-primary text-on-primary' : 'bg-surface-container-highest text-on-surface'">1</div>
+              </div>
+              <div class="relative z-10 flex flex-col items-center gap-1 w-1/4">
+                <div class="w-6 h-6 rounded-full flex items-center justify-center font-bold text-[10px] transition-colors" [ngClass]="['ACCEPTED', 'EN_ROUTE', 'ON_SITE', 'COMPLETED'].includes(assignment.status) ? 'bg-primary text-on-primary' : 'bg-surface-container-highest text-on-surface'">2</div>
+              </div>
+              <div class="relative z-10 flex flex-col items-center gap-1 w-1/4">
+                <div class="w-6 h-6 rounded-full flex items-center justify-center font-bold text-[10px] transition-colors" [ngClass]="['EN_ROUTE', 'ON_SITE', 'COMPLETED'].includes(assignment.status) ? 'bg-primary text-on-primary' : 'bg-surface-container-highest text-on-surface'">3</div>
+              </div>
+              <div class="relative z-10 flex flex-col items-center gap-1 w-1/4">
+                <div class="w-6 h-6 rounded-full flex items-center justify-center font-bold text-[10px] transition-colors" [ngClass]="['ON_SITE', 'COMPLETED'].includes(assignment.status) ? 'bg-primary text-on-primary' : 'bg-surface-container-highest text-on-surface'">4</div>
+              </div>
+              <div class="relative z-10 flex flex-col items-center gap-1 w-1/4">
+                <div class="w-6 h-6 rounded-full flex items-center justify-center font-bold text-[10px] transition-colors" [ngClass]="assignment.status === 'COMPLETED' ? 'bg-primary text-on-primary' : 'bg-surface-container-highest text-on-surface'"><span class="material-symbols-outlined text-[12px]">check</span></div>
+              </div>
+            </div>
+
+            <!-- Simulation Actions for Demo -->
+            <div *ngIf="assignment.status !== 'COMPLETED'" class="mt-4 p-space-md bg-surface-container-lowest rounded-xl border border-primary/20 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+              <div class="flex items-center gap-2 text-primary font-semibold text-sm uppercase tracking-wide">
+                <span class="material-symbols-outlined text-[18px]">touch_app</span> Simulate Action
+              </div>
+              
+              <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto justify-end">
+                <ng-container *ngIf="assignment.status === 'ASSIGNED'">
+                  <button class="px-4 py-2 rounded-lg bg-surface-container-high text-on-surface hover:bg-error/20 hover:text-error font-headline-sm transition-colors text-sm border border-transparent hover:border-error" (click)="updateAssignmentStatus(assignment._id, 'reject')">Reject</button>
+                  <button class="px-5 py-2 rounded-lg bg-secondary text-on-secondary hover:bg-secondary/90 font-headline-sm shadow-md transition-all hover:-translate-y-0.5 text-sm font-bold" (click)="updateAssignmentStatus(assignment._id, 'accept')">Accept Mission</button>
+                </ng-container>
+                
+                <button *ngIf="assignment.status === 'ACCEPTED'" class="px-5 py-2.5 rounded-lg bg-tertiary text-on-tertiary hover:bg-tertiary/90 font-headline-sm shadow-md transition-all hover:-translate-y-0.5 flex items-center gap-2 text-sm w-full sm:w-auto justify-center font-bold" (click)="updateAssignmentStatus(assignment._id, 'en-route')">
+                  <span class="material-symbols-outlined text-[20px]">airport_shuttle</span> En Route
+                </button>
+                
+                <button *ngIf="assignment.status === 'EN_ROUTE'" class="px-5 py-2.5 rounded-lg bg-error text-on-error hover:bg-error/90 font-headline-sm shadow-md transition-all hover:-translate-y-0.5 flex items-center gap-2 text-sm w-full sm:w-auto justify-center font-bold" (click)="updateAssignmentStatus(assignment._id, 'on-site')">
+                  <span class="material-symbols-outlined text-[20px]">pin_drop</span> Arrived On Site
+                </button>
+                
+                <button *ngIf="assignment.status === 'ON_SITE'" class="px-6 py-3 rounded-lg bg-primary text-on-primary hover:bg-primary/90 font-headline-sm shadow-lg transition-all hover:-translate-y-0.5 flex items-center gap-2 text-sm w-full sm:w-auto justify-center font-bold" (click)="updateAssignmentStatus(assignment._id, 'complete', 'Victims secured and evacuated safely.')">
+                  <span class="material-symbols-outlined text-[20px]">task_alt</span> Complete Rescue
+                </button>
+              </div>
+            </div>
+
+            <div *ngIf="assignment.status === 'COMPLETED'" class="p-space-md bg-primary-container/30 text-on-surface rounded-xl border border-primary-container flex items-start gap-3 mt-2">
+              <span class="material-symbols-outlined text-primary text-[24px]">verified</span>
+              <div>
+                <p class="font-bold text-primary mb-1">Mission Accomplished</p>
+                <p class="text-sm">Team has successfully completed the rescue operation and is returning to base. Incident has been automatically resolved.</p>
+                <p class="text-xs text-on-surface-variant mt-2 font-data-mono">Completed at {{ assignment.completedAt | date:'medium' }}</p>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="currentRoute !== 'live-disaster-map' && currentRoute !== 'disaster-alerts' && currentRoute !== 'rescue-operations'" class="flex flex-col items-center justify-center h-[60vh] text-center w-full">
   <span class="material-symbols-outlined text-[64px] text-outline mb-4">construction</span>
   <h2 class="font-headline-xl text-on-surface mb-2">Module Under Construction</h2>
   <p class="text-on-surface-variant font-body-lg max-w-md">This section is currently being developed by another team member.</p>
@@ -759,11 +974,71 @@
   </button>
 </div>
 
+<!-- Dispatch Modal -->
+<div *ngIf="isDispatchModalOpen" class="fixed inset-0 bg-primary-container/80 backdrop-blur-md z-[100] flex items-center justify-center p-space-md transition-all animate-fade-in">
+  <div class="bg-surface-container-lowest rounded-2xl shadow-2xl max-w-xl w-full flex flex-col overflow-hidden border border-surface-container">
+    <div class="p-space-lg bg-surface-container-low border-b border-surface-container flex items-center justify-between">
+      <div class="flex items-center gap-3 text-on-surface">
+        <div class="p-2 bg-primary-container text-on-primary-container rounded-lg">
+          <span class="material-symbols-outlined text-[28px]">send</span>
+        </div>
+        <h2 class="font-headline-lg font-bold">Dispatch Rescue Team</h2>
+      </div>
+      <button class="p-2 rounded-full text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" (click)="closeDispatchModal()">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    
+    <div class="p-space-xl flex flex-col gap-space-lg">
+      <div class="p-space-md bg-surface-container-lowest border border-surface-container rounded-xl shadow-sm flex flex-col gap-1 relative overflow-hidden">
+        <div class="absolute right-0 top-0 h-full w-2 bg-primary"></div>
+        <div class="font-label-sm text-on-surface-variant uppercase tracking-wider font-bold mb-1">Target Incident</div>
+        <div class="font-headline-md text-on-surface">{{ selectedRescueIncident?.type }} in {{ selectedRescueIncident?.district }}</div>
+        <div class="font-data-mono text-secondary text-sm">ID: {{ selectedRescueIncident?.incidentId }}</div>
+        <div class="mt-2 text-sm text-on-surface-variant flex items-start gap-1">
+          <span class="material-symbols-outlined text-[16px]">info</span> {{ selectedRescueIncident?.description }}
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label class="font-label-sm text-on-surface-variant uppercase tracking-wider font-bold">Select Available Team</label>
+        
+        <div class="relative">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant">group</span>
+          <select [(ngModel)]="selectedTeamIdToDispatch" class="w-full pl-10 pr-4 py-3.5 bg-surface-container-low border-2 border-surface-container rounded-xl text-on-surface font-body-lg focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all appearance-none cursor-pointer">
+            <option value="" disabled selected>-- Select a Rescue Team --</option>
+            <ng-container *ngFor="let team of rescueTeams">
+              <option *ngIf="team.status === 'AVAILABLE'" [value]="team._id">
+                {{ team.name }} ({{ team.type }}) - Capacity: {{ team.capacity }}
+              </option>
+            </ng-container>
+          </select>
+          <span class="absolute right-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant pointer-events-none">expand_more</span>
+        </div>
+        
+        <div class="flex items-center gap-1.5 text-xs text-on-surface-variant mt-1 ml-1 font-medium">
+          <span class="w-2 h-2 rounded-full bg-secondary"></span>
+          Only showing teams currently marked as AVAILABLE
+        </div>
+      </div>
+    </div>
+    
+    <div class="p-space-lg bg-surface-container-low border-t border-surface-container flex items-center justify-end gap-3">
+      <button class="px-5 py-2.5 rounded-lg text-on-surface font-headline-sm hover:bg-surface-container transition-colors" (click)="closeDispatchModal()" [disabled]="isSubmitting">Cancel</button>
+      <button class="px-6 py-2.5 rounded-lg bg-primary text-on-primary font-headline-sm hover:opacity-90 shadow-md flex items-center gap-2 transition-all hover:-translate-y-0.5 font-bold disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none" (click)="dispatchRescueTeam()" [disabled]="isSubmitting || !selectedTeamIdToDispatch">
+        <span *ngIf="isSubmitting" class="material-symbols-outlined animate-spin text-[20px]">progress_activity</span>
+        <span *ngIf="!isSubmitting" class="material-symbols-outlined text-[20px]">send</span>
+        Confirm Dispatch
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- Global Toast Notification Container -->
 <div class="fixed bottom-5 right-5 z-50 flex flex-col space-y-3 max-w-sm w-full pointer-events-none">
   <div
     *ngFor="let toast of (toasts$ | async)"
-    (click)="removeToast(toast.id)"
+    (click)="notificationService.removeToast(toast.id)"
     [ngClass]="{
       'bg-slate-900 border-emerald-500/60 text-emerald-300': toast.type === 'success',
       'bg-slate-900 border-red-500/60 text-red-300': toast.type === 'error',
