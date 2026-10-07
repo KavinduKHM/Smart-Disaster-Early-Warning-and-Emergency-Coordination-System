@@ -67,6 +67,10 @@ export class ReportService {
     return this.http.get<any>(url, { headers: this.getAuthHeaders() });
   }
 
+  createReport(payload: any): Observable<GroundReport> {
+    return this.http.post<GroundReport>(`${this.apiUrl}/reports`, payload, { headers: this.getAuthHeaders() });
+  }
+
   getShelters(district?: string): Observable<ReliefShelter[]> {
     const url = district ? `${this.apiUrl}/relief/shelters?district=${district}` : `${this.apiUrl}/relief/shelters`;
     return this.http.get<ReliefShelter[]>(url, { headers: this.getAuthHeaders() });

@@ -26,6 +26,41 @@ export class CitizenHomeComponent implements OnInit {
   selectedReportMapUrl: SafeResourceUrl | null = null;
   activeCardFilter: 'VERIFIED' | 'PENDING' | 'MY_REPORTS' | 'SHELTERS' | null = null;
 
+  // New Hazard Report Modal Form State
+  showCreateModal: boolean = false;
+  isSubmittingReport: boolean = false;
+  isFetchingLocation: boolean = false;
+  createReportErrorMessage: string = '';
+  createReportSuccessMessage: string = '';
+  newReportMapUrl: SafeResourceUrl | null = null;
+
+  newReport = {
+    hazardType: 'FLOOD',
+    description: '',
+    address: 'Peradeniya Main Rd, Gatambe',
+    latitude: 7.2906,
+    longitude: 80.6337,
+    district: 'Kandy',
+    photos: [] as string[]
+  };
+
+  hazardTypes = [
+    { value: 'FLOOD', label: '🌊 Flood Inundation' },
+    { value: 'LANDSLIDE', label: '⛰️ Slope Slippage / Landslide' },
+    { value: 'ROAD_BLOCKAGE', label: '🚧 Road Debris Blockage' },
+    { value: 'RISING_RIVER', label: '📈 Rising River Threshold' },
+    { value: 'FALLEN_TREE', label: '🌳 Fallen Tree / Infrastructure' },
+    { value: 'BUILDING_DAMAGE', label: '🏠 Structural Building Damage' },
+    { value: 'FIRE', label: '🔥 Fire Emergency' },
+    { value: 'OTHER', label: '⚠️ Other Hazard' }
+  ];
+
+  districts = [
+    'Kandy', 'Colombo', 'Badulla', 'Kegalle', 'Kalutara', 'Galle', 
+    'Matara', 'Ratnapura', 'Kurunegala', 'Nuwara Eliya', 'Anuradhapura', 
+    'Polonnaruwa', 'Jaffna', 'Batticaloa', 'Trincomalee', 'Hambantota'
+  ];
+
   constructor(
     private authService: AuthService,
     private reportService: ReportService,
@@ -34,6 +69,9 @@ export class CitizenHomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.user = this.authService.currentUserValue;
+    if (this.user?.district) {
+      this.newReport.district = this.user.district;
+    }
     this.loadData();
   }
 
@@ -109,16 +147,105 @@ export class CitizenHomeComponent implements OnInit {
       return { lat: report.latitude, lng: report.longitude };
     }
     if (report.location?.coordinates && report.location.coordinates.length === 2) {
-      // GeoJSON [longitude, latitude]
       return { lat: report.location.coordinates[1], lng: report.location.coordinates[0] };
     }
     return null;
   }
 
+  // --- LODGE NEW REPORT MODAL LOGIC ---
+  openCreateReportModal(): void {
+    this.showCreateModal = true;
+    this.createReportErrorMessage = '';
+    this.createReportSuccessMessage = '';
+    this.updateCreateReportMapUrl();
+  }
+
+  closeCreateReportModal(): void {
+    this.showCreateModal = false;
+  }
+
+  fetchUserCurrentLocation(): void {
+    if (!navigator.geolocation) {
+      this.createReportErrorMessage = 'Geolocation is not supported by your browser.';
+      return;
+    }
+
+    this.isFetchingLocation = true;
+    this.createReportErrorMessage = '';
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        this.newReport.latitude = parseFloat(position.coords.latitude.toFixed(6));
+        this.newReport.longitude = parseFloat(position.coords.longitude.toFixed(6));
+        this.isFetchingLocation = false;
+        this.updateCreateReportMapUrl();
+      },
+      (error) => {
+        this.isFetchingLocation = false;
+        console.warn('Geolocation error:', error);
+        this.createReportErrorMessage = 'Could not fetch current GPS location. Default coordinates set.';
+      },
+      { timeout: 10000, enableHighAccuracy: true }
+    );
+  }
+
+  updateCreateReportMapUrl(): void {
+    const rawUrl = `https://maps.google.com/maps?q=${this.newReport.latitude},${this.newReport.longitude}&z=15&output=embed`;
+    this.newReportMapUrl = this.sanitizer.bypassSecurityTrustResourceUrl(rawUrl);
+  }
+
+  onPhotoSelected(event: any): void {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (reader.result) {
+        this.newReport.photos = [reader.result as string];
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+
+  submitNewReport(): void {
+    if (!this.newReport.description || !this.newReport.hazardType) {
+      this.createReportErrorMessage = 'Please select a hazard type and provide a description.';
+      return;
+    }
+
+    this.isSubmittingReport = true;
+    this.createReportErrorMessage = '';
+    this.createReportSuccessMessage = '';
+
+    const payload = {
+      hazardType: this.newReport.hazardType,
+      description: this.newReport.description,
+      address: this.newReport.address,
+      district: this.newReport.district,
+      latitude: Number(this.newReport.latitude),
+      longitude: Number(this.newReport.longitude),
+      photos: this.newReport.photos
+    };
+
+    this.reportService.createReport(payload).subscribe({
+      next: (res) => {
+        this.isSubmittingReport = false;
+        this.createReportSuccessMessage = `Report #${this.getReportNumber(res)} lodged successfully! Sent for Duty Officer triage.`;
+        setTimeout(() => {
+          this.closeCreateReportModal();
+          this.loadData();
+        }, 1200);
+      },
+      error: (err) => {
+        this.isSubmittingReport = false;
+        this.createReportErrorMessage = err.error?.message || 'Failed to submit report. Please check required fields.';
+      }
+    });
+  }
+
+  // --- INCIDENT DETAILS & FILTER MODALS ---
   openReportModal(report: GroundReport): void {
     this.selectedReport = report;
-    
-    // Generate Google Maps Embed URL for exact incident coordinates/location
     const coords = this.getReportCoords(report);
     let mapQuery = '';
     if (coords) {
