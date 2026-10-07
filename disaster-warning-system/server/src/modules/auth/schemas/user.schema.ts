@@ -32,6 +32,13 @@ export class User {
   phone!: string;
 
   @Prop({ default: '' })
+  address?: string;
+
+  @Prop({ type: Number, default: 7.2906 })
+  latitude?: number;
+
+  @Prop({ type: Number, default: 80.6337 })
+  longitude?: number;
   pushToken?: string;
 
   @Prop({ default: '' })

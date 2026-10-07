@@ -1,0 +1,790 @@
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 left-0 right-0 z-50 bg-slate-900 border-b border-slate-800 shadow-xl px-6 py-4">
+  <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+    <!-- Brand Title -->
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-blue-600 text-white font-bold text-lg flex items-center justify-center shadow-lg shadow-blue-600/30">
+        🛡️
+      </div>
+      <div>
+        <h1 class="text-lg font-bold text-white tracking-tight">Disaster Management Centre</h1>
+        <p class="text-xs text-slate-400">SL-DEWS • Citizen Emergency Portal</p>
+      </div>
+    </div>
+
+    <!-- Right Controls: Emergency Hotlines & Profile -->
+    <div class="flex items-center gap-4">
+      <div class="hidden sm:flex items-center gap-2">
+        <a href="tel:117" class="px-3 py-1.5 rounded-lg bg-rose-500/10 text-rose-300 border border-rose-500/30 text-xs font-semibold hover:bg-rose-500/20 transition-all flex items-center gap-1.5">
+          <span>📞</span> DMC 117
+        </a>
+        <a href="tel:1990" class="px-3 py-1.5 rounded-lg bg-blue-500/10 text-blue-300 border border-blue-500/30 text-xs font-semibold hover:bg-blue-500/20 transition-all flex items-center gap-1.5">
+          <span>🚑</span> Suwa Seriya 1990
+        </a>
+      </div>
+
+      <div class="flex items-center gap-3 pl-3 border-l border-slate-800">
+        <div class="hidden md:flex flex-col text-right text-xs">
+          <span class="font-bold text-white">{{ user?.name || 'Citizen' }}</span>
+          <span class="text-emerald-400 font-medium">{{ user?.district || 'Kandy' }} District</span>
+        </div>
+        <a 
+          routerLink="/settings"
+          class="px-3 py-1.5 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 transition-all flex items-center gap-1">
+          <span>⚙️</span> Settings
+        </a>
+        <button 
+          (click)="logout()" 
+          class="px-3 py-1.5 text-xs font-semibold text-rose-400 hover:text-white bg-rose-500/10 hover:bg-rose-600 rounded-lg border border-rose-500/20 transition-all">
+          Sign Out
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Main Container -->
+<main class="pt-24 pb-16 bg-slate-950 text-slate-100 min-h-screen">
+  <div class="max-w-7xl mx-auto px-6 space-y-8">
+    
+    <!-- Welcome Header Banner -->
+    <div class="p-6 rounded-2xl bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border border-slate-800 shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs font-semibold border border-blue-500/30 mb-2">
+          <span>📍</span> {{ user?.district || 'Kandy' }}
+        </div>
+        <h1 class="text-2xl lg:text-3xl font-extrabold text-white">Welcome back, {{ user?.name }}</h1>
+        <p class="text-slate-400 text-sm mt-1">Submit ground hazard reports, check verified local incidents, and locate emergency relief shelters in real time.</p>
+      </div>
+
+      <!-- Quick Action: I Am Safe Beacon -->
+      <div class="shrink-0 w-full md:w-auto">
+        <button 
+          (click)="toggleSafeBeacon()" 
+          [ngClass]="isSafeBeaconActive ? 'bg-emerald-600 border-emerald-500 text-white' : 'bg-blue-600 hover:bg-blue-500 border-blue-500 text-white'"
+          class="w-full md:w-auto px-5 py-3 rounded-xl font-bold text-xs border shadow-lg transition-all flex items-center justify-center gap-2">
+          <span>{{ isSafeBeaconActive ? '✔' : '🛡️' }}</span>
+          <span>{{ isSafeBeaconActive ? 'Safety Registered with DMC' : 'Mark Myself Safe' }}</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Live Interactive Summary Stat Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      
+      <!-- Card 1: Verified Incidents -->
+      <div 
+        (click)="openCardFilterModal('VERIFIED')"
+        class="p-4 rounded-xl bg-slate-900 border border-slate-800 hover:border-emerald-500/80 hover:bg-slate-900/80 shadow-md cursor-pointer transition-all group">
+        <span class="text-xs text-slate-400 uppercase font-mono block group-hover:text-emerald-400">VERIFIED INCIDENTS</span>
+        <div class="text-2xl font-bold text-emerald-400 mt-1">{{ verifiedIncidentsList.length }}</div>
+        <span class="text-[11px] text-slate-500">{{ user?.district || 'Kandy' }} District • Click to View</span>
+      </div>
+
+      <!-- Card 2: Pending Verification (User's Pending Reports Only) -->
+      <div 
+        (click)="openCardFilterModal('PENDING')"
+        class="p-4 rounded-xl bg-slate-900 border border-slate-800 hover:border-amber-500/80 hover:bg-slate-900/80 shadow-md cursor-pointer transition-all group">
+        <span class="text-xs text-slate-400 uppercase font-mono block group-hover:text-amber-400">PENDING VERIFICATION</span>
+        <div class="text-2xl font-bold text-amber-400 mt-1">{{ myPendingReportsList.length }}</div>
+        <span class="text-[11px] text-slate-500">My Reports Pending • Click to View</span>
+      </div>
+
+      <!-- Card 3: My Reports -->
+      <div 
+        (click)="openCardFilterModal('MY_REPORTS')"
+        class="p-4 rounded-xl bg-slate-900 border border-slate-800 hover:border-blue-500/80 hover:bg-slate-900/80 shadow-md cursor-pointer transition-all group">
+        <span class="text-xs text-slate-400 uppercase font-mono block group-hover:text-blue-400">MY REPORTS</span>
+        <div class="text-2xl font-bold text-blue-400 mt-1">{{ myReports.length }}</div>
+        <span class="text-[11px] text-slate-500">Lodged by me • Click to View</span>
+      </div>
+
+      <!-- Card 4: Relief Shelters (User Location Shelters) -->
+      <div 
+        (click)="openCardFilterModal('SHELTERS')"
+        class="p-4 rounded-xl bg-slate-900 border border-slate-800 hover:border-purple-500/80 hover:bg-slate-900/80 shadow-md cursor-pointer transition-all group">
+        <span class="text-xs text-slate-400 uppercase font-mono block group-hover:text-purple-400">RELIEF SHELTERS</span>
+        <div class="text-2xl font-bold text-purple-400 mt-1">{{ shelters.length }}</div>
+        <span class="text-[11px] text-slate-500">In {{ user?.district || 'Kandy' }} • Click to View</span>
+      </div>
+
+    </div>
+
+    <!-- Grid Layout: Core Functional Modules & Placeholders -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- LEFT COLUMN: Hazard Reports & Alerts (8 Cols) -->
+      <div class="lg:col-span-8 space-y-8">
+        
+        <!-- MODULE: Ground Hazard Reports -->
+        <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+            <div>
+              <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                <span>📷</span> Ground Hazard Reports
+              </h2>
+              <p class="text-xs text-slate-400 mt-0.5">Click any incident card to view details, photos, & status.</p>
+            </div>
+            <button 
+              (click)="openCreateReportModal()"
+              class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 shrink-0">
+              <span>➕</span> Lodge New Hazard Report
+            </button>
+          </div>
+
+          <!-- Sub-Section: My Submitted Reports -->
+          <div class="space-y-3">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 font-mono">My Submitted Incidents</h3>
+            
+            <div *ngIf="myReports.length > 0; else emptyMyReports" class="space-y-3">
+              <div 
+                *ngFor="let rep of myReports" 
+                (click)="openReportModal(rep)"
+                class="p-4 rounded-xl bg-slate-800/70 border border-slate-700/60 hover:border-blue-500/80 hover:bg-slate-800 hover:-translate-y-1 hover:shadow-lg active:scale-[0.99] transition-all duration-300 ease-out cursor-pointer flex flex-col sm:flex-row justify-between gap-3 group">
+                <div class="space-y-1">
+                  <div class="flex items-center gap-2">
+                    <span class="font-mono text-xs font-bold text-blue-400 group-hover:underline">#{{ getReportNumber(rep) }}</span>
+                    <span 
+                      [ngClass]="{
+                        'bg-amber-500/20 text-amber-300 border-amber-500/30': rep.status === 'PENDING',
+                        'bg-emerald-500/20 text-emerald-300 border-emerald-500/30': rep.status === 'VERIFIED',
+                        'bg-rose-500/20 text-rose-300 border-rose-500/30': rep.status === 'REJECTED'
+                      }"
+                      class="px-2 py-0.5 rounded text-[10px] font-mono font-bold border">
+                      {{ rep.status }}
+                    </span>
+                    <span class="text-[11px] text-slate-400">{{ rep.createdAt | date:'short' }}</span>
+                  </div>
+                  <h4 class="font-bold text-sm text-white group-hover:text-blue-300 transition-colors">{{ rep.hazardType }} — {{ getReportLocation(rep) }}</h4>
+                  <p class="text-xs text-slate-300 leading-relaxed line-clamp-2">{{ rep.description }}</p>
+                </div>
+
+                <!-- Photos preview if present -->
+                <div *ngIf="rep.photos && rep.photos.length > 0" class="shrink-0 flex items-center">
+                  <img [src]="rep.photos[0]" alt="Report photo" class="w-16 h-16 rounded-lg object-cover border border-slate-700 group-hover:border-blue-500/80 group-hover:scale-105 transition-all duration-300" />
+                </div>
+              </div>
+            </div>
+
+            <ng-template #emptyMyReports>
+              <div class="p-4 rounded-xl bg-slate-800/40 border border-slate-800 text-center text-xs text-slate-400">
+                You have not submitted any ground hazard reports yet.
+              </div>
+            </ng-template>
+          </div>
+
+          <!-- Sub-Section: Verified District Reports -->
+          <div class="space-y-3 pt-2">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 font-mono">Verified Incidents in {{ user?.district || 'Kandy' }}</h3>
+            
+            <div *ngIf="verifiedIncidentsList.length > 0; else emptyDistrict" class="space-y-3">
+              <div 
+                *ngFor="let rep of verifiedIncidentsList" 
+                (click)="openReportModal(rep)"
+                class="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 hover:border-emerald-500/80 hover:bg-slate-800 hover:-translate-y-1 hover:shadow-lg active:scale-[0.99] transition-all duration-300 ease-out cursor-pointer space-y-1.5 group">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span class="font-mono text-xs text-emerald-400 font-bold group-hover:underline">#{{ getReportNumber(rep) }}</span>
+                    <span 
+                      *ngIf="rep.severity"
+                      [ngClass]="{
+                        'bg-rose-500/20 text-rose-300 border-rose-500/30': rep.severity === 'CRITICAL' || rep.severity === 'HIGH',
+                        'bg-amber-500/20 text-amber-300 border-amber-500/30': rep.severity === 'MEDIUM',
+                        'bg-blue-500/20 text-blue-300 border-blue-500/30': rep.severity === 'LOW'
+                      }"
+                      class="px-2 py-0.5 rounded text-[10px] font-mono font-bold border uppercase">
+                      {{ rep.severity }} SEVERITY
+                    </span>
+                  </div>
+                  <span class="text-[11px] text-slate-400">{{ rep.district }}</span>
+                </div>
+                <h4 class="font-bold text-sm text-white group-hover:text-emerald-300 transition-colors">{{ rep.hazardType }} at {{ getReportLocation(rep) }}</h4>
+                <p class="text-xs text-slate-300 leading-relaxed line-clamp-2">{{ rep.description }}</p>
+              </div>
+            </div>
+
+            <ng-template #emptyDistrict>
+              <div class="p-4 rounded-xl bg-slate-800/40 border border-slate-800 text-center text-xs text-slate-400">
+                No active verified reports recorded for {{ user?.district || 'Kandy' }} District.
+              </div>
+            </ng-template>
+          </div>
+        </div>
+
+        <!-- MODULE UC1: Early Warning Broadcast & Alerts (Placeholder) -->
+        <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-purple-400 text-xl">📢</span>
+              <h2 class="text-lg font-bold text-white">UC1: National Early Warnings & Bulletins</h2>
+            </div>
+            <span class="px-2.5 py-1 rounded-full bg-purple-500/20 text-purple-300 text-xs font-mono border border-purple-500/30">
+              Module 1 Component
+            </span>
+          </div>
+
+          <div class="p-6 rounded-xl bg-slate-800/40 border border-slate-800 text-center space-y-2">
+            <div class="w-12 h-12 mx-auto rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center text-2xl">
+              🛰️
+            </div>
+            <h3 class="font-bold text-sm text-white">Early Warning Broadcast System</h3>
+            <p class="text-xs text-slate-400 max-w-md mx-auto leading-relaxed">
+              DMC National Early Warning bulletins, flood risk alerts, and weather advisories issued by DMC Officers will be displayed in this panel.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN: UC4 Relief Shelters & UC3 Rescue Dispatch (4 Cols) -->
+      <div class="lg:col-span-4 space-y-8">
+        
+        <!-- MODULE UC4: Relief Shelters -->
+        <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-emerald-400 text-xl">🏕️</span>
+              <h2 class="text-base font-bold text-white">UC4: Evacuation Shelters</h2>
+            </div>
+            <span class="text-xs text-slate-400 font-mono">{{ user?.district }}</span>
+          </div>
+
+          <div *ngIf="shelters.length > 0; else shelterPlaceholder" class="space-y-3">
+            <div *ngFor="let s of shelters" class="p-3.5 rounded-xl bg-slate-800/60 border border-slate-700/60 space-y-2">
+              <div class="flex items-start justify-between">
+                <div>
+                  <h3 class="font-bold text-sm text-white">{{ s.name }}</h3>
+                  <p class="text-[11px] text-slate-400">{{ s.location }}</p>
+                </div>
+                <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-mono font-bold border border-emerald-500/30">
+                  {{ s.status }}
+                </span>
+              </div>
+              <div class="space-y-1">
+                <div class="flex justify-between text-[11px] text-slate-400">
+                  <span>Occupancy: {{ s.currentEvacuees }} / {{ s.capacity }}</span>
+                  <span class="text-emerald-400 font-semibold">{{ s.capacity - s.currentEvacuees }} Spots Free</span>
+                </div>
+                <div class="w-full bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                  <div class="bg-emerald-500 h-1.5 rounded-full" [style.width.%]="(s.currentEvacuees / s.capacity) * 100"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <ng-template #shelterPlaceholder>
+            <div class="p-4 rounded-xl bg-slate-800/40 border border-slate-800 text-center text-xs text-slate-400">
+              Shelter list for {{ user?.district }} District will be populated by District Officers.
+            </div>
+          </ng-template>
+        </div>
+
+        <!-- MODULE UC3: Emergency Rescue Request & Dispatch -->
+        <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-amber-400 text-xl">🚨</span>
+              <h2 class="text-base font-bold text-white">UC3: Emergency Rescue SOS</h2>
+            </div>
+            <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[10px] font-mono border border-amber-500/30">
+              Module 3
+            </span>
+          </div>
+
+          <div class="p-4 rounded-xl bg-slate-800/40 border border-slate-800 text-center space-y-2">
+            <p class="text-xs text-slate-400 leading-relaxed">
+              If trapped in floodwaters or isolated by landslides, request immediate dispatch of Navy / Air Force Rescue Teams.
+            </p>
+            <button class="w-full py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-md transition-all">
+              Request Emergency Rescue Boat / Team
+            </button>
+          </div>
+        </div>
+
+        <!-- Emergency Hotlines Box -->
+        <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl space-y-3">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 font-mono">Emergency Hotlines (24/7)</h3>
+          <div class="grid grid-cols-2 gap-3 font-mono text-xs">
+            <a href="tel:117" class="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 hover:bg-rose-500/20 transition-all text-center">
+              <span class="text-[10px] uppercase text-rose-300 block font-semibold">Disaster Centre</span>
+              <span class="text-xl font-extrabold text-rose-400">117</span>
+            </a>
+            <a href="tel:1990" class="p-3 rounded-xl bg-blue-500/10 border border-blue-500/30 hover:bg-blue-500/20 transition-all text-center">
+              <span class="text-[10px] uppercase text-blue-300 block font-semibold">Suwa Seriya EMS</span>
+              <span class="text-xl font-extrabold text-blue-400">1990</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</main>
+
+<!-- MODAL POPUP FORM: Lodge New Ground Hazard Report -->
+<div *ngIf="showCreateModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+  <div class="bg-slate-900 max-w-2xl w-full rounded-2xl border border-slate-700 shadow-2xl overflow-hidden animate-in fade-in duration-200">
+    
+    <!-- Modal Form Header -->
+    <div class="p-5 bg-slate-800 border-b border-slate-700 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center text-xl shadow-md">
+          📷
+        </div>
+        <div>
+          <h3 class="font-extrabold text-base text-white">Lodge New Ground Hazard Report</h3>
+          <p class="text-xs text-slate-400">Report ground incidents directly to DMC & Duty Officers</p>
+        </div>
+      </div>
+      <button (click)="closeCreateReportModal()" class="w-8 h-8 rounded-lg bg-slate-700 hover:bg-slate-600 text-white flex items-center justify-center font-bold text-sm transition-colors">
+        ✕
+      </button>
+    </div>
+
+    <!-- Modal Form Body -->
+    <div class="p-6 space-y-5 max-h-[75vh] overflow-y-auto">
+      
+      <!-- Error & Success Alert Banners -->
+      <div *ngIf="createReportErrorMessage" class="p-3.5 rounded-xl bg-rose-500/20 border border-rose-500/30 text-rose-300 text-xs font-semibold">
+        {{ createReportErrorMessage }}
+      </div>
+      <div *ngIf="createReportSuccessMessage" class="p-3.5 rounded-xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-semibold">
+        {{ createReportSuccessMessage }}
+      </div>
+
+      <!-- Hazard Type & District -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-mono font-bold uppercase text-slate-300 mb-1.5">Hazard Type *</label>
+          <select 
+            [(ngModel)]="newReport.hazardType"
+            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs font-medium focus:border-blue-500 outline-none">
+            <option *ngFor="let h of hazardTypes" [value]="h.value">{{ h.label }}</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-mono font-bold uppercase text-slate-300 mb-1.5">District *</label>
+          <select 
+            [(ngModel)]="newReport.district"
+            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs font-medium focus:border-blue-500 outline-none">
+            <option *ngFor="let d of districts" [value]="d">{{ d }}</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Address / Location Name -->
+      <div>
+        <label class="block text-xs font-mono font-bold uppercase text-slate-300 mb-1.5">Street Address / Location Landmark *</label>
+        <input 
+          type="text" 
+          [(ngModel)]="newReport.address"
+          (change)="updateCreateReportMapUrl()"
+          placeholder="e.g. Peradeniya Main Rd, Gatambe Junction"
+          class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs placeholder-slate-500 focus:border-blue-500 outline-none" />
+      </div>
+
+      <!-- Location Geolocation Fetching & GPS Coordinates -->
+      <div class="p-4 rounded-xl bg-slate-800/60 border border-slate-700/60 space-y-3">
+        <div class="flex items-center justify-between">
+          <label class="text-xs font-mono font-bold uppercase text-slate-300">Exact GPS Location Coordinates</label>
+          <button 
+            type="button"
+            (click)="fetchUserCurrentLocation()"
+            [disabled]="isFetchingLocation"
+            class="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-colors flex items-center gap-1.5 shadow-sm">
+            <span [ngClass]="{'animate-spin': isFetchingLocation}">📍</span>
+            <span>{{ isFetchingLocation ? 'Fetching GPS...' : 'Fetch My Location' }}</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 font-mono text-xs">
+          <div>
+            <span class="text-[10px] text-slate-400 block mb-1">Latitude</span>
+            <input 
+              type="number" 
+              step="any"
+              [(ngModel)]="newReport.latitude"
+              (change)="updateCreateReportMapUrl()"
+              class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white text-xs font-mono outline-none" />
+          </div>
+
+          <div>
+            <span class="text-[10px] text-slate-400 block mb-1">Longitude</span>
+            <input 
+              type="number" 
+              step="any"
+              [(ngModel)]="newReport.longitude"
+              (change)="updateCreateReportMapUrl()"
+              class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white text-xs font-mono outline-none" />
+          </div>
+        </div>
+
+        <!-- Interactive Google Map Preview -->
+        <div *ngIf="newReportMapUrl" class="w-full rounded-xl overflow-hidden border border-slate-700 shadow-md bg-slate-950">
+          <iframe 
+            [src]="newReportMapUrl" 
+            class="w-full h-44" 
+            frameborder="0" 
+            scrolling="no" 
+            title="Incident Location Map Preview">
+          </iframe>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div>
+        <label class="block text-xs font-mono font-bold uppercase text-slate-300 mb-1.5">Detailed Description *</label>
+        <textarea 
+          rows="3"
+          [(ngModel)]="newReport.description"
+          placeholder="Describe flood depth, blocked roads, trapped citizens, or slope cracks observed..."
+          class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs placeholder-slate-500 focus:border-blue-500 outline-none leading-relaxed"></textarea>
+      </div>
+
+      <!-- Evidence Photo Upload -->
+      <div>
+        <label class="block text-xs font-mono font-bold uppercase text-slate-300 mb-1.5">Ground Evidence Photo (Cloudinary Upload)</label>
+        <input 
+          type="file" 
+          accept="image/*"
+          (change)="onPhotoSelected($event)"
+          class="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 text-xs file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-500 cursor-pointer" />
+        
+        <!-- Photo Preview -->
+        <div *ngIf="newReport.photos && newReport.photos.length > 0" class="mt-3 w-32 h-24 rounded-xl overflow-hidden border border-slate-700">
+          <img [src]="newReport.photos[0]" alt="Photo preview" class="w-full h-full object-cover" />
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Modal Form Footer -->
+    <div class="p-4 bg-slate-800 border-t border-slate-700 flex items-center justify-end gap-3">
+      <button 
+        (click)="closeCreateReportModal()"
+        class="px-5 py-2.5 rounded-xl bg-slate-700 hover:bg-slate-600 text-white font-bold text-xs transition-colors">
+        Cancel
+      </button>
+      <button 
+        (click)="submitNewReport()"
+        [disabled]="isSubmittingReport"
+        class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-md transition-all flex items-center gap-1.5">
+        <span *ngIf="isSubmittingReport" class="animate-spin">🔄</span>
+        <span>{{ isSubmittingReport ? 'Lodging Report...' : '🚀 Submit Report to DMC' }}</span>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL FILTER POPUP CARD: When clicking any of the 4 Stat Cards -->
+<div *ngIf="activeCardFilter" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+  <div class="bg-slate-900 max-w-3xl w-full rounded-2xl border border-slate-700 shadow-2xl overflow-hidden animate-in fade-in duration-200">
+    
+    <!-- Modal Header -->
+    <div class="p-5 bg-slate-800 border-b border-slate-700 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div 
+          [ngClass]="{
+            'bg-emerald-500/20 text-emerald-400 border-emerald-500/30': activeCardFilter === 'VERIFIED',
+            'bg-amber-500/20 text-amber-400 border-amber-500/30': activeCardFilter === 'PENDING',
+            'bg-blue-500/20 text-blue-400 border-blue-500/30': activeCardFilter === 'MY_REPORTS',
+            'bg-purple-500/20 text-purple-400 border-purple-500/30': activeCardFilter === 'SHELTERS'
+          }"
+          class="w-10 h-10 rounded-xl flex items-center justify-center text-xl border">
+          <span *ngIf="activeCardFilter === 'VERIFIED'">✅</span>
+          <span *ngIf="activeCardFilter === 'PENDING'">⏳</span>
+          <span *ngIf="activeCardFilter === 'MY_REPORTS'">📋</span>
+          <span *ngIf="activeCardFilter === 'SHELTERS'">🏕️</span>
+        </div>
+
+        <div>
+          <h3 class="font-extrabold text-base text-white">
+            <span *ngIf="activeCardFilter === 'VERIFIED'">All Verified Incidents in {{ user?.district || 'Kandy' }}</span>
+            <span *ngIf="activeCardFilter === 'PENDING'">My Pending Reports (Awaiting Verification)</span>
+            <span *ngIf="activeCardFilter === 'MY_REPORTS'">All My Submitted Reports</span>
+            <span *ngIf="activeCardFilter === 'SHELTERS'">Relief Shelters in {{ user?.district || 'Kandy' }}</span>
+          </h3>
+          <p class="text-xs text-slate-400">
+            <span *ngIf="activeCardFilter === 'VERIFIED'">Official incidents verified by Duty / District Officers</span>
+            <span *ngIf="activeCardFilter === 'PENDING'">Reports submitted by you that are currently under triage</span>
+            <span *ngIf="activeCardFilter === 'MY_REPORTS'">Complete record of reports submitted by {{ user?.name }}</span>
+            <span *ngIf="activeCardFilter === 'SHELTERS'">Emergency evacuation shelters and current occupancy</span>
+          </p>
+        </div>
+      </div>
+
+      <button (click)="closeCardFilterModal()" class="w-8 h-8 rounded-lg bg-slate-700 hover:bg-slate-600 text-white flex items-center justify-center font-bold text-sm transition-colors">
+        ✕
+      </button>
+    </div>
+
+    <!-- Modal Body Lists -->
+    <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+      
+      <!-- 1. VERIFIED INCIDENTS LIST -->
+      <div *ngIf="activeCardFilter === 'VERIFIED'" class="space-y-3">
+        <div *ngIf="verifiedIncidentsList.length > 0; else emptyModalList" class="space-y-3">
+          <div 
+            *ngFor="let rep of verifiedIncidentsList" 
+            (click)="closeCardFilterModal(); openReportModal(rep)"
+            class="p-4 rounded-xl bg-slate-800/80 border border-slate-700/60 hover:border-emerald-500/80 cursor-pointer transition-all space-y-1.5 group">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-xs text-emerald-400 font-bold group-hover:underline">#{{ getReportNumber(rep) }}</span>
+                <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-mono font-bold border border-emerald-500/30">VERIFIED</span>
+              </div>
+              <span class="text-xs text-slate-400">{{ rep.createdAt | date:'mediumDate' }}</span>
+            </div>
+            <h4 class="font-bold text-sm text-white group-hover:text-emerald-300 transition-colors">{{ rep.hazardType }} at {{ getReportLocation(rep) }}</h4>
+            <p class="text-xs text-slate-300 leading-relaxed line-clamp-2">{{ rep.description }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. PENDING REPORTS LIST (CREATED BY LOGGED-IN USER ONLY) -->
+      <div *ngIf="activeCardFilter === 'PENDING'" class="space-y-3">
+        <div *ngIf="myPendingReportsList.length > 0; else emptyModalList" class="space-y-3">
+          <div 
+            *ngFor="let rep of myPendingReportsList" 
+            (click)="closeCardFilterModal(); openReportModal(rep)"
+            class="p-4 rounded-xl bg-slate-800/80 border border-slate-700/60 hover:border-amber-500/80 cursor-pointer transition-all space-y-1.5 group">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-xs text-amber-400 font-bold group-hover:underline">#{{ getReportNumber(rep) }}</span>
+                <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[10px] font-mono font-bold border border-amber-500/30">PENDING TRIAGE</span>
+              </div>
+              <span class="text-xs text-slate-400">{{ rep.createdAt | date:'mediumDate' }}</span>
+            </div>
+            <h4 class="font-bold text-sm text-white group-hover:text-amber-300 transition-colors">{{ rep.hazardType }} at {{ getReportLocation(rep) }}</h4>
+            <p class="text-xs text-slate-300 leading-relaxed line-clamp-2">{{ rep.description }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. ALL MY REPORTS LIST -->
+      <div *ngIf="activeCardFilter === 'MY_REPORTS'" class="space-y-3">
+        <div *ngIf="myReports.length > 0; else emptyModalList" class="space-y-3">
+          <div 
+            *ngFor="let rep of myReports" 
+            (click)="closeCardFilterModal(); openReportModal(rep)"
+            class="p-4 rounded-xl bg-slate-800/80 border border-slate-700/60 hover:border-blue-500/80 cursor-pointer transition-all space-y-1.5 group">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-xs text-blue-400 font-bold group-hover:underline">#{{ getReportNumber(rep) }}</span>
+                <span 
+                  [ngClass]="{
+                    'bg-amber-500/20 text-amber-300 border-amber-500/30': rep.status === 'PENDING',
+                    'bg-emerald-500/20 text-emerald-300 border-emerald-500/30': rep.status === 'VERIFIED',
+                    'bg-rose-500/20 text-rose-300 border-rose-500/30': rep.status === 'REJECTED'
+                  }"
+                  class="px-2 py-0.5 rounded text-[10px] font-mono font-bold border">
+                  {{ rep.status }}
+                </span>
+              </div>
+              <span class="text-xs text-slate-400">{{ rep.createdAt | date:'mediumDate' }}</span>
+            </div>
+            <h4 class="font-bold text-sm text-white group-hover:text-blue-300 transition-colors">{{ rep.hazardType }} at {{ getReportLocation(rep) }}</h4>
+            <p class="text-xs text-slate-300 leading-relaxed line-clamp-2">{{ rep.description }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. SHELTERS LIST (USER LOCATION) -->
+      <div *ngIf="activeCardFilter === 'SHELTERS'" class="space-y-3">
+        <div *ngIf="shelters.length > 0; else emptyModalList" class="space-y-3">
+          <div *ngFor="let s of shelters" class="p-4 rounded-xl bg-slate-800/80 border border-slate-700/60 space-y-2">
+            <div class="flex items-start justify-between">
+              <div>
+                <h4 class="font-bold text-base text-white">{{ s.name }}</h4>
+                <p class="text-xs text-slate-400">{{ s.location }} • {{ s.district }} District</p>
+              </div>
+              <span class="px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-300 text-xs font-mono font-bold border border-emerald-500/30">
+                {{ s.status }}
+              </span>
+            </div>
+            <div class="space-y-1">
+              <div class="flex justify-between text-xs text-slate-300">
+                <span>Current Occupancy: {{ s.currentEvacuees }} / {{ s.capacity }}</span>
+                <span class="text-emerald-400 font-bold">{{ s.capacity - s.currentEvacuees }} Spots Free</span>
+              </div>
+              <div class="w-full bg-slate-700 h-2 rounded-full overflow-hidden">
+                <div class="bg-emerald-500 h-2 rounded-full" [style.width.%]="(s.currentEvacuees / s.capacity) * 100"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #emptyModalList>
+        <div class="p-8 text-center text-slate-400 text-xs">
+          No records found for this category in {{ user?.district || 'Kandy' }} District.
+        </div>
+      </ng-template>
+
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="p-4 bg-slate-800 border-t border-slate-700 flex justify-end">
+      <button 
+        (click)="closeCardFilterModal()" 
+        class="px-5 py-2 rounded-xl bg-slate-700 hover:bg-slate-600 text-white font-bold text-xs shadow-md transition-colors">
+        Close Window
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL POPUP CARD: Incident Details Modal with Google Maps Integration -->
+<div *ngIf="selectedReport" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+  <div class="bg-slate-900 max-w-2xl w-full rounded-2xl border border-slate-700 shadow-2xl overflow-hidden animate-in fade-in duration-200">
+    
+    <!-- Modal Header -->
+    <div class="p-5 bg-slate-800 border-b border-slate-700 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-xl border border-blue-500/30">
+          📋
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h3 class="font-extrabold text-base text-white">Incident #{{ getReportNumber(selectedReport) }}</h3>
+            <span 
+              [ngClass]="{
+                'bg-amber-500/20 text-amber-300 border-amber-500/30': selectedReport.status === 'PENDING',
+                'bg-emerald-500/20 text-emerald-300 border-emerald-500/30': selectedReport.status === 'VERIFIED',
+                'bg-rose-500/20 text-rose-300 border-rose-500/30': selectedReport.status === 'REJECTED'
+              }"
+              class="px-2 py-0.5 rounded text-[10px] font-mono font-bold border">
+              {{ selectedReport.status }}
+            </span>
+          </div>
+          <p class="text-xs text-slate-400">Reported on {{ selectedReport.createdAt | date:'medium' }}</p>
+        </div>
+      </div>
+
+      <button (click)="closeReportModal()" class="w-8 h-8 rounded-lg bg-slate-700 hover:bg-slate-600 text-white flex items-center justify-center font-bold text-sm transition-colors">
+        ✕
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
+      
+      <!-- Key Metadata Grid -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 font-mono text-xs">
+        <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700/60">
+          <span class="text-[10px] text-slate-400 uppercase block font-semibold">Hazard Type</span>
+          <span class="font-bold text-white text-sm">{{ selectedReport.hazardType }}</span>
+        </div>
+
+        <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700/60">
+          <span class="text-[10px] text-slate-400 uppercase block font-semibold">Severity</span>
+          <span 
+            *ngIf="selectedReport.severity"
+            [ngClass]="{
+              'text-rose-400': selectedReport.severity === 'CRITICAL' || selectedReport.severity === 'HIGH',
+              'text-amber-400': selectedReport.severity === 'MEDIUM',
+              'text-blue-400': selectedReport.severity === 'LOW'
+            }"
+            class="font-extrabold text-sm">
+            {{ selectedReport.severity }}
+          </span>
+          <span *ngIf="!selectedReport.severity" class="font-medium text-slate-400 text-xs italic">
+            Pending Officer Triage
+          </span>
+        </div>
+
+        <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700/60 col-span-2 sm:col-span-1">
+          <span class="text-[10px] text-slate-400 uppercase block font-semibold">District</span>
+          <span class="font-bold text-emerald-400 text-sm">{{ selectedReport.district }}</span>
+        </div>
+      </div>
+
+      <!-- Reporter & Timestamp Metadata Details -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+        <div class="p-3 rounded-xl bg-slate-800/60 border border-slate-700/60 flex items-center justify-between">
+          <div>
+            <span class="text-[10px] font-mono text-slate-400 uppercase block font-semibold">Reported By</span>
+            <span class="font-bold text-white flex items-center gap-1 mt-0.5">
+              <span>👤</span> {{ selectedReport.reportedBy || 'Citizen User' }}
+            </span>
+          </div>
+          <span class="px-2 py-0.5 rounded text-[9px] font-mono font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30 uppercase">
+            {{ selectedReport.reporterType || 'CITIZEN' }}
+          </span>
+        </div>
+
+        <div class="p-3 rounded-xl bg-slate-800/60 border border-slate-700/60">
+          <span class="text-[10px] font-mono text-slate-400 uppercase block font-semibold">Reported Date & Time</span>
+          <span class="font-mono text-slate-200 text-xs block mt-0.5">
+            🕒 {{ selectedReport.createdAt | date:'medium' }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Location & Google Maps Integration -->
+      <div class="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 space-y-3">
+        <div>
+          <span class="text-xs text-slate-400 font-mono font-semibold uppercase block">Incident Location</span>
+          <p class="text-sm font-bold text-white mt-0.5">{{ getReportLocation(selectedReport) }}</p>
+          <p *ngIf="getReportCoords(selectedReport) as coords" class="text-xs text-slate-400 font-mono mt-0.5">
+            GPS: {{ coords.lat }}, {{ coords.lng }}
+          </p>
+        </div>
+
+        <!-- Embedded Interactive Google Map -->
+        <div *ngIf="selectedReportMapUrl" class="w-full rounded-xl overflow-hidden border border-slate-700 bg-slate-950 shadow-md">
+          <iframe 
+            [src]="selectedReportMapUrl" 
+            class="w-full h-52" 
+            frameborder="0" 
+            scrolling="no" 
+            marginheight="0" 
+            marginwidth="0"
+            title="Google Map Incident Location">
+          </iframe>
+        </div>
+      </div>
+
+      <!-- Full Description -->
+      <div class="space-y-1">
+        <span class="text-xs text-slate-400 font-mono font-semibold uppercase block">Detailed Description</span>
+        <p class="text-xs text-slate-200 bg-slate-800/60 p-4 rounded-xl border border-slate-700/60 leading-relaxed">
+          {{ selectedReport.description }}
+        </p>
+      </div>
+
+      <!-- Verification Notes if available -->
+      <div *ngIf="selectedReport.verificationRemarks || selectedReport.verificationNotes" class="p-4 rounded-xl bg-blue-950/60 border border-blue-600/40 space-y-1">
+        <span class="text-xs font-mono font-bold text-blue-300 uppercase block">Duty Officer Verification Remarks</span>
+        <p class="text-xs text-slate-200 leading-relaxed">{{ selectedReport.verificationRemarks || selectedReport.verificationNotes }}</p>
+      </div>
+
+      <!-- Attached Photos / Cloudinary CDN Images -->
+      <div *ngIf="selectedReport.photos && selectedReport.photos.length > 0" class="space-y-2">
+        <span class="text-xs text-slate-400 font-mono font-semibold uppercase block">Ground Evidence Photos ({{ selectedReport.photos.length }})</span>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div *ngFor="let photo of selectedReport.photos" class="rounded-xl overflow-hidden border border-slate-700 bg-slate-950">
+            <img [src]="photo" alt="Incident Evidence Photo" class="w-full h-48 object-cover hover:scale-105 transition-transform duration-300" />
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="p-4 bg-slate-800 border-t border-slate-700 flex items-center justify-between">
+      <span class="text-xs text-slate-400 font-mono">Report ID: {{ selectedReport._id }}</span>
+      <button 
+        (click)="closeReportModal()" 
+        class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-md transition-colors">
+        Close Card
+      </button>
+    </div>
+
+  </div>
+</div>
