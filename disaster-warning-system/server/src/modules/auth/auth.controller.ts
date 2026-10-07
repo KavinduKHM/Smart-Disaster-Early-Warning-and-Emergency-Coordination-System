@@ -47,6 +47,7 @@ export class AuthController {
   }
 
   @Post('seed-users')
+  @HttpCode(HttpStatus.OK)
   async seedUsers() {
     return this.authService.seedUsers();
   }

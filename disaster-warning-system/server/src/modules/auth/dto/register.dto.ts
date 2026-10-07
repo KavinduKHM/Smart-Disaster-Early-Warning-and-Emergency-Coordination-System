@@ -1,53 +1,41 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength, IsOptional, IsEnum, IsNumber } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, MinLength, IsEnum, IsOptional } from 'class-validator';
+import { UserRole } from '../enums/user-role.enum';
 
 export class RegisterDto {
+  @IsNotEmpty({ message: 'Full name is required' })
   @IsString()
-  @IsNotEmpty()
-  name!: string; // Citizen Name or Rescue Team Name
+  name!: string;
 
-  @IsEmail()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Email address is required' })
+  @IsEmail({}, { message: 'Invalid email address' })
   email!: string;
 
+  @IsNotEmpty({ message: 'Password is required' })
   @IsString()
-  @IsNotEmpty()
-  @MinLength(6)
+  @MinLength(6, { message: 'Password must be at least 6 characters long' })
   password!: string;
 
-  @IsEnum(['CITIZEN', 'RESCUE_TEAM', 'DUTY_OFFICER', 'DMC_OFFICER', 'DISTRICT_OFFICER'])
   @IsOptional()
-  role?: string;
+  @IsEnum(UserRole, { message: 'Invalid role specified' })
+  role?: UserRole;
 
-  @IsString()
   @IsOptional()
+  @IsString()
   district?: string;
 
-  @IsString()
   @IsOptional()
+  @IsString()
+  riverBasin?: string;
+
+  @IsOptional()
+  @IsString()
   phone?: string;
 
-  @IsString()
   @IsOptional()
+  @IsString()
+  pushToken?: string;
+
+  @IsOptional()
+  @IsString()
   badgeId?: string;
-
-  // Fields required when registering as RESCUE_TEAM
-  @IsString()
-  @IsOptional()
-  organization?: string;
-
-  @IsEnum(['WATER_RESCUE', 'SEARCH_AND_RESCUE', 'MEDICAL', 'FIRE', 'EVACUATION', 'GENERAL'])
-  @IsOptional()
-  teamType?: string;
-
-  @IsNumber()
-  @IsOptional()
-  membersCount?: number;
-
-  @IsNumber()
-  @IsOptional()
-  latitude?: number;
-
-  @IsNumber()
-  @IsOptional()
-  longitude?: number;
 }

@@ -5,20 +5,27 @@ import { Component } from '@angular/core';
   templateUrl: './app.component.html'
 })
 export class AppComponent {
-  title = 'disaster-warning-client';
-  
-  isDrawerOpen = false;
-  isIssueModalOpen = false;
+  title = 'Disaster Warning System';
+}
+import { Component, OnInit } from '@angular/core';
+import { NotificationService, ToastMessage } from './core/services/notification.service';
+import { Observable } from 'rxjs';
 
-  toggleDrawer(open: boolean) {
-    this.isDrawerOpen = open;
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styles: [],
+})
+export class AppComponent implements OnInit {
+  toasts$: Observable<ToastMessage[]>;
+
+  constructor(private notificationService: NotificationService) {
+    this.toasts$ = this.notificationService.toasts$;
   }
 
-  openModal() {
-    this.isIssueModalOpen = true;
-  }
+  ngOnInit(): void {}
 
-  closeModal() {
-    this.isIssueModalOpen = false;
+  removeToast(id: string): void {
+    this.notificationService.removeToast(id);
   }
 }

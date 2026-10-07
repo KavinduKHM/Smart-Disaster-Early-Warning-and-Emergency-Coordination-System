@@ -9,26 +9,18 @@ import { Model } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import { User, UserDocument } from './schemas/user.schema';
-import { RescueTeam, RescueTeamDocument } from '../uc3-rescue/rescue-teams/schemas/rescue-team.schema';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { UserRole } from './enums/user-role.enum';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel(User.name)
-    private readonly userModel: Model<UserDocument>,
-    @InjectModel(RescueTeam.name)
-    private readonly rescueTeamModel: Model<RescueTeamDocument>,
+    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
     private readonly jwtService: JwtService,
   ) {}
-
-  private async generateTeamId(): Promise<string> {
-    const count = await this.rescueTeamModel.countDocuments();
-    return `TEAM-${(count + 1).toString().padStart(3, '0')}`;
-  }
 
   async register(dto: RegisterDto) {
     const existing = await this.userModel.findOne({ email: dto.email.toLowerCase() }).exec();
@@ -37,7 +29,7 @@ export class AuthService {
     }
 
     const hashedPassword = await bcrypt.hash(dto.password, 10);
-    const role = dto.role || 'CITIZEN';
+    const role = dto.role || UserRole.CITIZEN;
 
     let generatedTeamId = dto.badgeId;
 
@@ -66,13 +58,11 @@ export class AuthService {
       email: dto.email.toLowerCase(),
       password: hashedPassword,
       role,
-      district: dto.district || 'Kandy',
+      district: dto.district || 'Colombo',
+      riverBasin: dto.riverBasin || '',
       phone: dto.phone || '',
+      pushToken: dto.pushToken || '',
       badgeId: dto.badgeId || '',
-      teamId: generatedTeamId,
-      organization: dto.organization,
-      teamType: dto.teamType,
-      membersCount: dto.membersCount,
     });
 
     const savedUser = await newUser.save();
@@ -83,25 +73,24 @@ export class AuthService {
       name: savedUser.name,
       role: savedUser.role,
       district: savedUser.district,
-      teamId: savedUser.teamId,
+      riverBasin: savedUser.riverBasin,
     };
 
-    const token = this.jwtService.sign(payload);
+    const accessToken = this.jwtService.sign(payload);
 
     return {
-      accessToken: token,
+      message: 'Registration successful',
+      accessToken,
       user: {
         id: savedUser._id,
         name: savedUser.name,
         email: savedUser.email,
         role: savedUser.role,
         district: savedUser.district,
+        riverBasin: savedUser.riverBasin,
         phone: savedUser.phone,
+        pushToken: savedUser.pushToken,
         badgeId: savedUser.badgeId,
-        teamId: savedUser.teamId,
-        organization: savedUser.organization,
-        teamType: savedUser.teamType,
-        membersCount: savedUser.membersCount,
       },
     };
   }
@@ -123,25 +112,24 @@ export class AuthService {
       name: user.name,
       role: user.role,
       district: user.district,
-      teamId: user.teamId,
+      riverBasin: user.riverBasin,
     };
 
-    const token = this.jwtService.sign(payload);
+    const accessToken = this.jwtService.sign(payload);
 
     return {
-      accessToken: token,
+      message: 'Login successful',
+      accessToken,
       user: {
         id: user._id,
         name: user.name,
         email: user.email,
         role: user.role,
         district: user.district,
+        riverBasin: user.riverBasin,
         phone: user.phone,
+        pushToken: user.pushToken,
         badgeId: user.badgeId,
-        teamId: user.teamId,
-        organization: user.organization,
-        teamType: user.teamType,
-        membersCount: user.membersCount,
       },
     };
   }
@@ -172,7 +160,6 @@ export class AuthService {
 
     const savedUser = await user.save();
 
-    // If RESCUE_TEAM user, also sync rescue team location & details
     if (user.role === 'RESCUE_TEAM' && user.teamId) {
       await this.rescueTeamModel.updateOne(
         { teamId: user.teamId },
@@ -255,51 +242,43 @@ export class AuthService {
 
     const defaultUsers = [
       {
-        name: 'Amara Perera',
+        name: 'DMC Officer Perera',
+        email: 'dmc@disaster.lk',
+        password: passwordHash,
+        role: UserRole.DMC_OFFICER,
+        district: 'Colombo',
+        riverBasin: 'Kelani River Basin',
+        phone: '0119998877',
+        badgeId: 'DMC-OFF-001',
+      },
+      {
+        name: 'System Admin',
+        email: 'admin@disaster.lk',
+        password: passwordHash,
+        role: UserRole.ADMIN,
+        district: 'Colombo',
+        phone: '0110000000',
+        badgeId: 'ADMIN-001',
+      },
+      {
+        name: 'Citizen Amara',
         email: 'citizen@disaster.lk',
         password: passwordHash,
-        role: 'CITIZEN',
+        role: UserRole.CITIZEN,
         district: 'Kandy',
+        riverBasin: 'Mahaweli River Basin',
         phone: '0771234567',
+        pushToken: 'push_token_citizen_1',
       },
       {
-        name: 'Sri Lanka Navy Water Rescue Team 1',
-        email: 'rescueteam@disaster.lk',
+        name: 'Volunteer Nimal',
+        email: 'volunteer@disaster.lk',
         password: passwordHash,
-        role: 'RESCUE_TEAM',
-        district: 'Kandy',
-        phone: '0812345678',
-        teamId: 'TEAM-001',
-        organization: 'Sri Lanka Navy',
-        teamType: 'WATER_RESCUE',
-        membersCount: 12,
-      },
-      {
-        name: 'Duty Officer Ruwan',
-        email: 'officer@dmc.gov.lk',
-        password: passwordHash,
-        role: 'DUTY_OFFICER',
-        district: 'Colombo',
-        phone: '0112345678',
-        badgeId: 'DMC-OFF-101',
-      },
-      {
-        name: 'DMC Director Jayasinghe',
-        email: 'dmc@disaster.gov.lk',
-        password: passwordHash,
-        role: 'DMC_OFFICER',
-        district: 'Colombo',
-        phone: '0119998877',
-        badgeId: 'DMC-DIR-001',
-      },
-      {
-        name: 'District Officer Nimal',
-        email: 'district@kandy.gov.lk',
-        password: passwordHash,
-        role: 'DISTRICT_OFFICER',
-        district: 'Kandy',
-        phone: '0812233445',
-        badgeId: 'DIST-KANDY-01',
+        role: UserRole.VOLUNTEER,
+        district: 'Galle',
+        riverBasin: 'Gin River Basin',
+        phone: '0719876543',
+        pushToken: 'push_token_volunteer_1',
       },
     ];
 
@@ -317,8 +296,8 @@ export class AuthService {
 
     await this.userModel.insertMany(defaultUsers);
     return {
-      message: 'Default system users seeded successfully! All users have password: "password123"',
-      users: defaultUsers.map(u => ({ email: u.email, role: u.role, name: u.name })),
+      message: 'Default system users seeded successfully! Password for all: "password123"',
+      users: defaultUsers.map((u) => ({ email: u.email, role: u.role, name: u.name })),
     };
   }
 }
