@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
@@ -14,13 +14,43 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 
 dotenv.config();
 
-const mongoUri =
-  process.env.MONGODB_URI ||
-  'mongodb+srv://user:pass@cluster0.j5gvtgv.mongodb.net/?appName=Cluster0';
+let memServerPromise: Promise<string> | null = null;
+
+async function resolveMongoUri(): Promise<string> {
+  const envUri = process.env.MONGODB_URI || process.env.MONGO_URI;
+  if (envUri && !envUri.includes('user:pass@cluster0')) {
+    return envUri;
+  }
+
+  // Spin up MongoMemoryServer dynamically if no working cloud/local URI is provided
+  if (!memServerPromise) {
+    memServerPromise = (async () => {
+      try {
+        const { MongoMemoryServer } = await import('mongodb-memory-server');
+        const mongod = await MongoMemoryServer.create();
+        const uri = mongod.getUri();
+        console.log('=======================================================');
+        console.log('⚡ Dynamic In-Memory MongoDB Started Automatically!');
+        console.log(`URI: ${uri}`);
+        console.log('=======================================================');
+        return uri;
+      } catch (err) {
+        console.warn('Falling back to local 127.0.0.1:27017');
+        return 'mongodb://127.0.0.1:27017/disaster_db';
+      }
+    })();
+  }
+
+  return memServerPromise;
+}
 
 @Module({
   imports: [
-    MongooseModule.forRoot(mongoUri),
+    MongooseModule.forRootAsync({
+      useFactory: async () => ({
+        uri: await resolveMongoUri(),
+      }),
+    }),
     EventEmitterModule.forRoot(),
     SharedModule,
     AuthModule,

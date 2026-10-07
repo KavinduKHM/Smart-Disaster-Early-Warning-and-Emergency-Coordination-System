@@ -3,6 +3,7 @@ import {
   ConflictException,
   UnauthorizedException,
   NotFoundException,
+  OnModuleInit,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -14,11 +15,19 @@ import { LoginDto } from './dto/login.dto';
 import { UserRole } from './enums/user-role.enum';
 
 @Injectable()
-export class AuthService {
+export class AuthService implements OnModuleInit {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
     private readonly jwtService: JwtService,
   ) {}
+
+  async onModuleInit() {
+    try {
+      await this.seedUsers();
+    } catch (err) {
+      console.error('Error during auto-seeding users on module init:', err);
+    }
+  }
 
   async register(dto: RegisterDto) {
     const existing = await this.userModel.findOne({ email: dto.email.toLowerCase() }).exec();
@@ -119,14 +128,20 @@ export class AuthService {
   }
 
   async seedUsers() {
-    const count = await this.userModel.countDocuments();
-    if (count > 0) {
-      return { message: 'Users already exist. Skipping seed.', seededCount: count };
-    }
-
     const passwordHash = await bcrypt.hash('password123', 10);
+    const officerHash = await bcrypt.hash('Password123!', 10);
 
     const defaultUsers = [
+      {
+        name: 'DMC Officer Kamal',
+        email: 'dmc.officer@disaster.lk',
+        password: officerHash,
+        role: UserRole.DMC_OFFICER,
+        district: 'Colombo',
+        riverBasin: 'Kelani River Basin',
+        phone: '0112345678',
+        badgeId: 'DMC-OFF-2026',
+      },
       {
         name: 'DMC Officer Perera',
         email: 'dmc@disaster.lk',
@@ -168,9 +183,22 @@ export class AuthService {
       },
     ];
 
-    await this.userModel.insertMany(defaultUsers);
+    for (const u of defaultUsers) {
+      await this.userModel.findOneAndUpdate(
+        { email: u.email },
+        { $setOnInsert: u },
+        { upsert: true, new: true }
+      );
+    }
+
+    console.log('=======================================================');
+    console.log('✅ DMC OFFICER ACCOUNTS VERIFIED / SEEDED IN DATABASE');
+    console.log('1. dmc.officer@disaster.lk  | Password: Password123!');
+    console.log('2. dmc@disaster.lk          | Password: password123');
+    console.log('=======================================================');
+
     return {
-      message: 'Default system users seeded successfully! Password for all: "password123"',
+      message: 'Default system users verified/seeded successfully!',
       users: defaultUsers.map((u) => ({ email: u.email, role: u.role, name: u.name })),
     };
   }

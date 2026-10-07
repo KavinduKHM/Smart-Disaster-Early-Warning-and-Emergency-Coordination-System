@@ -33,7 +33,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "buildTarget": "disaster-warning-client:build"
+            "buildTarget": "disaster-warning-client:build",
+            "proxyConfig": "proxy.conf.json"
           }
         }
       }

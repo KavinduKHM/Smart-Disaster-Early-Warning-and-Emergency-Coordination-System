@@ -4,13 +4,15 @@ import { Observable, map } from 'rxjs';
 import { Hazard } from '../models/hazard.model';
 import { HazardWarning, NotificationChannel } from '../models/warning.model';
 import { NotificationLog } from '../models/notification-log.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class WarningService {
-  private hazardsUrl = '/api/hazards';
-  private warningsUrl = '/api/warnings';
+  private baseUrl = environment.apiUrl || 'http://localhost:3000/api';
+  private hazardsUrl = `${this.baseUrl}/uc1-warning/hazards`;
+  private warningsUrl = `${this.baseUrl}/uc1-warning/warnings`;
 
   constructor(private http: HttpClient) {}
 
