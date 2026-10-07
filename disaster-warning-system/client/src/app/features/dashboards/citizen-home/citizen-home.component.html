@@ -136,7 +136,7 @@
                 class="p-4 rounded-xl bg-slate-800/70 border border-slate-700/60 hover:border-blue-500/80 hover:bg-slate-800 transition-all cursor-pointer flex flex-col sm:flex-row justify-between gap-3 group">
                 <div class="space-y-1">
                   <div class="flex items-center gap-2">
-                    <span class="font-mono text-xs font-bold text-blue-400 group-hover:underline">#{{ rep.reportNumber }}</span>
+                    <span class="font-mono text-xs font-bold text-blue-400 group-hover:underline">#{{ getReportNumber(rep) }}</span>
                     <span 
                       [ngClass]="{
                         'bg-amber-500/20 text-amber-300 border-amber-500/30': rep.status === 'PENDING',
@@ -148,7 +148,7 @@
                     </span>
                     <span class="text-[11px] text-slate-400">{{ rep.createdAt | date:'short' }}</span>
                   </div>
-                  <h4 class="font-bold text-sm text-white group-hover:text-blue-300 transition-colors">{{ rep.hazardType }} — {{ rep.locationName }}</h4>
+                  <h4 class="font-bold text-sm text-white group-hover:text-blue-300 transition-colors">{{ rep.hazardType }} — {{ getReportLocation(rep) }}</h4>
                   <p class="text-xs text-slate-300 leading-relaxed line-clamp-2">{{ rep.description }}</p>
                 </div>
 
@@ -177,8 +177,9 @@
                 class="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 hover:border-emerald-500/80 hover:bg-slate-800 transition-all cursor-pointer space-y-1.5 group">
                 <div class="flex items-center justify-between">
                   <div class="flex items-center gap-2">
-                    <span class="font-mono text-xs text-emerald-400 font-bold group-hover:underline">#{{ rep.reportNumber }}</span>
+                    <span class="font-mono text-xs text-emerald-400 font-bold group-hover:underline">#{{ getReportNumber(rep) }}</span>
                     <span 
+                      *ngIf="rep.severity"
                       [ngClass]="{
                         'bg-rose-500/20 text-rose-300 border-rose-500/30': rep.severity === 'CRITICAL' || rep.severity === 'HIGH',
                         'bg-amber-500/20 text-amber-300 border-amber-500/30': rep.severity === 'MEDIUM',
@@ -190,7 +191,7 @@
                   </div>
                   <span class="text-[11px] text-slate-400">{{ rep.district }}</span>
                 </div>
-                <h4 class="font-bold text-sm text-white group-hover:text-emerald-300 transition-colors">{{ rep.hazardType }} at {{ rep.locationName }}</h4>
+                <h4 class="font-bold text-sm text-white group-hover:text-emerald-300 transition-colors">{{ rep.hazardType }} at {{ getReportLocation(rep) }}</h4>
                 <p class="text-xs text-slate-300 leading-relaxed line-clamp-2">{{ rep.description }}</p>
               </div>
             </div>
@@ -369,12 +370,12 @@
             class="p-4 rounded-xl bg-slate-800/80 border border-slate-700/60 hover:border-emerald-500/80 cursor-pointer transition-all space-y-1.5 group">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
-                <span class="font-mono text-xs text-emerald-400 font-bold group-hover:underline">#{{ rep.reportNumber }}</span>
+                <span class="font-mono text-xs text-emerald-400 font-bold group-hover:underline">#{{ getReportNumber(rep) }}</span>
                 <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-mono font-bold border border-emerald-500/30">VERIFIED</span>
               </div>
               <span class="text-xs text-slate-400">{{ rep.createdAt | date:'mediumDate' }}</span>
             </div>
-            <h4 class="font-bold text-sm text-white group-hover:text-emerald-300 transition-colors">{{ rep.hazardType }} at {{ rep.locationName }}</h4>
+            <h4 class="font-bold text-sm text-white group-hover:text-emerald-300 transition-colors">{{ rep.hazardType }} at {{ getReportLocation(rep) }}</h4>
             <p class="text-xs text-slate-300 leading-relaxed line-clamp-2">{{ rep.description }}</p>
           </div>
         </div>
@@ -389,12 +390,12 @@
             class="p-4 rounded-xl bg-slate-800/80 border border-slate-700/60 hover:border-amber-500/80 cursor-pointer transition-all space-y-1.5 group">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
-                <span class="font-mono text-xs text-amber-400 font-bold group-hover:underline">#{{ rep.reportNumber }}</span>
+                <span class="font-mono text-xs text-amber-400 font-bold group-hover:underline">#{{ getReportNumber(rep) }}</span>
                 <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[10px] font-mono font-bold border border-amber-500/30">PENDING TRIAGE</span>
               </div>
               <span class="text-xs text-slate-400">{{ rep.createdAt | date:'mediumDate' }}</span>
             </div>
-            <h4 class="font-bold text-sm text-white group-hover:text-amber-300 transition-colors">{{ rep.hazardType }} at {{ rep.locationName }}</h4>
+            <h4 class="font-bold text-sm text-white group-hover:text-amber-300 transition-colors">{{ rep.hazardType }} at {{ getReportLocation(rep) }}</h4>
             <p class="text-xs text-slate-300 leading-relaxed line-clamp-2">{{ rep.description }}</p>
           </div>
         </div>
@@ -409,7 +410,7 @@
             class="p-4 rounded-xl bg-slate-800/80 border border-slate-700/60 hover:border-blue-500/80 cursor-pointer transition-all space-y-1.5 group">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
-                <span class="font-mono text-xs text-blue-400 font-bold group-hover:underline">#{{ rep.reportNumber }}</span>
+                <span class="font-mono text-xs text-blue-400 font-bold group-hover:underline">#{{ getReportNumber(rep) }}</span>
                 <span 
                   [ngClass]="{
                     'bg-amber-500/20 text-amber-300 border-amber-500/30': rep.status === 'PENDING',
@@ -422,7 +423,7 @@
               </div>
               <span class="text-xs text-slate-400">{{ rep.createdAt | date:'mediumDate' }}</span>
             </div>
-            <h4 class="font-bold text-sm text-white group-hover:text-blue-300 transition-colors">{{ rep.hazardType }} at {{ rep.locationName }}</h4>
+            <h4 class="font-bold text-sm text-white group-hover:text-blue-300 transition-colors">{{ rep.hazardType }} at {{ getReportLocation(rep) }}</h4>
             <p class="text-xs text-slate-300 leading-relaxed line-clamp-2">{{ rep.description }}</p>
           </div>
         </div>
@@ -474,7 +475,7 @@
   </div>
 </div>
 
-<!-- MODAL POPUP CARD: Incident Details Modal -->
+<!-- MODAL POPUP CARD: Incident Details Modal with Google Maps Integration -->
 <div *ngIf="selectedReport" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
   <div class="bg-slate-900 max-w-2xl w-full rounded-2xl border border-slate-700 shadow-2xl overflow-hidden animate-in fade-in duration-200">
     
@@ -486,7 +487,7 @@
         </div>
         <div>
           <div class="flex items-center gap-2">
-            <h3 class="font-extrabold text-base text-white">Incident #{{ selectedReport.reportNumber }}</h3>
+            <h3 class="font-extrabold text-base text-white">Incident #{{ getReportNumber(selectedReport) }}</h3>
             <span 
               [ngClass]="{
                 'bg-amber-500/20 text-amber-300 border-amber-500/30': selectedReport.status === 'PENDING',
@@ -519,6 +520,7 @@
         <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700/60">
           <span class="text-[10px] text-slate-400 uppercase block font-semibold">Severity</span>
           <span 
+            *ngIf="selectedReport.severity"
             [ngClass]="{
               'text-rose-400': selectedReport.severity === 'CRITICAL' || selectedReport.severity === 'HIGH',
               'text-amber-400': selectedReport.severity === 'MEDIUM',
@@ -526,6 +528,9 @@
             }"
             class="font-extrabold text-sm">
             {{ selectedReport.severity }}
+          </span>
+          <span *ngIf="!selectedReport.severity" class="font-medium text-slate-400 text-xs italic">
+            Pending Officer Triage
           </span>
         </div>
 
@@ -535,13 +540,28 @@
         </div>
       </div>
 
-      <!-- Location & Address -->
-      <div class="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 space-y-1">
-        <span class="text-xs text-slate-400 font-mono font-semibold uppercase block">Incident Location</span>
-        <p class="text-sm font-bold text-white">{{ selectedReport.locationName }}</p>
-        <p *ngIf="selectedReport.latitude && selectedReport.longitude" class="text-xs text-slate-400 font-mono">
-          GPS: {{ selectedReport.latitude }}, {{ selectedReport.longitude }}
-        </p>
+      <!-- Location & Google Maps Integration -->
+      <div class="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 space-y-3">
+        <div>
+          <span class="text-xs text-slate-400 font-mono font-semibold uppercase block">Incident Location</span>
+          <p class="text-sm font-bold text-white mt-0.5">{{ getReportLocation(selectedReport) }}</p>
+          <p *ngIf="getReportCoords(selectedReport) as coords" class="text-xs text-slate-400 font-mono mt-0.5">
+            GPS: {{ coords.lat }}, {{ coords.lng }}
+          </p>
+        </div>
+
+        <!-- Embedded Interactive Google Map -->
+        <div *ngIf="selectedReportMapUrl" class="w-full rounded-xl overflow-hidden border border-slate-700 bg-slate-950 shadow-md">
+          <iframe 
+            [src]="selectedReportMapUrl" 
+            class="w-full h-52" 
+            frameborder="0" 
+            scrolling="no" 
+            marginheight="0" 
+            marginwidth="0"
+            title="Google Map Incident Location">
+          </iframe>
+        </div>
       </div>
 
       <!-- Full Description -->
@@ -553,14 +573,14 @@
       </div>
 
       <!-- Verification Notes if available -->
-      <div *ngIf="selectedReport.verificationNotes" class="p-4 rounded-xl bg-blue-950/60 border border-blue-600/40 space-y-1">
-        <span class="text-xs font-mono font-bold text-blue-300 uppercase block">Duty Officer Verification Notes</span>
-        <p class="text-xs text-slate-200 leading-relaxed">{{ selectedReport.verificationNotes }}</p>
+      <div *ngIf="selectedReport.verificationRemarks || selectedReport.verificationNotes" class="p-4 rounded-xl bg-blue-950/60 border border-blue-600/40 space-y-1">
+        <span class="text-xs font-mono font-bold text-blue-300 uppercase block">Duty Officer Verification Remarks</span>
+        <p class="text-xs text-slate-200 leading-relaxed">{{ selectedReport.verificationRemarks || selectedReport.verificationNotes }}</p>
       </div>
 
       <!-- Attached Photos / Cloudinary CDN Images -->
       <div *ngIf="selectedReport.photos && selectedReport.photos.length > 0" class="space-y-2">
-        <span class="text-xs text-slate-400 font-mono font-semibold uppercase block">Ground Imagery / Evidence Photos ({{ selectedReport.photos.length }})</span>
+        <span class="text-xs text-slate-400 font-mono font-semibold uppercase block">Ground Evidence Photos ({{ selectedReport.photos.length }})</span>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div *ngFor="let photo of selectedReport.photos" class="rounded-xl overflow-hidden border border-slate-700 bg-slate-950">
             <img [src]="photo" alt="Incident Evidence Photo" class="w-full h-48 object-cover hover:scale-105 transition-transform duration-300" />

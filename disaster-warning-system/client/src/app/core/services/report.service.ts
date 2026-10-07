@@ -5,16 +5,23 @@ import { AuthService } from './auth.service';
 
 export interface GroundReport {
   _id: string;
-  reportNumber: string;
+  reportId?: string;
+  reportNumber?: string;
   hazardType: string;
-  severity: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
+  severity?: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
   description: string;
   district: string;
-  locationName: string;
+  address?: string;
+  locationName?: string;
   latitude?: number;
   longitude?: number;
+  location?: {
+    type: string;
+    coordinates: number[]; // [longitude, latitude]
+  };
   photos?: string[];
-  status: 'PENDING' | 'VERIFIED' | 'REJECTED' | 'RESOLVED';
+  status: 'PENDING' | 'VERIFIED' | 'REJECTED' | 'RESOLVED' | 'ARCHIVED';
+  verificationRemarks?: string;
   verificationNotes?: string;
   createdAt: string;
 }

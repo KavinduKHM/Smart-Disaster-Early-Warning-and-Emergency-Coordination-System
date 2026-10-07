@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { AuthService, UserProfile } from '../../../core/services/auth.service';
 import { ReportService, GroundReport, ReliefShelter } from '../../../core/services/report.service';
 
@@ -22,11 +23,13 @@ export class CitizenHomeComponent implements OnInit {
   isLoading: boolean = true;
   isSafeBeaconActive: boolean = false;
   selectedReport: GroundReport | null = null;
+  selectedReportMapUrl: SafeResourceUrl | null = null;
   activeCardFilter: 'VERIFIED' | 'PENDING' | 'MY_REPORTS' | 'SHELTERS' | null = null;
 
   constructor(
     private authService: AuthService,
-    private reportService: ReportService
+    private reportService: ReportService,
+    private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit(): void {
@@ -82,7 +85,6 @@ export class CitizenHomeComponent implements OnInit {
     });
   }
 
-  // Filtered computed getters matching exact user requirements:
   get verifiedIncidentsList(): GroundReport[] {
     return this.districtReports.filter(r => r.status === 'VERIFIED');
   }
@@ -91,20 +93,56 @@ export class CitizenHomeComponent implements OnInit {
     return this.myReports.filter(r => r.status === 'PENDING');
   }
 
+  getReportNumber(report: GroundReport): string {
+    if (!report) return '';
+    return report.reportId || report.reportNumber || ('REP-' + report._id.substring(report._id.length - 6).toUpperCase());
+  }
+
+  getReportLocation(report: GroundReport): string {
+    if (!report) return '';
+    return report.address || report.locationName || (report.district + ' District');
+  }
+
+  getReportCoords(report: GroundReport): { lat: number; lng: number } | null {
+    if (!report) return null;
+    if (report.latitude && report.longitude) {
+      return { lat: report.latitude, lng: report.longitude };
+    }
+    if (report.location?.coordinates && report.location.coordinates.length === 2) {
+      // GeoJSON [longitude, latitude]
+      return { lat: report.location.coordinates[1], lng: report.location.coordinates[0] };
+    }
+    return null;
+  }
+
+  openReportModal(report: GroundReport): void {
+    this.selectedReport = report;
+    
+    // Generate Google Maps Embed URL for exact incident coordinates/location
+    const coords = this.getReportCoords(report);
+    let mapQuery = '';
+    if (coords) {
+      mapQuery = `${coords.lat},${coords.lng}`;
+    } else {
+      const locName = this.getReportLocation(report);
+      mapQuery = encodeURIComponent(`${locName}, ${report.district || 'Kandy'}, Sri Lanka`);
+    }
+    
+    const rawUrl = `https://maps.google.com/maps?q=${mapQuery}&z=15&output=embed`;
+    this.selectedReportMapUrl = this.sanitizer.bypassSecurityTrustResourceUrl(rawUrl);
+  }
+
+  closeReportModal(): void {
+    this.selectedReport = null;
+    this.selectedReportMapUrl = null;
+  }
+
   openCardFilterModal(type: 'VERIFIED' | 'PENDING' | 'MY_REPORTS' | 'SHELTERS'): void {
     this.activeCardFilter = type;
   }
 
   closeCardFilterModal(): void {
     this.activeCardFilter = null;
-  }
-
-  openReportModal(report: GroundReport): void {
-    this.selectedReport = report;
-  }
-
-  closeReportModal(): void {
-    this.selectedReport = null;
   }
 
   toggleSafeBeacon(): void {
