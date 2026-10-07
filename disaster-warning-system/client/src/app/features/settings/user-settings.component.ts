@@ -81,6 +81,25 @@ export class UserSettingsComponent implements OnInit {
     this.updateMapUrl();
   }
 
+  districtCoordsMap: { [key: string]: { lat: number; lng: number } } = {
+    'Kandy': { lat: 7.2906, lng: 80.6337 },
+    'Colombo': { lat: 6.9271, lng: 79.8612 },
+    'Badulla': { lat: 6.9934, lng: 81.0550 },
+    'Kegalle': { lat: 7.2513, lng: 80.3464 },
+    'Kalutara': { lat: 6.5854, lng: 79.9607 },
+    'Galle': { lat: 6.0535, lng: 80.2210 },
+    'Matara': { lat: 5.9549, lng: 80.5550 },
+    'Ratnapura': { lat: 6.6828, lng: 80.3992 },
+    'Kurunegala': { lat: 7.4863, lng: 80.3623 },
+    'Nuwara Eliya': { lat: 6.9497, lng: 80.7891 },
+    'Anuradhapura': { lat: 8.3114, lng: 80.4037 },
+    'Polonnaruwa': { lat: 7.9403, lng: 81.0188 },
+    'Jaffna': { lat: 9.6615, lng: 80.0255 },
+    'Batticaloa': { lat: 7.7310, lng: 81.6747 },
+    'Trincomalee': { lat: 8.5874, lng: 81.2152 },
+    'Hambantota': { lat: 6.1246, lng: 81.1185 }
+  };
+
   fetchGPSLocation(): void {
     if (!navigator.geolocation) {
       this.profileErrorMessage = 'Geolocation is not supported by your browser.';
@@ -95,6 +114,7 @@ export class UserSettingsComponent implements OnInit {
         this.profileForm.latitude = parseFloat(position.coords.latitude.toFixed(6));
         this.profileForm.longitude = parseFloat(position.coords.longitude.toFixed(6));
         this.isFetchingLocation = false;
+        this.detectDistrictFromCoords(this.profileForm.latitude, this.profileForm.longitude);
         this.updateMapUrl();
       },
       (error) => {
@@ -106,9 +126,47 @@ export class UserSettingsComponent implements OnInit {
     );
   }
 
+  detectDistrictFromCoords(lat: number, lng: number): void {
+    if (!lat || !lng) return;
+
+    // 1. Immediate Closest Centroid Calculation
+    let closestDistrict = 'Kandy';
+    let minDistance = Infinity;
+
+    for (const d of this.districts) {
+      const coords = this.districtCoordsMap[d];
+      if (coords) {
+        const dist = Math.hypot(coords.lat - lat, coords.lng - lng);
+        if (dist < minDistance) {
+          minDistance = dist;
+          closestDistrict = d;
+        }
+      }
+    }
+
+    this.profileForm.district = closestDistrict;
+
+    // 2. Asynchronous Reverse Geocoding via OpenStreetMap
+    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.address) {
+          const addr = data.address;
+          const placeName = (addr.state_district || addr.district || addr.county || addr.city || addr.state || '').toLowerCase();
+          
+          const matchedDistrict = this.districts.find(d => placeName.includes(d.toLowerCase()));
+          if (matchedDistrict) {
+            this.profileForm.district = matchedDistrict;
+          }
+        }
+      })
+      .catch(err => console.warn('Reverse geocoding error:', err));
+  }
+
   updateMapUrl(): void {
     const rawUrl = `https://maps.google.com/maps?q=${this.profileForm.latitude},${this.profileForm.longitude}&z=15&output=embed`;
     this.locationMapUrl = this.sanitizer.bypassSecurityTrustResourceUrl(rawUrl);
+    this.detectDistrictFromCoords(this.profileForm.latitude, this.profileForm.longitude);
   }
 
   saveProfile(): void {
