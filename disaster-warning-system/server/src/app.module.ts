@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-
-import { MongooseModule } from '@nestjs/mongoose';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { SharedModule } from './modules/shared/shared.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -13,15 +12,15 @@ import { ReliefModule } from './modules/uc4-relief/relief.module';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 
+
 let memServerPromise: Promise<string> | null = null;
 
-async function resolveMongoUri(): Promise<string> {
-  const envUri = process.env.MONGODB_URI || process.env.MONGO_URI;
+async function resolveMongoUri(configService?: ConfigService): Promise<string> {
+  const envUri = configService?.get<string>('MONGODB_URI') || process.env.MONGODB_URI || process.env.MONGO_URI;
   if (envUri && !envUri.includes('user:pass@cluster0')) {
     return envUri;
   }
 
-  // Spin up MongoMemoryServer dynamically if no working cloud/local URI is provided
   if (!memServerPromise) {
     memServerPromise = (async () => {
       try {
@@ -45,15 +44,19 @@ async function resolveMongoUri(): Promise<string> {
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
+    EventEmitterModule.forRoot(),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-
-      useFactory: (configService: ConfigService) => ({
-        uri: configService.get<string>('MONGODB_URI'),
-      }),
+      useFactory: async (configService: ConfigService) => {
+        const uri = await resolveMongoUri(configService);
+        return { uri };
+      },
     }),
-    MongooseModule.forRoot(mongoUri),
     SharedModule,
     AuthModule,
     WarningModule,

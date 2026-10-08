@@ -1,5 +1,6 @@
 import * as dns from 'dns';
 import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 import * as dotenv from 'dotenv';
 import { AppModule } from './app.module';
 
@@ -35,4 +36,3 @@ async function bootstrap() {
 }
 
 bootstrap();
-

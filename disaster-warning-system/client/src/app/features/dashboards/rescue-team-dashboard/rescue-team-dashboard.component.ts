@@ -351,7 +351,7 @@ export class RescueTeamDashboardComponent implements OnInit, OnDestroy {
     // Match by user teamId or badge or district, or default to first
     let found = this.teams.find(t => t.teamId === this.user?.teamId);
     if (!found && this.user?.district) {
-      found = this.teams.find(t => t.district.toLowerCase() === this.user?.district.toLowerCase());
+      found = this.teams.find(t => (t.district || '').toLowerCase() === (this.user?.district || '').toLowerCase());
     }
     if (!found) {
       found = this.teams[0];

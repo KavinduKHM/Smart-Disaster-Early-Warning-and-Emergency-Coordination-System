@@ -16,16 +16,22 @@ import { LoginDto } from './dto/login.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { UserRole } from './enums/user-role.enum';
-import { RescueTeam } from '../uc3-rescue/rescue-teams/schemas/rescue-team.schema';
 
 @Injectable()
 export class AuthService implements OnModuleInit {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
-    @InjectModel(RescueTeam.name) private readonly rescueTeamModel: Model<RescueTeam>,
     @InjectModel(RescueTeam.name) private readonly rescueTeamModel: Model<RescueTeamDocument>,
     private readonly jwtService: JwtService,
   ) {}
+
+  async onModuleInit() {
+    try {
+      await this.seedUsers();
+    } catch (err) {
+      console.error('Error during auto-seeding users on module init:', err);
+    }
+  }
 
   async register(dto: RegisterDto) {
     const existing = await this.userModel.findOne({ email: dto.email.toLowerCase() }).exec();
@@ -68,16 +74,12 @@ export class AuthService implements OnModuleInit {
       phone: dto.phone || '',
       pushToken: dto.pushToken || '',
       badgeId: dto.badgeId || '',
-      teamId: role === UserRole.RESCUE_TEAM ? generatedTeamId : undefined,
+      teamId: generatedTeamId,
       organization: dto.organization,
       teamType: dto.teamType,
       membersCount: dto.membersCount,
       latitude: dto.latitude,
       longitude: dto.longitude,
-      teamId: generatedTeamId,
-      organization: dto.organization,
-      teamType: dto.teamType,
-      membersCount: dto.membersCount,
     });
 
     const savedUser = await newUser.save();
@@ -323,17 +325,22 @@ export class AuthService implements OnModuleInit {
       },
     ];
 
-    const sampleTeam = new this.rescueTeamModel({
-      teamId: 'TEAM-001',
-      name: 'Sri Lanka Navy Water Rescue Team 1',
-      organization: 'Sri Lanka Navy',
-      type: 'WATER_RESCUE',
-      members: 12,
-      district: 'Kandy',
-      location: { type: 'Point', coordinates: [80.6337, 7.2906] },
-      status: 'AVAILABLE',
-    });
-    await sampleTeam.save();
+    await this.rescueTeamModel.findOneAndUpdate(
+      { teamId: 'TEAM-001' },
+      {
+        $setOnInsert: {
+          teamId: 'TEAM-001',
+          name: 'Sri Lanka Navy Water Rescue Team 1',
+          organization: 'Sri Lanka Navy',
+          type: 'WATER_RESCUE',
+          members: 12,
+          district: 'Kandy',
+          location: { type: 'Point', coordinates: [80.6337, 7.2906] },
+          status: 'AVAILABLE',
+        },
+      },
+      { upsert: true, new: true }
+    );
 
     for (const u of defaultUsers) {
       await this.userModel.findOneAndUpdate(
@@ -344,9 +351,10 @@ export class AuthService implements OnModuleInit {
     }
 
     console.log('=======================================================');
-    console.log('✅ DMC OFFICER ACCOUNTS VERIFIED / SEEDED IN DATABASE');
+    console.log('✅ SYSTEM ACCOUNTS & RESCUE TEAMS VERIFIED IN DATABASE');
     console.log('1. dmc.officer@disaster.lk  | Password: Password123!');
     console.log('2. dmc@disaster.lk          | Password: password123');
+    console.log('3. citizen.user@disaster.lk | Password: Password123!');
     console.log('=======================================================');
 
     return {

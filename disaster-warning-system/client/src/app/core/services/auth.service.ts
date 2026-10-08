@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, map } from 'rxjs';
-import { User, AuthResponse } from '../models/user.model';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { BehaviorSubject, Observable, map, tap } from 'rxjs';
+import { User, AuthResponse, UserProfile } from '../models/user.model';
+
+export { UserProfile };
 
 @Injectable({
   providedIn: 'root'
@@ -39,7 +42,7 @@ export class AuthService {
   login(credentials: { email: string; password: string }): Observable<AuthResponse> {
     return this.http.post<any>(`${this.apiUrl}/login`, credentials).pipe(
       map((res: any) => (res && res.data ? res.data : res)),
-      tap((res) => {
+      tap((res: any) => {
         this.saveAuthSession(res);
         if (res && res.user && res.user.role) {
           this.redirectUserByRole(res.user.role);
@@ -51,7 +54,7 @@ export class AuthService {
   register(payload: any): Observable<AuthResponse> {
     return this.http.post<any>(`${this.apiUrl}/register`, payload).pipe(
       map((res: any) => (res && res.data ? res.data : res)),
-      tap((res) => {
+      tap((res: any) => {
         this.saveAuthSession(res);
         if (res && res.user && res.user.role) {
           this.redirectUserByRole(res.user.role);
@@ -63,7 +66,7 @@ export class AuthService {
   updateProfile(payload: any): Observable<AuthResponse> {
     return this.http.put<any>(`${this.apiUrl}/profile`, payload, { headers: this.getAuthHeaders() }).pipe(
       map((res: any) => (res && res.data ? res.data : res)),
-      tap((res) => {
+      tap((res: any) => {
         this.saveAuthSession(res);
       })
     );
