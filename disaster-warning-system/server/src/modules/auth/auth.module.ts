@@ -9,6 +9,7 @@ import { AuthController } from './auth.controller';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { jwtConstants } from './auth.constants';
 import { RolesGuard } from './guards/roles.guard';
+import { RescueTeam, RescueTeamSchema } from '../uc3-rescue/rescue-teams/schemas/rescue-team.schema';
 
 @Module({
   imports: [

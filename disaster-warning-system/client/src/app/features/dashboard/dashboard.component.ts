@@ -2,9 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService, UserProfile } from '../../core/services/auth.service';
 import { WarningService } from '../../core/services/warning.service';
-import { User } from '../../core/models/user.model';
 import { HazardWarning } from '../../core/models/warning.model';
-import { Hazard } from '../../core/models/hazard.model';
 
 @Component({
   selector: 'app-dashboard',
@@ -12,6 +10,7 @@ import { Hazard } from '../../core/models/hazard.model';
   styles: [],
 })
 export class DashboardComponent implements OnInit {
+  currentUser: UserProfile | null = null;
   currentUser: UserProfile | User | null = null;
   activeTab: 'active-warnings' | 'hazards' | 'create-warning' = 'active-warnings';
 

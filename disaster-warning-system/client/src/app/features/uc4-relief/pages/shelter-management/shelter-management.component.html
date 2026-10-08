@@ -1,130 +1,151 @@
-<div class="page">
+<main class="shelter-page">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">District Emergency Operations Center · District Logistics</p>
+      <h1>Shelter Management</h1>
+      <p class="page-description">Register emergency facilities and monitor district shelter capacity.</p>
+    </div>
+    <div class="shelter-count" aria-label="Number of registered shelters">
+      <span class="count-icon" aria-hidden="true">⌂</span>
+      <span><strong>{{ shelters.length }}</strong><small>Registered shelters</small></span>
+    </div>
+  </header>
 
-  <h1>Shelter Management</h1>
+  <section class="panel registration-panel">
+    <div class="panel-heading">
+      <span class="heading-icon" aria-hidden="true">＋</span>
+      <div>
+        <h2>Register Emergency Shelter</h2>
+        <p>Add a safe facility to the district shelter directory.</p>
+      </div>
+    </div>
 
-  <div class="card">
+    <form class="shelter-form" (ngSubmit)="createShelter()">
+      <label class="field">
+        <span>Shelter Name <b>*</b></span>
+        <input
+          type="text"
+          placeholder="e.g. Riverside High Gymnasium"
+          [(ngModel)]="newShelter.name"
+          name="name"
+          required
+        />
+      </label>
 
-    <h2>Register Emergency Shelter</h2>
+      <label class="field">
+        <span>District <b>*</b></span>
+        <input
+          type="text"
+          placeholder="e.g. District 04 - Northern Valley"
+          [(ngModel)]="newShelter.district"
+          name="district"
+          required
+        />
+      </label>
 
-    <form
-      (ngSubmit)="createShelter()"
-    >
+      <label class="field field-full">
+        <span>Physical Address <b>*</b></span>
+        <input
+          type="text"
+          placeholder="Street, town, and district"
+          [(ngModel)]="newShelter.address"
+          name="address"
+          required
+        />
+      </label>
 
-      <input
-        type="text"
-        placeholder="Shelter Name"
-        [(ngModel)]="newShelter.name"
-        name="name"
-        required
-      />
+      <label class="field">
+        <span>Authorized Bed Capacity <b>*</b></span>
+        <input
+          type="number"
+          placeholder="e.g. 350"
+          [(ngModel)]="newShelter.capacity"
+          name="capacity"
+          required
+        />
+      </label>
 
-      <input
-        type="text"
-        placeholder="District"
-        [(ngModel)]="newShelter.district"
-        name="district"
-        required
-      />
+      <label class="field">
+        <span>Facility Manager / Lead Officer</span>
+        <input
+          type="text"
+          placeholder="e.g. Sgt. Sarah Jenkins"
+          [(ngModel)]="newShelter.managerName"
+          name="managerName"
+        />
+      </label>
 
-      <input
-        type="text"
-        placeholder="Address"
-        [(ngModel)]="newShelter.address"
-        name="address"
-        required
-      />
+      <label class="field field-full">
+        <span>Direct Hotline / Radio</span>
+        <input
+          type="text"
+          placeholder="e.g. +1 (555) 234-8890"
+          [(ngModel)]="newShelter.managerContact"
+          name="managerContact"
+        />
+      </label>
 
-      <input
-        type="number"
-        placeholder="Capacity"
-        [(ngModel)]="newShelter.capacity"
-        name="capacity"
-        required
-      />
-
-      <input
-        type="text"
-        placeholder="Manager Name"
-        [(ngModel)]="newShelter.managerName"
-        name="managerName"
-      />
-
-      <input
-        type="text"
-        placeholder="Manager Contact"
-        [(ngModel)]="newShelter.managerContact"
-        name="managerContact"
-      />
-
-      <button type="submit">
-        Register Shelter
-      </button>
-
+      <div class="form-actions">
+        <button class="primary-button" type="submit">
+          <span aria-hidden="true">＋</span>
+          Register Shelter
+        </button>
+      </div>
     </form>
+  </section>
 
-  </div>
+  <section class="panel directory-panel">
+    <div class="directory-heading">
+      <div>
+        <h2>Registered Shelters</h2>
+        <p>Current capacity, occupancy, and operational status</p>
+      </div>
+      <span class="listed-count">{{ shelters.length }} listed</span>
+    </div>
 
-
-  <div class="card">
-
-    <h2>Registered Shelters</h2>
-
-    <table>
-
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>District</th>
-          <th>Capacity</th>
-          <th>Occupancy</th>
-          <th>Status</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-
-      <tbody>
-
-        <tr
-          *ngFor="let shelter of shelters"
-        >
-
-          <td>
-            {{ shelter.name }}
-          </td>
-
-          <td>
-            {{ shelter.district }}
-          </td>
-
-          <td>
-            {{ shelter.capacity }}
-          </td>
-
-          <td>
-            {{ shelter.currentOccupancy }}
-            /
-            {{ shelter.capacity }}
-          </td>
-
-          <td>
-            {{ shelter.status }}
-          </td>
-
-          <td>
-            <button
-              *ngIf="shelter.status !== 'CLOSED'"
-              (click)="closeShelter(shelter._id)"
-            >
-              Close
-            </button>
-          </td>
-
-        </tr>
-
-      </tbody>
-
-    </table>
-
-  </div>
-
-</div>
+    <div class="table-scroll">
+      <table class="shelter-table">
+        <thead>
+          <tr>
+            <th>Shelter Name</th>
+            <th>District</th>
+            <th>Capacity</th>
+            <th>Current Occupancy</th>
+            <th>Operational Status</th>
+            <th class="action-heading">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let shelter of shelters">
+            <td>
+              <div class="facility-name">
+                <span class="facility-icon" aria-hidden="true">⌂</span>
+                <span>{{ shelter.name }}</span>
+              </div>
+              <small class="facility-address">{{ shelter.address }}</small>
+            </td>
+            <td><span class="district-chip">{{ shelter.district }}</span></td>
+            <td class="number-cell">{{ shelter.capacity }}</td>
+            <td class="number-cell">
+              {{ shelter.currentOccupancy }} <span class="capacity-total">/ {{ shelter.capacity }}</span>
+            </td>
+            <td><span class="status-chip">{{ shelter.status }}</span></td>
+            <td class="action-cell">
+              <button
+                class="close-button"
+                *ngIf="shelter.status !== 'CLOSED'"
+                (click)="closeShelter(shelter._id)"
+              >
+                Close
+              </button>
+              <span class="closed-label" *ngIf="shelter.status === 'CLOSED'">Closed</span>
+            </td>
+          </tr>
+          <tr *ngIf="shelters.length === 0">
+            <td class="empty-state" colspan="6">No shelters are registered yet.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>

@@ -15,11 +15,13 @@ import { LoginDto } from './dto/login.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { UserRole } from './enums/user-role.enum';
+import { RescueTeam } from '../uc3-rescue/rescue-teams/schemas/rescue-team.schema';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+    @InjectModel(RescueTeam.name) private readonly rescueTeamModel: Model<RescueTeam>,
     @InjectModel(RescueTeam.name) private readonly rescueTeamModel: Model<RescueTeamDocument>,
     private readonly jwtService: JwtService,
   ) {}
@@ -38,7 +40,7 @@ export class AuthService {
     const hashedPassword = await bcrypt.hash(dto.password, 10);
     const role = dto.role || UserRole.CITIZEN;
 
-    let generatedTeamId = dto.badgeId;
+    let generatedTeamId: string | undefined;
 
     if (role === UserRole.RESCUE_TEAM || role === ('RESCUE_TEAM' as any)) {
       generatedTeamId = await this.generateTeamId();
@@ -70,6 +72,12 @@ export class AuthService {
       phone: dto.phone || '',
       pushToken: dto.pushToken || '',
       badgeId: dto.badgeId || '',
+      teamId: role === UserRole.RESCUE_TEAM ? generatedTeamId : undefined,
+      organization: dto.organization,
+      teamType: dto.teamType,
+      membersCount: dto.membersCount,
+      latitude: dto.latitude,
+      longitude: dto.longitude,
       teamId: generatedTeamId,
       organization: dto.organization,
       teamType: dto.teamType,
@@ -320,5 +328,10 @@ export class AuthService {
       message: 'Default system users seeded successfully! Password for all: "password123"',
       users: defaultUsers.map((u) => ({ email: u.email, role: u.role, name: u.name })),
     };
+  }
+
+  private async generateTeamId(): Promise<string> {
+    const teamCount = await this.rescueTeamModel.countDocuments().exec();
+    return `TEAM-${(teamCount + 1).toString().padStart(3, '0')}`;
   }
 }

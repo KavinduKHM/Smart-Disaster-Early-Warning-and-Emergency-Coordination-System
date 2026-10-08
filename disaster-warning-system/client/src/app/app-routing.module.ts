@@ -54,6 +54,13 @@ const routes: Routes = [
     canActivate: [AuthGuard], 
     data: { roles: ['DISTRICT_OFFICER'] } 
   },
+  {
+    path: 'relief',
+    canActivate: [AuthGuard],
+    data: { roles: ['DISTRICT_OFFICER'] },
+    loadChildren: () =>
+      import('./features/uc4-relief/relief.module').then((module) => module.ReliefModule),
+  },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: '**', redirectTo: '/login' }
 ];

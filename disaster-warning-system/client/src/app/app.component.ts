@@ -5,7 +5,7 @@ import { NotificationService, ToastMessage } from './core/services/notification.
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styles: [],
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
   title = 'Disaster Warning System';

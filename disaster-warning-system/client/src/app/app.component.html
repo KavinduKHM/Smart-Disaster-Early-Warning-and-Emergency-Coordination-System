@@ -1,21 +1,40 @@
-<nav class="main-nav">
-
-  <a routerLink="/relief/shelters">
-    Shelters
+<nav class="main-nav" aria-label="Relief management">
+  <a
+    routerLink="/relief/shelters"
+    routerLinkActive="active-link"
+    [routerLinkActiveOptions]="{ exact: true }"
+    ariaCurrentWhenActive="page"
+  >
+    <span class="nav-icon" aria-hidden="true">⌂</span>
+    <span>Shelters</span>
   </a>
-
-  <a routerLink="/relief/evacuees">
-    Evacuees
+  <a
+    routerLink="/relief/evacuees"
+    routerLinkActive="active-link"
+    [routerLinkActiveOptions]="{ exact: true }"
+    ariaCurrentWhenActive="page"
+  >
+    <span class="nav-icon" aria-hidden="true">♙</span>
+    <span>Evacuees</span>
   </a>
-
-  <a routerLink="/relief/resources">
-    Resources
+  <a
+    routerLink="/relief/resources"
+    routerLinkActive="active-link"
+    [routerLinkActiveOptions]="{ exact: true }"
+    ariaCurrentWhenActive="page"
+  >
+    <span class="nav-icon" aria-hidden="true">▦</span>
+    <span>Resources</span>
   </a>
-
-  <a routerLink="/relief/allocation">
-    Allocation
+  <a
+    routerLink="/relief/allocation"
+    routerLinkActive="active-link"
+    [routerLinkActiveOptions]="{ exact: true }"
+    ariaCurrentWhenActive="page"
+  >
+    <span class="nav-icon" aria-hidden="true">⇢</span>
+    <span>Allocation</span>
   </a>
-
 </nav>
 
 <router-outlet></router-outlet>
