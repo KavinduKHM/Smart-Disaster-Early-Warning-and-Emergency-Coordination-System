@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Query, Delete } from '@nestjs/common';
 import { RescueAssignmentsService } from './rescue-assignments.service';
 import { CreateAssignmentDto } from './dto/create-assignment.dto';
 import { UpdateAssignmentDto } from './dto/update-assignment.dto';
@@ -27,6 +27,16 @@ export class RescueAssignmentsController {
     return this.rescueAssignmentsService.getStatusHistory(id);
   }
 
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateAssignmentDto: UpdateAssignmentDto) {
+    return this.rescueAssignmentsService.update(id, updateAssignmentDto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.rescueAssignmentsService.remove(id);
+  }
+
   @Patch(':id/accept')
   accept(@Param('id') id: string, @Body('updatedBy') updatedBy: string) {
     return this.rescueAssignmentsService.updateStatus(id, 'ACCEPTED', updatedBy);
@@ -35,6 +45,11 @@ export class RescueAssignmentsController {
   @Patch(':id/reject')
   reject(@Param('id') id: string, @Body('updatedBy') updatedBy: string, @Body('notes') notes: string) {
     return this.rescueAssignmentsService.updateStatus(id, 'REJECTED', updatedBy, notes);
+  }
+
+  @Patch(':id/cancel')
+  cancel(@Param('id') id: string, @Body('updatedBy') updatedBy: string, @Body('notes') notes: string) {
+    return this.rescueAssignmentsService.updateStatus(id, 'CANCELLED', updatedBy, notes);
   }
 
   @Patch(':id/en-route')
@@ -52,3 +67,4 @@ export class RescueAssignmentsController {
     return this.rescueAssignmentsService.updateStatus(id, 'COMPLETED', updatedBy, notes);
   }
 }
+

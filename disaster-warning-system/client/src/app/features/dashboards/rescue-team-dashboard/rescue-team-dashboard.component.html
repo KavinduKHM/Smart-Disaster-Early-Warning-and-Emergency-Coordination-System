@@ -1,86 +1,802 @@
-<div class="min-h-screen bg-slate-900 text-slate-100 font-sans">
-  <!-- Top Navigation Header -->
-  <header class="bg-slate-800 border-b border-slate-700 shadow-lg px-6 py-4 flex flex-wrap items-center justify-between gap-4">
-    <div class="flex items-center space-x-3">
-      <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-lg border border-amber-500/30">
+<div class="flex w-full h-full overflow-hidden bg-[#F8FAFC]" style="font-family:'Inter',system-ui,sans-serif">
+
+  <!-- SIDEBAR (Primary: #0B192C) -->
+  <aside class="w-[260px] bg-[#0B192C] flex flex-col flex-shrink-0 h-full overflow-hidden text-white shadow-xl z-20">
+
+    <!-- Brand Header -->
+    <div class="flex items-center gap-3 px-6 py-5 border-b border-white/10">
+      <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center flex-shrink-0 shadow-lg text-lg">
         🛡️
       </div>
-      <div>
-        <h1 class="text-xl font-bold tracking-tight text-white">Rescue Team Tactical Operations Portal</h1>
-        <p class="text-xs text-slate-400">Emergency Response Coordination & Telemetry Dispatch</p>
+      <div class="min-w-0">
+        <div class="text-sm font-bold text-white leading-tight truncate">Rescue Operations</div>
+        <div class="text-[11px] text-[#64748B] uppercase tracking-wider mt-0.5">Field Tactical Command</div>
       </div>
     </div>
 
-    <div class="flex items-center space-x-4">
-      <div class="text-right text-xs">
-        <p class="font-semibold text-white">{{ user?.name || 'Rescue Team Member' }}</p>
-        <span class="inline-block px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono text-[11px] border border-amber-500/30 mt-0.5">
-          {{ user?.teamId || 'TEAM-DISPATCH' }} | {{ user?.district || 'National' }} District
+    <!-- Active Unit Status & Connectivity Badge -->
+    <div class="px-5 py-3.5 border-b border-white/10 bg-black/20">
+      <div class="flex items-center justify-between mb-1.5">
+        <div class="flex items-center gap-2 min-w-0">
+          <span [ngClass]="currentTeam?.status === 'AVAILABLE' ? 'bg-emerald-400' : 'bg-amber-400'" 
+            class="w-2.5 h-2.5 rounded-full animate-pulse flex-shrink-0"></span>
+          <span class="text-xs font-bold text-white truncate">{{ currentTeam?.name || 'Rescue Unit 01' }}</span>
+        </div>
+        <span [ngClass]="currentTeam?.status === 'AVAILABLE' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' : 'bg-amber-500/20 text-amber-300 border-amber-500/30'"
+          class="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border">
+          {{ currentTeam?.status === 'AVAILABLE' ? 'READY' : 'STANDBY' }}
         </span>
       </div>
-      <button 
-        (click)="logout()" 
-        class="px-4 py-2 text-xs font-semibold text-rose-400 hover:text-white bg-rose-500/10 hover:bg-rose-600 rounded-lg transition-all duration-200 border border-rose-500/20">
-        Sign Out
+      
+      <div class="flex items-center justify-between text-[11px]">
+        <span class="text-slate-400 truncate">{{ currentTeam?.district || 'Sector' }} District</span>
+        <span [ngClass]="isEffectivelyOffline ? 'text-amber-400 font-bold' : 'text-emerald-400'" class="font-mono text-[10px] flex items-center gap-1">
+          <span>{{ isEffectivelyOffline ? '⚡ OFFLINE' : '📶 ONLINE' }}</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Navigation Items -->
+    <nav class="flex-1 overflow-y-auto py-4 px-4 space-y-1.5">
+      <button *ngFor="let item of navItems"
+        (click)="navigate(item.id)"
+        class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 group relative"
+        [ngClass]="activePage === item.id
+          ? 'bg-[#1D4ED8] text-white shadow-md'
+          : 'text-[#64748B] hover:bg-white/5 hover:text-white'">
+
+        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" [attr.d]="item.icon"/>
+        </svg>
+        <span class="text-sm font-medium flex-1 truncate">{{ item.label }}</span>
+        
+        <!-- Counter Badge -->
+        <span *ngIf="item.count && item.count() > 0" 
+          [ngClass]="item.id === 'connectivity' ? 'bg-amber-500 text-slate-900 font-black' : 'bg-blue-600 text-white'"
+          class="px-2 py-0.5 rounded-full text-[10px] font-mono shadow-sm">
+          {{ item.count() }}
+        </span>
+      </button>
+    </nav>
+
+    <!-- Bottom: Profile & Logout -->
+    <div class="border-t border-white/10 p-4 bg-black/15">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-full bg-[#1D4ED8] flex items-center justify-center text-white text-xs font-bold flex-shrink-0 shadow">
+          {{ userInitials }}
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="text-xs font-semibold text-white truncate">{{ user?.name || currentTeam?.name || 'Rescue Officer' }}</div>
+          <div class="text-[10px] text-[#64748B] truncate font-mono">{{ currentTeam?.teamId || 'TEAM-DISPATCH' }}</div>
+        </div>
+        <button (click)="logout()" title="Sign Out" class="text-[#64748B] hover:text-[#DC2626] transition-colors p-1.5 rounded-md hover:bg-white/5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT AREA -->
+  <div class="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
+    
+    <!-- Top Header Bar -->
+    <header class="h-16 bg-white border-b border-[#E2E8F0] flex items-center justify-between px-6 lg:px-8 flex-shrink-0 z-10 shadow-sm">
+      <div class="flex items-center gap-4">
+        <h2 class="text-lg font-bold text-[#0B192C] flex items-center gap-2">
+          <span *ngIf="activePage === 'missions'">Assigned Rescue Missions</span>
+          <span *ngIf="activePage === 'navigation'">Tactical Route & Navigation</span>
+          <span *ngIf="activePage === 'connectivity'">Field Network & Offline Sync (Scenario A4)</span>
+          <span *ngIf="activePage === 'readiness'">Unit Readiness & Roster (Scenario A1)</span>
+          <span *ngIf="activePage === 'comms'">Communications & Dispatch Logs</span>
+        </h2>
+      </div>
+
+      <div class="flex items-center gap-3">
+
+        <!-- Active Unit Switcher (Convenient for live testing) -->
+        <div class="hidden sm:flex items-center gap-2 text-xs text-[#64748B]">
+          <span class="font-medium text-[#0B192C]">Unit:</span>
+          <select [ngModel]="selectedTeamId" (ngModelChange)="switchActiveTeam($event)"
+            class="px-2.5 py-1.5 rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] text-xs font-semibold text-[#0B192C] focus:outline-none focus:ring-1 focus:ring-[#1D4ED8]">
+            <option *ngFor="let tm of teams" [value]="tm.teamId">
+              {{ tm.name }} ({{ tm.district }})
+            </option>
+          </select>
+        </div>
+
+        <!-- Network Connectivity Status & Simulator Toggle (A4) -->
+        <button (click)="toggleSimulatedOffline()"
+          [title]="isEffectivelyOffline ? 'Click to restore online network connectivity' : 'Click to simulate field connectivity loss'"
+          [ngClass]="isEffectivelyOffline ? 'bg-amber-500/15 border-amber-400 text-amber-700 hover:bg-amber-500/25' : 'bg-emerald-50 border-emerald-300 text-emerald-700 hover:bg-emerald-100'"
+          class="flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-semibold transition-all">
+          <span [ngClass]="isEffectivelyOffline ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'" class="w-2 h-2 rounded-full"></span>
+          <span>{{ isEffectivelyOffline ? '⚡ Offline Mode (Click to Connect)' : '📶 Online Link (Click to Cut)' }}</span>
+          <span *ngIf="offlineQueue.length > 0" class="ml-1 px-1.5 py-0.2 rounded bg-amber-600 text-white font-mono text-[10px]">
+            {{ offlineQueue.length }}
+          </span>
+        </button>
+
+        <!-- Notification Bell (Connected to NotificationService) -->
+        <app-notification-bell 
+          role="RESCUE_TEAM" 
+          (notificationAction)="handleNotificationAction($event)">
+        </app-notification-bell>
+
+        <!-- UTC Time -->
+        <div class="hidden lg:flex items-center gap-1.5 text-xs font-mono text-[#64748B] bg-[#F8FAFC] px-2.5 py-1.5 rounded-md border border-[#E2E8F0]">
+          UTC+05:30
+        </div>
+      </div>
+    </header>
+
+    <!-- Feedback Message Banner -->
+    <div *ngIf="feedbackMessage" 
+      [ngClass]="{
+        'bg-emerald-50 border-emerald-300 text-emerald-800': feedbackType === 'success',
+        'bg-rose-50 border-rose-300 text-rose-800': feedbackType === 'error',
+        'bg-amber-50 border-amber-300 text-amber-800': feedbackType === 'warning'
+      }"
+      class="px-6 py-2.5 border-b text-xs flex items-center justify-between transition-all">
+      <div class="flex items-center gap-2">
+        <span *ngIf="feedbackType === 'success'">✅</span>
+        <span *ngIf="feedbackType === 'error'">🚨</span>
+        <span *ngIf="feedbackType === 'warning'">⚠️</span>
+        <span class="font-medium">{{ feedbackMessage }}</span>
+      </div>
+      <button (click)="feedbackMessage = null" class="text-slate-400 hover:text-slate-600 font-bold ml-4">✕</button>
+    </div>
+
+    <!-- SCENARIO A4: Offline Mode Floating Alert -->
+    <div *ngIf="isEffectivelyOffline" 
+      class="bg-amber-500 text-slate-900 px-6 py-2 text-xs font-bold flex items-center justify-between shadow-inner">
+      <div class="flex items-center gap-2">
+        <span class="animate-pulse">⚡</span>
+        <span>A4 FIELD NETWORK OUTAGE: Operating offline. All telemetry and mission status transitions will be safely queued locally.</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="font-mono text-[11px] bg-slate-900 text-amber-300 px-2 py-0.5 rounded">
+          {{ offlineQueue.length }} Updates Stored
+        </span>
+        <button (click)="toggleSimulatedOffline()" class="underline hover:text-white transition-colors">
+          Reconnect Now →
+        </button>
+      </div>
+    </div>
+
+    <!-- Scrollable Page Content -->
+    <main class="flex-1 overflow-y-auto bg-[#F8FAFC] p-6 lg:p-8 flex flex-col min-h-0 space-y-6">
+
+      <!-- ================= PAGE 1: ACTIVE MISSIONS ================= -->
+      <div *ngIf="activePage === 'missions'" class="flex-1 flex flex-col space-y-6 min-h-0">
+        
+        <!-- Summary Stats Ribbon -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="bg-white p-4 rounded-xl border border-[#E2E8F0] shadow-sm flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-lg font-bold">
+              ⏳
+            </div>
+            <div>
+              <div class="text-xl font-black text-[#0B192C]">{{ pendingMissionsCount }}</div>
+              <div class="text-[11px] text-[#64748B] uppercase tracking-wider font-semibold">Pending Acceptance</div>
+            </div>
+          </div>
+
+          <div class="bg-white p-4 rounded-xl border border-[#E2E8F0] shadow-sm flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-blue-50 text-[#1D4ED8] flex items-center justify-center text-lg font-bold">
+              ⚡
+            </div>
+            <div>
+              <div class="text-xl font-black text-[#0B192C]">{{ activeMissionsCount }}</div>
+              <div class="text-[11px] text-[#64748B] uppercase tracking-wider font-semibold">Active Missions</div>
+            </div>
+          </div>
+
+          <div class="bg-white p-4 rounded-xl border border-[#E2E8F0] shadow-sm flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg font-bold">
+              ✓
+            </div>
+            <div>
+              <div class="text-xl font-black text-[#0B192C]">{{ completedMissionsCount }}</div>
+              <div class="text-[11px] text-[#64748B] uppercase tracking-wider font-semibold">Completed</div>
+            </div>
+          </div>
+
+          <div class="bg-white p-4 rounded-xl border border-[#E2E8F0] shadow-sm flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-slate-100 text-[#0B192C] flex items-center justify-center text-lg font-bold">
+              📶
+            </div>
+            <div>
+              <div class="text-xl font-black text-[#0B192C]">{{ offlineQueue.length }}</div>
+              <div class="text-[11px] text-[#64748B] uppercase tracking-wider font-semibold">Offline Queued (A4)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mission Cards List -->
+        <div class="bg-white rounded-2xl border border-[#E2E8F0] shadow-sm overflow-hidden flex-1 flex flex-col min-h-0">
+          <div class="px-6 py-4 border-b border-[#E2E8F0] flex items-center justify-between bg-[#F8FAFC]">
+            <div>
+              <h3 class="text-base font-bold text-[#0B192C]">Assigned Rescue Directives</h3>
+              <p class="text-xs text-[#64748B] mt-0.5">
+                Review assigned dispatches, accept or decline assignments (A2), and advance operational status.
+              </p>
+            </div>
+            <button (click)="loadAllData()" class="px-3 py-1.5 text-xs font-semibold text-[#1D4ED8] bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors flex items-center gap-1.5">
+              <span>🔄 Refresh</span>
+            </button>
+          </div>
+
+          <!-- Loading State -->
+          <div *ngIf="loading" class="p-12 text-center text-[#64748B]">
+            <svg class="w-8 h-8 animate-spin mx-auto text-[#1D4ED8] mb-3" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            Loading mission queue...
+          </div>
+
+          <!-- Empty State -->
+          <div *ngIf="!loading && myAssignments.length === 0" class="p-12 text-center text-[#64748B]">
+            <div class="w-16 h-16 rounded-full bg-slate-100 text-slate-400 mx-auto flex items-center justify-center text-2xl mb-3">
+              🛡️
+            </div>
+            <h4 class="text-sm font-bold text-[#0B192C]">No Active Assignments for {{ currentTeam?.name }}</h4>
+            <p class="text-xs text-[#64748B] mt-1 max-w-sm mx-auto">
+              This unit has no pending rescue orders. When the District Officer dispatches a mission, it will appear here instantly.
+            </p>
+          </div>
+
+          <!-- Assignments Cards -->
+          <div *ngIf="!loading && myAssignments.length > 0" class="flex-1 overflow-y-auto p-6 space-y-4">
+            <div *ngFor="let item of myAssignments" 
+              class="bg-white rounded-xl border border-[#E2E8F0] shadow-sm hover:shadow-md transition-all p-5 relative overflow-hidden group">
+
+              <!-- Left Status Accent Stripe -->
+              <div [ngClass]="{
+                'bg-amber-500': item.status === 'ASSIGNED',
+                'bg-blue-600': item.status === 'ACCEPTED',
+                'bg-indigo-600': item.status === 'EN_ROUTE',
+                'bg-purple-600': item.status === 'ON_SITE',
+                'bg-emerald-600': item.status === 'COMPLETED',
+                'bg-rose-600': item.status === 'CANCELLED' || item.status === 'REJECTED'
+              }" class="absolute left-0 top-0 bottom-0 w-1.5"></div>
+
+              <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                
+                <!-- Main Mission Info -->
+                <div class="space-y-2 flex-1 min-w-0 pl-2">
+                  <div class="flex flex-wrap items-center gap-2">
+                    <span class="font-mono text-xs font-bold text-[#1D4ED8] bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                      {{ item.assignmentId }}
+                    </span>
+                    <span class="font-mono text-xs font-bold text-[#DC2626] bg-red-50 px-2 py-0.5 rounded border border-red-200">
+                      INCIDENT: {{ item.incidentId }}
+                    </span>
+                    <span [ngClass]="getStatusBadgeClass(item.status)" 
+                      class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full border font-mono">
+                      {{ item.status }}
+                    </span>
+                    <span class="text-[11px] text-[#64748B]">
+                      Assigned: {{ item.assignedAt | date:'medium' }}
+                    </span>
+                  </div>
+
+                  <!-- Incident & Dispatcher Info -->
+                  <div>
+                    <h4 class="text-sm font-bold text-[#0B192C]">
+                      {{ getNavigationIncident(item)?.type || 'Emergency Rescue Mission' }} - {{ getNavigationIncident(item)?.district || currentTeam?.district }} District
+                    </h4>
+                    <p class="text-xs text-[#475569] mt-0.5 leading-relaxed">
+                      {{ item.notes || getNavigationIncident(item)?.description || 'Proceed to designated disaster zone immediately.' }}
+                    </p>
+                  </div>
+
+                  <!-- Transit Corridor & ETA -->
+                  <div class="flex flex-wrap items-center gap-4 text-xs pt-1 text-[#64748B]">
+                    <div class="flex items-center gap-1 font-mono text-[#0B192C]">
+                      <span>📏 Distance:</span>
+                      <strong>{{ getDistanceKm(item) }} km</strong>
+                    </div>
+                    <div class="flex items-center gap-1 text-emerald-700 font-semibold">
+                      <span>⏱️ ETA:</span>
+                      <span>{{ getETA(item) }}</span>
+                    </div>
+                    <div class="flex items-center gap-1 text-[#64748B]">
+                      <span>👤 Assigned By:</span>
+                      <span>{{ item.assignedBy }}</span>
+                    </div>
+                  </div>
+
+                  <!-- Scenario A2 Notice if Cancelled -->
+                  <div *ngIf="item.status === 'CANCELLED' || item.status === 'REJECTED'" 
+                    class="bg-rose-50 border border-rose-200 rounded-lg p-2.5 text-xs text-rose-800 flex items-center gap-2 mt-2">
+                    <span class="text-base">🚨</span>
+                    <div>
+                      <strong>Scenario A2 - Assignment Cancelled:</strong>
+                      <span> This unit reported inability to accept. The incident remains active and District Officer has been notified to dispatch a replacement team.</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Action Controls Pipeline -->
+                <div class="flex flex-wrap items-center gap-2 lg:flex-col lg:items-end flex-shrink-0 pt-2 lg:pt-0">
+                  
+                  <!-- 1. Step 14 / Scenario A2: ASSIGNED STATE (Accept or Cannot Accept) -->
+                  <ng-container *ngIf="item.status === 'ASSIGNED'">
+                    <div class="flex items-center gap-2">
+                      <!-- Accept Button -->
+                      <button (click)="acceptMission(item)" [disabled]="actionLoading"
+                        class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg shadow-sm transition-all flex items-center gap-1.5">
+                        <span>✓ Accept Mission</span>
+                      </button>
+
+                      <!-- Step 14 / A2: Cannot Accept Button -->
+                      <button (click)="openDeclineModal(item)" [disabled]="actionLoading"
+                        class="px-3.5 py-2 bg-rose-50 hover:bg-rose-600 hover:text-white text-rose-700 border border-rose-300 text-xs font-bold rounded-lg shadow-sm transition-all flex items-center gap-1.5"
+                        title="Rescue team cannot accept assignment (Scenario A2)">
+                        <span>✕ Cannot Accept (A2)</span>
+                      </button>
+                    </div>
+                  </ng-container>
+
+                  <!-- 2. ACCEPTED STATE -> Depart En Route -->
+                  <ng-container *ngIf="item.status === 'ACCEPTED'">
+                    <button (click)="markEnRoute(item)" [disabled]="actionLoading"
+                      class="px-4 py-2 bg-[#1D4ED8] hover:bg-blue-700 text-white text-xs font-bold rounded-lg shadow-sm transition-all flex items-center gap-1.5">
+                      <span>🚒 Depart Base (En Route)</span>
+                    </button>
+                  </ng-container>
+
+                  <!-- 3. EN ROUTE STATE -> Arrived On Site -->
+                  <ng-container *ngIf="item.status === 'EN_ROUTE'">
+                    <button (click)="markOnSite(item)" [disabled]="actionLoading"
+                      class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-lg shadow-sm transition-all flex items-center gap-1.5">
+                      <span>📍 Arrived On Scene (On Site)</span>
+                    </button>
+                  </ng-container>
+
+                  <!-- 4. ON SITE STATE -> Complete Mission -->
+                  <ng-container *ngIf="item.status === 'ON_SITE'">
+                    <button (click)="completeMission(item)" [disabled]="actionLoading"
+                      class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg shadow-sm transition-all flex items-center gap-1.5">
+                      <span>🏁 Complete Operation</span>
+                    </button>
+                  </ng-container>
+
+                  <!-- View Map & Dossier Links -->
+                  <div class="flex items-center gap-2 mt-1">
+                    <button (click)="navigate('navigation')" 
+                      class="text-xs font-semibold text-[#1D4ED8] hover:underline flex items-center gap-1">
+                      <span>🗺️ Live Route</span>
+                    </button>
+                    <span class="text-slate-300">•</span>
+                    <button (click)="openDetailModal(item)" 
+                      class="text-xs font-semibold text-[#64748B] hover:text-[#0B192C]">
+                      Dossier
+                    </button>
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ================= PAGE 2: TACTICAL NAVIGATION ================= -->
+      <div *ngIf="activePage === 'navigation'" class="flex-1 flex flex-col space-y-4 min-h-0">
+        
+        <div class="bg-white p-4 rounded-xl border border-[#E2E8F0] shadow-sm flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h3 class="text-base font-bold text-[#0B192C]">Google Maps Emergency Routing</h3>
+            <p class="text-xs text-[#64748B]">Real-time driving navigation corridor towards target incident coordinates.</p>
+          </div>
+
+          <!-- GPS Telemetry Simulator & Coordinate Transmitter -->
+          <div class="flex items-center gap-2">
+            <div class="text-right text-xs font-mono">
+              <span class="text-[#64748B]">Current GPS:</span>
+              <strong class="text-[#1D4ED8] ml-1">[{{ currentLat }}, {{ currentLng }}]</strong>
+            </div>
+            <div class="flex items-center gap-1">
+              <button (click)="transmitLocationUpdate(0.015, 0.012)" 
+                class="px-2.5 py-1 text-xs font-bold text-slate-700 bg-slate-100 border border-slate-300 rounded hover:bg-slate-200">
+                + North
+              </button>
+              <button (click)="transmitLocationUpdate(-0.015, -0.012)" 
+                class="px-2.5 py-1 text-xs font-bold text-slate-700 bg-slate-100 border border-slate-300 rounded hover:bg-slate-200">
+                + South
+              </button>
+              <button (click)="transmitLocationUpdate(0.005, 0.005)" 
+                class="px-3 py-1 text-xs font-bold text-white bg-[#1D4ED8] rounded hover:bg-blue-700 flex items-center gap-1 shadow-sm">
+                <span>📍 Transmit GPS</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Google Maps Direct Navigation Container -->
+        <div *ngIf="myAssignments.length > 0" class="flex-1 rounded-2xl overflow-hidden border border-[#E2E8F0] shadow-md bg-slate-100 relative min-h-[460px]">
+          <iframe 
+            [src]="getGoogleMapsEmbedUrl(myAssignments[0])" 
+            class="w-full h-full border-0 min-h-[460px]" 
+            allowfullscreen 
+            loading="lazy">
+          </iframe>
+
+          <!-- Top-Left Floating Tactical HUD Overlay -->
+          <div class="absolute top-4 left-4 z-10 bg-[#0B192C]/90 backdrop-blur-md text-white p-4 rounded-xl border border-slate-700 shadow-xl max-w-xs space-y-2">
+            <div class="flex items-center justify-between border-b border-slate-700 pb-1.5">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-blue-400 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                Active Mission Nav
+              </span>
+              <span class="text-[10px] font-mono text-slate-400">{{ myAssignments[0].assignmentId }}</span>
+            </div>
+            <div class="text-xs space-y-1">
+              <div class="flex justify-between">
+                <span class="text-slate-400">Target:</span>
+                <span class="font-bold text-red-400">{{ getNavigationIncident(myAssignments[0])?.type }}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-400">Transit Distance:</span>
+                <span class="font-bold text-emerald-400">{{ getDistanceKm(myAssignments[0]) }} km</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-400">ETA to Scene:</span>
+                <span class="font-bold text-white">{{ getETA(myAssignments[0]) }}</span>
+              </div>
+            </div>
+            <div class="pt-1">
+              <a [href]="getGoogleMapsExternalUrl(myAssignments[0])" target="_blank" rel="noopener noreferrer"
+                class="w-full block text-center py-1.5 text-xs font-bold text-white bg-[#1D4ED8] hover:bg-blue-600 rounded-lg transition-colors">
+                Open in Full Google Maps ↗
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="myAssignments.length === 0" class="flex-1 bg-white rounded-2xl border border-[#E2E8F0] p-12 text-center text-[#64748B] flex flex-col items-center justify-center">
+          <div class="text-3xl mb-2">🗺️</div>
+          <h4 class="text-sm font-bold text-[#0B192C]">No Active Mission to Route</h4>
+          <p class="text-xs mt-1">Accept an assigned mission in the Active Missions tab to start live tactical routing.</p>
+        </div>
+
+      </div>
+
+      <!-- ================= PAGE 3: FIELD CONNECTIVITY (SCENARIO A4) ================= -->
+      <div *ngIf="activePage === 'connectivity'" class="flex-1 flex flex-col space-y-6 min-h-0">
+        
+        <!-- Explanation Banner -->
+        <div class="bg-gradient-to-r from-[#0B192C] to-[#1E293B] text-white p-6 rounded-2xl border border-slate-700 shadow-md">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl flex-shrink-0 border border-amber-500/30">
+              📶
+            </div>
+            <div>
+              <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono text-[10px] font-bold border border-amber-500/30">
+                SCENARIO A4 SPECIFICATION
+              </span>
+              <h3 class="text-lg font-bold text-white mt-1">Rescue Team Field Connectivity & Telemetry Synchronization</h3>
+              <p class="text-xs text-slate-300 mt-1 max-w-2xl leading-relaxed">
+                When working in flooded valleys or disaster zones, network connection may be lost temporarily.
+                Status transitions and GPS coordinates are preserved locally in browser storage. Once reconnected,
+                all stored updates synchronize with the central DMC server and update the District Officer's dashboard.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive Testing Controls -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          <!-- Connection Control Card -->
+          <div class="bg-white p-6 rounded-2xl border border-[#E2E8F0] shadow-sm space-y-4">
+            <h4 class="text-sm font-bold text-[#0B192C] flex items-center gap-2">
+              <span>📡 Network Status Controller</span>
+            </h4>
+            
+            <div class="p-4 rounded-xl border flex items-center justify-between"
+              [ngClass]="isEffectivelyOffline ? 'bg-amber-50 border-amber-200' : 'bg-emerald-50 border-emerald-200'">
+              <div class="flex items-center gap-3">
+                <span [ngClass]="isEffectivelyOffline ? 'bg-amber-500' : 'bg-emerald-500'" class="w-3.5 h-3.5 rounded-full animate-pulse"></span>
+                <div>
+                  <div class="text-xs font-bold" [ngClass]="isEffectivelyOffline ? 'text-amber-900' : 'text-emerald-900'">
+                    {{ isEffectivelyOffline ? 'OFFLINE MODE (Disconnected)' : 'ONLINE (Central Telemetry Link Active)' }}
+                  </div>
+                  <div class="text-[11px]" [ngClass]="isEffectivelyOffline ? 'text-amber-700' : 'text-emerald-700'">
+                    {{ isEffectivelyOffline ? 'Telemetry and state updates are directed to offline cache' : 'Direct API communication with server' }}
+                  </div>
+                </div>
+              </div>
+
+              <button (click)="toggleSimulatedOffline()"
+                [ngClass]="isEffectivelyOffline ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : 'bg-rose-600 hover:bg-rose-700 text-white'"
+                class="px-3.5 py-2 text-xs font-bold rounded-lg shadow-sm transition-all whitespace-nowrap">
+                {{ isEffectivelyOffline ? '📶 Reconnect Link' : '⚡ Simulate Outage' }}
+              </button>
+            </div>
+
+            <!-- Offline Action Simulator -->
+            <div class="pt-2 border-t border-[#E2E8F0] space-y-2">
+              <label class="text-xs font-semibold text-[#0B192C]">Simulate Field Telemetry while in current state:</label>
+              <div class="flex flex-wrap gap-2">
+                <button (click)="transmitLocationUpdate(0.01, 0.01)" 
+                  class="px-3 py-1.5 text-xs font-bold bg-[#F8FAFC] border border-[#CBD5E1] text-[#0B192C] rounded-lg hover:bg-slate-100">
+                  📍 Log GPS Telemetry
+                </button>
+                <button (click)="enqueueOfflineUpdate({ type: 'NOTES', teamId: currentTeam?.teamId || 'TEAM-1', payload: { sitrep: 'Severe rainfall continuing' }, summary: 'Field SitRep: High flood level' })" 
+                  class="px-3 py-1.5 text-xs font-bold bg-[#F8FAFC] border border-[#CBD5E1] text-[#0B192C] rounded-lg hover:bg-slate-100">
+                  📝 Log Field SitRep Note
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Offline Queue Synchronization Card -->
+          <div class="bg-white p-6 rounded-2xl border border-[#E2E8F0] shadow-sm space-y-4 flex flex-col justify-between">
+            <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                <h4 class="text-sm font-bold text-[#0B192C] flex items-center gap-2">
+                  <span>💾 Offline Cache Storage</span>
+                </h4>
+                <span class="text-xs font-mono font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                  {{ offlineQueue.length }} Item(s) Pending
+                </span>
+              </div>
+              <p class="text-xs text-[#64748B]">
+                Stored updates await network restoration. When synchronized, updates flush to central database and broadcast to the District Officer's dashboard.
+              </p>
+            </div>
+
+            <div class="flex items-center gap-3 pt-4 border-t border-[#E2E8F0]">
+              <button (click)="syncOfflineQueue()" [disabled]="offlineQueue.length === 0 || isSyncing || isEffectivelyOffline"
+                class="flex-1 py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2">
+                <span *ngIf="isSyncing" class="animate-spin">🔄</span>
+                <span>{{ isSyncing ? 'Synchronizing...' : 'Synchronize Stored Updates (A4)' }}</span>
+              </button>
+              <button (click)="clearOfflineQueue()" [disabled]="offlineQueue.length === 0"
+                class="px-3 py-2.5 text-xs font-bold text-[#DC2626] bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition-colors">
+                Clear
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Offline Queue Items Table -->
+        <div class="bg-white rounded-2xl border border-[#E2E8F0] shadow-sm overflow-hidden flex-1 flex flex-col min-h-0">
+          <div class="px-6 py-4 border-b border-[#E2E8F0] bg-[#F8FAFC] flex items-center justify-between">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-[#0B192C]">
+              Cached Telemetry Queue Items ({{ offlineQueue.length }})
+            </h4>
+            <span class="text-[11px] text-[#64748B] font-mono">Storage: localStorage['{{ OFFLINE_QUEUE_KEY }}']</span>
+          </div>
+
+          <div *ngIf="offlineQueue.length === 0" class="p-8 text-center text-xs text-[#64748B]">
+            No offline telemetry queued. System is fully synchronized with central servers.
+          </div>
+
+          <div *ngIf="offlineQueue.length > 0" class="flex-1 overflow-y-auto divide-y divide-[#F1F5F9]">
+            <div *ngFor="let item of offlineQueue" class="px-6 py-3.5 flex items-center justify-between hover:bg-slate-50 text-xs">
+              <div class="space-y-0.5">
+                <div class="font-bold text-[#0B192C] flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                  <span>{{ item.summary }}</span>
+                </div>
+                <div class="text-[10px] text-[#64748B] font-mono">
+                  Type: {{ item.type }} | Team: {{ item.teamId }} | Queued: {{ item.timestamp | date:'mediumTime' }}
+                </div>
+              </div>
+              <span class="text-[10px] font-mono bg-amber-100 text-amber-800 px-2 py-0.5 rounded border border-amber-300">
+                PENDING SYNC
+              </span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ================= PAGE 4: UNIT READINESS (SCENARIO A1) ================= -->
+      <div *ngIf="activePage === 'readiness'" class="flex-1 flex flex-col space-y-6 min-h-0">
+        
+        <!-- Explanation Banner -->
+        <div class="bg-gradient-to-r from-[#0B192C] to-[#1E293B] text-white p-6 rounded-2xl border border-slate-700 shadow-md">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-2xl flex-shrink-0 border border-blue-500/30">
+              🛡️
+            </div>
+            <div>
+              <span class="px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 font-mono text-[10px] font-bold border border-blue-500/30">
+                SCENARIO A1 SPECIFICATION
+              </span>
+              <h3 class="text-lg font-bold text-white mt-1">Rescue Team Availability & Readiness Controller</h3>
+              <p class="text-xs text-slate-300 mt-1 max-w-2xl leading-relaxed">
+                When a unit enters maintenance, refuels, or rests, they can toggle their status to UNAVAILABLE.
+                Under Scenario A1, if a District Officer attempts to dispatch an unavailable unit, the system immediately
+                notifies the officer that the team cannot be dispatched and returns them to the list of available teams.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Availability Toggle Card -->
+        <div class="bg-white p-6 rounded-2xl border border-[#E2E8F0] shadow-sm">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <h4 class="text-base font-bold text-[#0B192C]">{{ currentTeam?.name }} Readiness State</h4>
+              <p class="text-xs text-[#64748B] mt-0.5">
+                Current Operational Status: 
+                <strong [ngClass]="currentTeam?.status === 'AVAILABLE' ? 'text-emerald-600' : 'text-amber-600'">
+                  {{ currentTeam?.status === 'AVAILABLE' ? 'AVAILABLE (Ready for Dispatch)' : 'UNAVAILABLE (Maintenance / Standby)' }}
+                </strong>
+              </p>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <button (click)="toggleTeamReadiness('AVAILABLE')" [disabled]="actionLoading || currentTeam?.status === 'AVAILABLE'"
+                [ngClass]="currentTeam?.status === 'AVAILABLE' ? 'bg-emerald-600 text-white shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-emerald-50 hover:text-emerald-700'"
+                class="px-4 py-2.5 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5">
+                <span>✓ Set AVAILABLE</span>
+              </button>
+
+              <button (click)="toggleTeamReadiness('INACTIVE')" [disabled]="actionLoading || currentTeam?.status === 'INACTIVE'"
+                [ngClass]="currentTeam?.status === 'INACTIVE' ? 'bg-amber-600 text-white shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-amber-50 hover:text-amber-700'"
+                class="px-4 py-2.5 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5">
+                <span>⚠️ Set UNAVAILABLE (A1)</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Team Profile & Equipment Roster -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-white p-6 rounded-2xl border border-[#E2E8F0] shadow-sm space-y-3">
+            <h4 class="text-sm font-bold text-[#0B192C]">Unit Specifications</h4>
+            <div class="divide-y divide-[#F1F5F9] text-xs">
+              <div class="py-2.5 flex justify-between"><span class="text-[#64748B]">Organization:</span><span class="font-bold text-[#0B192C]">{{ currentTeam?.organization }}</span></div>
+              <div class="py-2.5 flex justify-between"><span class="text-[#64748B]">Unit Type:</span><span class="font-bold text-[#1D4ED8]">{{ currentTeam?.type }}</span></div>
+              <div class="py-2.5 flex justify-between"><span class="text-[#64748B]">Personnel Deployed:</span><span class="font-bold text-[#0B192C]">{{ currentTeam?.members }} Specialists</span></div>
+              <div class="py-2.5 flex justify-between"><span class="text-[#64748B]">Operational District:</span><span class="font-bold text-[#0B192C]">{{ currentTeam?.district }}</span></div>
+              <div class="py-2.5 flex justify-between"><span class="text-[#64748B]">Base Station Coordinates:</span><span class="font-mono text-[#0B192C]">[{{ currentLat }}, {{ currentLng }}]</span></div>
+            </div>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl border border-[#E2E8F0] shadow-sm space-y-3">
+            <h4 class="text-sm font-bold text-[#0B192C]">Deployment Equipment Checklist</h4>
+            <div class="space-y-2 text-xs">
+              <div class="flex items-center gap-2 text-emerald-700"><span>✅</span><span>High-water assault rescue boat (Zodiac 40HP)</span></div>
+              <div class="flex items-center gap-2 text-emerald-700"><span>✅</span><span>Emergency life vests & floatation lines (25 units)</span></div>
+              <div class="flex items-center gap-2 text-emerald-700"><span>✅</span><span>Paramedic trauma & hypothermia kit</span></div>
+              <div class="flex items-center gap-2 text-emerald-700"><span>✅</span><span>Satellite VHF communicator & GPS beacons</span></div>
+              <div class="flex items-center gap-2 text-emerald-700"><span>✅</span><span>Hydraulic cutting shears & tow winches</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ================= PAGE 5: COMMS & BULLETINS ================= -->
+      <div *ngIf="activePage === 'comms'" class="flex-1 flex flex-col space-y-4 min-h-0">
+        <div class="bg-white rounded-2xl border border-[#E2E8F0] shadow-sm p-6 flex-1 flex flex-col min-h-0">
+          <h3 class="text-base font-bold text-[#0B192C] mb-2">District Command Communications Feed</h3>
+          <p class="text-xs text-[#64748B] mb-4">Live communications channel between District Officers and field rescue teams.</p>
+          
+          <div class="flex-1 overflow-y-auto space-y-3 pr-2">
+            <div class="p-3.5 rounded-xl bg-blue-50/70 border border-blue-200 text-xs">
+              <div class="flex items-center justify-between text-[11px] font-bold text-[#1D4ED8]">
+                <span>🚨 DISTRICT COMMAND ADVISORY</span>
+                <span class="font-mono text-[#64748B]">10 mins ago</span>
+              </div>
+              <p class="text-[#0B192C] mt-1">All units operating in Mahaweli basin: Monitor flood cresting at 14:00 hours. Maintain high ground protocols.</p>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-xs">
+              <div class="flex items-center justify-between text-[11px] font-bold text-[#0B192C]">
+                <span>📻 TELEMETRY SYNC CHANNEL</span>
+                <span class="font-mono text-[#64748B]">Active</span>
+              </div>
+              <p class="text-[#64748B] mt-1">Cross-system broadcast channel connected. Real-time updates delivered to District Officer dashboard.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+</div>
+
+
+<!-- ================= MODAL: CANNOT ACCEPT MISSION (SCENARIO A2) ================= -->
+<div *ngIf="showDeclineModal" 
+  class="fixed inset-0 bg-[#0B192C]/70 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col">
+    
+    <div class="px-6 py-4 border-b border-[#E2E8F0] bg-rose-600 text-white flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="text-xl">⚠️</span>
+        <div>
+          <h3 class="text-sm font-bold">Cannot Accept Assignment (Scenario A2)</h3>
+          <p class="text-[11px] text-rose-100">{{ selectedDeclineAssignment?.assignmentId }} for Incident {{ selectedDeclineAssignment?.incidentId }}</p>
+        </div>
+      </div>
+      <button (click)="closeDeclineModal()" class="text-rose-200 hover:text-white p-1">✕</button>
+    </div>
+
+    <div class="p-6 space-y-4 text-xs">
+      
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 text-amber-900 leading-relaxed">
+        <strong>Workflow Rule (A2):</strong> Declining will cancel this rescue assignment (status changes to 
+        <strong class="font-mono text-rose-700">CANCELLED</strong>). The Incident will remain <strong>OPEN</strong>, and the District Officer will be immediately prompted to select a replacement Rescue Team.
+      </div>
+
+      <div class="space-y-1.5">
+        <label class="font-bold text-[#0B192C]">Reason for Inability to Accept *</label>
+        <select [(ngModel)]="declineReason" 
+          class="w-full p-2.5 border border-[#CBD5E1] rounded-lg text-xs bg-[#F8FAFC] text-[#0B192C] focus:ring-2 focus:ring-rose-500">
+          <option *ngFor="let r of declineReasons" [value]="r">{{ r }}</option>
+        </select>
+      </div>
+
+      <div class="space-y-1.5">
+        <label class="font-bold text-[#0B192C]">Additional Field Notes / SITREP</label>
+        <textarea [(ngModel)]="customDeclineNote" rows="3" placeholder="Enter details regarding mechanical issue or route block..."
+          class="w-full p-2.5 border border-[#CBD5E1] rounded-lg text-xs bg-[#F8FAFC] text-[#0B192C] focus:ring-2 focus:ring-rose-500"></textarea>
+      </div>
+
+    </div>
+
+    <div class="px-6 py-4 border-t border-[#E2E8F0] bg-[#F8FAFC] flex items-center justify-end gap-3">
+      <button (click)="closeDeclineModal()" 
+        class="px-4 py-2 text-xs font-bold text-[#64748B] bg-white border border-[#CBD5E1] rounded-lg hover:bg-slate-50">
+        Back to Mission
+      </button>
+      <button (click)="confirmDeclineAssignment()" [disabled]="declineSubmitting"
+        class="px-4 py-2 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 rounded-lg shadow-sm transition-all flex items-center gap-1.5">
+        <span>{{ declineSubmitting ? 'Cancelling...' : 'Confirm Cannot Accept (Cancel ASN)' }}</span>
       </button>
     </div>
-  </header>
 
-  <!-- Main Content Shell -->
-  <main class="max-w-7xl mx-auto px-6 py-8">
-    <!-- Status Banner -->
-    <div class="bg-slate-800/80 rounded-2xl p-6 border border-slate-700/60 shadow-xl mb-8 flex flex-wrap items-center justify-between gap-4 backdrop-blur">
+  </div>
+</div>
+
+
+<!-- ================= MODAL: MISSION DOSSIER ================= -->
+<div *ngIf="showDetailModal && activeDetailAssignment" 
+  class="fixed inset-0 bg-[#0B192C]/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[85vh]">
+    <div class="px-6 py-4 border-b border-[#E2E8F0] bg-[#F8FAFC] flex items-center justify-between">
       <div>
-        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 mb-2">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse mr-2"></span>
-          TEAM STATUS: READY FOR DISPATCH
-        </span>
-        <h2 class="text-2xl font-bold text-white">Welcome, {{ user?.name }}</h2>
-        <p class="text-slate-400 text-sm mt-1">Organization: {{ user?.organization || 'National Rescue Unit' }} ({{ user?.teamType || 'Water Rescue' }})</p>
+        <h3 class="text-sm font-bold text-[#0B192C]">Incident Dossier: {{ activeDetailAssignment.incidentId }}</h3>
+        <p class="text-[11px] text-[#64748B]">Assigned Unit: {{ activeDetailAssignment.teamId }}</p>
       </div>
-      <div class="flex space-x-3">
-        <div class="px-4 py-3 bg-slate-900/60 rounded-xl border border-slate-700/50 text-center">
-          <div class="text-xl font-bold text-amber-400">{{ user?.membersCount || 8 }}</div>
-          <div class="text-[11px] text-slate-400 uppercase font-mono">Personnel</div>
+      <button (click)="closeDetailModal()" class="text-slate-400 hover:text-slate-600">✕</button>
+    </div>
+
+    <div class="p-6 overflow-y-auto space-y-4 text-xs">
+      <div class="bg-blue-50 border border-blue-200 rounded-xl p-3">
+        <div class="font-bold text-[#1D4ED8] uppercase text-[10px]">Operational Directive</div>
+        <div class="text-[#0B192C] font-medium mt-1">{{ activeDetailAssignment.notes || 'No specific notes entered.' }}</div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 text-xs">
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+          <span class="text-[#64748B] block text-[10px] uppercase font-bold">Current Status</span>
+          <span class="font-bold text-[#0B192C]">{{ activeDetailAssignment.status }}</span>
         </div>
-        <div class="px-4 py-3 bg-slate-900/60 rounded-xl border border-slate-700/50 text-center">
-          <div class="text-xl font-bold text-emerald-400">0 Active</div>
-          <div class="text-[11px] text-slate-400 uppercase font-mono">Missions</div>
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+          <span class="text-[#64748B] block text-[10px] uppercase font-bold">Assigned Time</span>
+          <span class="font-bold text-[#0B192C]">{{ activeDetailAssignment.assignedAt | date:'medium' }}</span>
         </div>
       </div>
     </div>
 
-    <!-- Placeholder grid for team members -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50 flex flex-col items-center justify-center text-center min-h-[220px]">
-        <div class="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-2xl mb-3">
-          🚨
-        </div>
-        <h3 class="text-lg font-semibold text-white">UC3 - Emergency Dispatch</h3>
-        <p class="text-xs text-slate-400 mt-2 max-w-xs">
-          Assigned rescue missions, victim location routing, and real-time status updates will be displayed here.
-        </p>
-      </div>
-
-      <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50 flex flex-col items-center justify-center text-center min-h-[220px]">
-        <div class="w-12 h-12 rounded-2xl bg-sky-500/10 text-sky-400 flex items-center justify-center text-2xl mb-3">
-          🗺️
-        </div>
-        <h3 class="text-lg font-semibold text-white">Live Hazard Map</h3>
-        <p class="text-xs text-slate-400 mt-2 max-w-xs">
-          Geospatial hazard telemetry, flood lines, and active citizen SOS reports in {{ user?.district }} District.
-        </p>
-      </div>
-
-      <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50 flex flex-col items-center justify-center text-center min-h-[220px]">
-        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center text-2xl mb-3">
-          📻
-        </div>
-        <h3 class="text-lg font-semibold text-white">Field Communications</h3>
-        <p class="text-xs text-slate-400 mt-2 max-w-xs">
-          Direct comms link with Duty Officers and DMC Central Command.
-        </p>
-      </div>
+    <div class="px-6 py-3 border-t border-[#E2E8F0] bg-[#F8FAFC] flex justify-end">
+      <button (click)="closeDetailModal()" class="px-4 py-2 text-xs font-bold text-[#64748B] bg-white border border-[#E2E8F0] rounded-lg">Close</button>
     </div>
-  </main>
+  </div>
 </div>
