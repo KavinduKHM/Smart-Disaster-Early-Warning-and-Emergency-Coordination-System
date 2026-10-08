@@ -23,6 +23,8 @@ import { HazardListComponent } from './features/uc1-warning/hazard-list/hazard-l
 import { CreateWarningComponent } from './features/uc1-warning/create-warning/create-warning.component';
 import { ActiveWarningsComponent } from './features/uc1-warning/active-warnings/active-warnings.component';
 
+// UC3
+import { IncidentsComponent } from './features/uc3-rescue/components/incidents.component';
 // Core Interceptors
 import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
 
@@ -49,6 +51,7 @@ import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
     ReactiveFormsModule,
     HttpClientModule,
     AppRoutingModule,
+    IncidentsComponent
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
