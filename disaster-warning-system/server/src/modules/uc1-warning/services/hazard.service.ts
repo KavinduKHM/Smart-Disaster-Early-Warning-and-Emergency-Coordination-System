@@ -58,17 +58,21 @@ export class HazardService {
    * Create a new Hazard record with GeoJSON location
    */
   async create(dto: CreateHazardDto, userId?: string): Promise<HazardDocument> {
+    const rawDto = dto as any;
+    const lat = dto.latitude ?? rawDto.location?.coordinates?.[1] ?? 7.2906;
+    const lng = dto.longitude ?? rawDto.location?.coordinates?.[0] ?? 80.6337;
+
     const newHazard = new this.hazardModel({
       type: dto.type,
       title: dto.title,
       description: dto.description,
       status: dto.status || HazardStatus.ACTIVE,
       severity: dto.severity || 'MEDIUM',
-      district: dto.district || '',
+      district: dto.district || 'Colombo',
       riverBasin: dto.riverBasin || '',
       location: {
         type: 'Point',
-        coordinates: [dto.longitude, dto.latitude], // GeoJSON order: [longitude, latitude]
+        coordinates: [lng, lat],
       },
       reportedBy: userId,
       isDeleted: false,

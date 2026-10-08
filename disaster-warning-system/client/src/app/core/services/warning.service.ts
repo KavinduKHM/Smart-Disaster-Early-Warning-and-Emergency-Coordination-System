@@ -28,7 +28,12 @@ export class WarningService {
   }
 
   createHazard(hazard: Partial<Hazard>): Observable<Hazard> {
-    return this.http.post<any>(this.hazardsUrl, hazard).pipe(map((res) => res.data || res));
+    const payload = {
+      ...hazard,
+      latitude: (hazard as any).latitude ?? hazard.location?.coordinates?.[1] ?? 7.2906,
+      longitude: (hazard as any).longitude ?? hazard.location?.coordinates?.[0] ?? 80.6337,
+    };
+    return this.http.post<any>(this.hazardsUrl, payload).pipe(map((res) => res.data || res));
   }
 
   updateHazard(id: string, hazard: Partial<Hazard>): Observable<Hazard> {

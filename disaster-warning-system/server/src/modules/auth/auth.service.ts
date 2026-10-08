@@ -172,6 +172,16 @@ export class AuthService implements OnModuleInit {
         pushToken: 'push_token_citizen_1',
       },
       {
+        name: 'Citizen Sunil',
+        email: 'citizen.user@disaster.lk',
+        password: officerHash,
+        role: UserRole.CITIZEN,
+        district: 'Colombo',
+        riverBasin: 'Kelani River Basin',
+        phone: '0779998877',
+        pushToken: 'push_token_citizen_2',
+      },
+      {
         name: 'Volunteer Nimal',
         email: 'volunteer@disaster.lk',
         password: passwordHash,

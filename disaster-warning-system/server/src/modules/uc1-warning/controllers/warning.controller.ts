@@ -21,7 +21,7 @@ import { Roles } from '../../auth/decorators/roles.decorator';
 import { UserRole } from '../../auth/enums/user-role.enum';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 
-@Controller('warnings')
+@Controller(['uc1-warning/warnings', 'warnings'])
 export class WarningController {
   constructor(
     private readonly warningService: WarningService,
