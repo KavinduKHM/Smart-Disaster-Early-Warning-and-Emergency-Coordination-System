@@ -44,6 +44,10 @@ export class AuthService {
     return localStorage.getItem('disaster_token');
   }
 
+  getToken(): string | null {
+    return this.token;
+  }
+
   get currentUserValue(): UserProfile | null {
     return this.currentUserSubject.value;
   }
@@ -116,7 +120,7 @@ export class AuthService {
         this.router.navigate(['/dmc-officer/dashboard']);
         break;
       case 'DISTRICT_OFFICER':
-        this.router.navigate(['/district-officer/dashboard']);
+        this.router.navigate(['/relief/shelters']);
         break;
       default:
         this.router.navigate(['/citizen/home']);
