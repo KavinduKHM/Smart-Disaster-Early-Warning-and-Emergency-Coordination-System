@@ -4,6 +4,7 @@ import { ReliefService } from '../../services/relief.service';
 @Component({
   selector: 'app-shelter-management',
   templateUrl: './shelter-management.component.html',
+  styleUrls: ['./shelter-management.component.scss'],
 })
 export class ShelterManagementComponent
   implements OnInit {
