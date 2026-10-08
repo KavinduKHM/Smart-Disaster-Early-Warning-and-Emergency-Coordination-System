@@ -10,6 +10,11 @@ import { RejectReportDto } from './dto/reject-report.dto';
 import { QueryReportDto } from './dto/query-report.dto';
 import { CloudinaryService } from '../shared/cloudinary/cloudinary.service';
 
+/**
+ * ReportService
+ * Handlers for Ground Hazard Reports (Member 2 - Ground Hazard Report & Duty Officer Module).
+ * Implements clean architecture, dependency injection, and audit logging.
+ */
 @Injectable()
 export class ReportService {
   constructor(
@@ -20,6 +25,9 @@ export class ReportService {
     private readonly cloudinaryService: CloudinaryService,
   ) {}
 
+  /**
+   * Generates a unique, human-readable report ID in the format `REP-YYYY-XXXX`
+   */
   private async generateReportId(): Promise<string> {
     const count = await this.reportModel.countDocuments();
     const nextNum = (count + 1).toString().padStart(4, '0');
@@ -28,7 +36,9 @@ export class ReportService {
   }
 
   /**
-   * Helper to automatically process and upload any base64 image strings to Cloudinary
+   * Automatically processes and uploads base64 image strings to Cloudinary CDN
+   * @param photos Array of photo URLs or base64 image strings
+   * @returns Array of secure Cloudinary CDN URLs
    */
   private async processPhotos(photos?: string[]): Promise<string[]> {
     if (!photos || photos.length === 0) return [];
@@ -51,6 +61,11 @@ export class ReportService {
     return processedPhotos;
   }
 
+  /**
+   * Creates a new Ground Hazard Report submitted by a citizen or officer.
+   * @param dto Data transfer object containing hazard details and coordinates
+   * @param user Authenticated user payload (optional)
+   */
   async create(dto: CreateReportDto, user?: any): Promise<GroundReportDocument> {
     const reportId = await this.generateReportId();
 
@@ -182,6 +197,9 @@ export class ReportService {
     report.verificationRemarks = dto.remarks || 'Verified based on field confirmation.';
     report.verifiedBy = verifiedBy;
     report.verifiedAt = new Date();
+    if (dto.severity) {
+      report.severity = dto.severity as any;
+    }
 
     await report.save();
 

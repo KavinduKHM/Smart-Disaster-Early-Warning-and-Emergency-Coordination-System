@@ -8,4 +8,8 @@ export class VerifyReportDto {
   @IsString()
   @IsOptional()
   remarks?: string;
+
+  @IsString()
+  @IsOptional()
+  severity?: string;
 }
