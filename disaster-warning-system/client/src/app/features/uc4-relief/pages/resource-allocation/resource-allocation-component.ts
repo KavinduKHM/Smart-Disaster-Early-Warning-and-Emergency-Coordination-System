@@ -9,6 +9,7 @@ import { ReliefService } from '../../services/relief.service';
   selector: 'app-resource-allocation',
   templateUrl:
     './resource-allocation-component.html',
+  styleUrls: ['./resource-allocation-component.scss'],
 })
 export class ResourceAllocationComponent
   implements OnInit {

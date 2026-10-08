@@ -9,6 +9,7 @@ import { ReliefService } from '../../services/relief.service';
   selector: 'app-evacuee-registration',
   templateUrl:
     './evacuee-registration.component.html',
+  styleUrls: ['./evacuee-registration.component.scss'],
 })
 export class EvacueeRegistrationComponent
   implements OnInit {

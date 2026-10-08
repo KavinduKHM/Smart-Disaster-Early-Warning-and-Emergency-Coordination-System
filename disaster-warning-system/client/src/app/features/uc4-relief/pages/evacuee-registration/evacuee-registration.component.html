@@ -1,161 +1,166 @@
-<div class="page">
+<main class="evacuee-page">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">District Emergency Operations Center · People & Welfare</p>
+      <h1>Evacuee Registration</h1>
+      <p class="page-description">Register displaced residents and coordinate safe shelter occupancy.</p>
+    </div>
+    <div class="evacuee-count">
+      <span class="count-icon" aria-hidden="true">♙</span>
+      <span><strong>{{ evacuees.length }}</strong><small>Registered evacuees</small></span>
+    </div>
+  </header>
 
-  <h1>Evacuee Registration</h1>
+  <section class="panel shelter-panel">
+    <div class="panel-heading">
+      <span class="heading-icon" aria-hidden="true">⌂</span>
+      <div>
+        <h2>Select Shelter</h2>
+        <p>Choose a facility to view its evacuee list or register a new arrival.</p>
+      </div>
+    </div>
 
-  <div class="card">
-
-    <label>Select Shelter</label>
-
-    <select
-      [(ngModel)]="selectedShelterId"
-      (change)="loadEvacuees()"
-    >
-
-      <option value="">
-        Select shelter
-      </option>
-
-      <option
-        *ngFor="let shelter of shelters"
-        [value]="shelter._id"
-      >
-        {{ shelter.name }}
-        -
-        {{ shelter.currentOccupancy }}
-        /
-        {{ shelter.capacity }}
-      </option>
-
-    </select>
-
-  </div>
-
-
-  <div
-    class="card"
-    *ngIf="selectedShelterId"
-  >
-
-    <h2>Register Evacuee</h2>
-
-    <form
-      (ngSubmit)="registerEvacuee()"
-    >
-
-      <input
-        type="text"
-        placeholder="Full Name"
-        [(ngModel)]="evacuee.fullName"
-        name="fullName"
-        required
-      />
-
-      <input
-        type="text"
-        placeholder="National ID"
-        [(ngModel)]="evacuee.nationalId"
-        name="nationalId"
-        required
-      />
-
-      <input
-        type="number"
-        placeholder="Age"
-        [(ngModel)]="evacuee.age"
-        name="age"
-      />
-
+    <label class="field shelter-select">
+      <span>Emergency Shelter</span>
       <select
-        [(ngModel)]="evacuee.gender"
-        name="gender"
+        [(ngModel)]="selectedShelterId"
+        (change)="loadEvacuees()"
       >
-        <option value="">
-          Select Gender
-        </option>
-
-        <option value="Male">
-          Male
-        </option>
-
-        <option value="Female">
-          Female
-        </option>
-
-        <option value="Other">
-          Other
+        <option value="">Select shelter</option>
+        <option
+          *ngFor="let shelter of shelters"
+          [value]="shelter._id"
+        >
+          {{ shelter.name }} - {{ shelter.currentOccupancy }} / {{ shelter.capacity }}
         </option>
       </select>
+    </label>
+  </section>
 
-      <input
-        type="text"
-        placeholder="Phone"
-        [(ngModel)]="evacuee.phone"
-        name="phone"
-      />
+  <section class="panel registration-panel" *ngIf="selectedShelterId">
+    <div class="panel-heading">
+      <span class="heading-icon" aria-hidden="true">＋</span>
+      <div>
+        <h2>Register Evacuee</h2>
+        <p>Enter the evacuee’s details for the selected shelter.</p>
+      </div>
+    </div>
 
-      <textarea
-        placeholder="Special Needs"
-        [(ngModel)]="evacuee.specialNeeds"
-        name="specialNeeds"
-      ></textarea>
+    <form class="evacuee-form" (ngSubmit)="registerEvacuee()">
+      <label class="field">
+        <span>Full Name <b>*</b></span>
+        <input
+          type="text"
+          placeholder="Enter full name"
+          [(ngModel)]="evacuee.fullName"
+          name="fullName"
+          required
+        />
+      </label>
 
-      <button type="submit">
-        Register Evacuee
-      </button>
+      <label class="field">
+        <span>National ID <b>*</b></span>
+        <input
+          type="text"
+          placeholder="Enter national ID"
+          [(ngModel)]="evacuee.nationalId"
+          name="nationalId"
+          required
+        />
+      </label>
 
-    </form>
+      <label class="field">
+        <span>Age</span>
+        <input
+          type="number"
+          placeholder="Age"
+          [(ngModel)]="evacuee.age"
+          name="age"
+        />
+      </label>
 
-  </div>
-
-
-  <div class="card">
-
-    <h2>Registered Evacuees</h2>
-
-    <table>
-
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>NIC</th>
-          <th>Age</th>
-          <th>Gender</th>
-          <th>Special Needs</th>
-        </tr>
-      </thead>
-
-      <tbody>
-
-        <tr
-          *ngFor="let person of evacuees"
+      <label class="field">
+        <span>Gender</span>
+        <select
+          [(ngModel)]="evacuee.gender"
+          name="gender"
         >
+          <option value="">Select gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+      </label>
 
-          <td>
-            {{ person.fullName }}
-          </td>
+      <label class="field">
+        <span>Phone</span>
+        <input
+          type="text"
+          placeholder="Contact number"
+          [(ngModel)]="evacuee.phone"
+          name="phone"
+        />
+      </label>
 
-          <td>
-            {{ person.nationalId }}
-          </td>
+      <label class="field field-full">
+        <span>Special Needs</span>
+        <textarea
+          placeholder="Medical, accessibility, or other support needs"
+          [(ngModel)]="evacuee.specialNeeds"
+          name="specialNeeds"
+          rows="3"
+        ></textarea>
+      </label>
 
-          <td>
-            {{ person.age }}
-          </td>
+      <div class="form-actions">
+        <button class="primary-button" type="submit">
+          <span aria-hidden="true">＋</span>
+          Register Evacuee
+        </button>
+      </div>
+    </form>
+  </section>
 
-          <td>
-            {{ person.gender }}
-          </td>
+  <section class="panel directory-panel">
+    <div class="directory-heading">
+      <div>
+        <h2>Registered Evacuees</h2>
+        <p>People currently recorded at the selected shelter</p>
+      </div>
+      <span class="listed-count">{{ evacuees.length }} listed</span>
+    </div>
 
-          <td>
-            {{ person.specialNeeds || 'None' }}
-          </td>
-
-        </tr>
-
-      </tbody>
-
-    </table>
-
-  </div>
-
-</div>
+    <div class="table-scroll">
+      <table class="evacuee-table">
+        <thead>
+          <tr>
+            <th>Full Name</th>
+            <th>National ID</th>
+            <th>Age</th>
+            <th>Gender</th>
+            <th>Special Needs</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let person of evacuees">
+            <td>
+              <div class="person-name">
+                <span class="person-icon" aria-hidden="true">♙</span>
+                {{ person.fullName }}
+              </div>
+            </td>
+            <td class="id-cell">{{ person.nationalId }}</td>
+            <td>{{ person.age }}</td>
+            <td>{{ person.gender }}</td>
+            <td>{{ person.specialNeeds || 'None' }}</td>
+          </tr>
+          <tr *ngIf="evacuees.length === 0">
+            <td class="empty-state" colspan="5">
+              {{ selectedShelterId ? 'No evacuees registered at this shelter yet.' : 'Select a shelter to view registered evacuees.' }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>

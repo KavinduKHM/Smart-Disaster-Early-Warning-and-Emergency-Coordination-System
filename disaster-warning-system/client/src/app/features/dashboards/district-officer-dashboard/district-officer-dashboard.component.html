@@ -1,0 +1,106 @@
+<div class="flex w-full h-full overflow-hidden bg-[#F8FAFC]" style="font-family:'Inter',system-ui,sans-serif">
+
+  <!-- SIDEBAR (Primary: #0B192C) -->
+  <aside class="w-[260px] bg-[#0B192C] flex flex-col flex-shrink-0 h-full overflow-hidden text-white">
+
+    <!-- Brand Header -->
+    <div class="flex items-center gap-3 px-6 py-6 border-b border-white/10">
+      <div class="w-10 h-10 rounded-xl bg-[#1D4ED8] flex items-center justify-center flex-shrink-0 shadow-lg">
+        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+        </svg>
+      </div>
+      <div class="min-w-0">
+        <div class="text-sm font-bold text-white leading-tight truncate">District Command</div>
+        <div class="text-[11px] text-[#64748B] uppercase tracking-wider mt-0.5">Disaster Mgt Cell</div>
+      </div>
+    </div>
+
+    <!-- Active Node Badge -->
+    <div class="px-6 py-4 border-b border-white/10">
+      <div class="flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-[#1D4ED8] animate-pulse"></span>
+        <span class="text-xs font-semibold text-white/80 uppercase tracking-wider">{{ user?.district || 'Kandy' }} District</span>
+      </div>
+    </div>
+
+    <!-- Navigation Items -->
+    <nav class="flex-1 overflow-y-auto py-4 px-4 space-y-1.5">
+      <button *ngFor="let item of navItems"
+        (click)="navigate(item.id)"
+        class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 group relative"
+        [ngClass]="activePage === item.id
+          ? 'bg-[#1D4ED8] text-white shadow-md'
+          : 'text-[#64748B] hover:bg-white/5 hover:text-white'">
+
+        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" [attr.d]="item.icon"/>
+        </svg>
+        <span class="text-sm font-medium flex-1 truncate">{{ item.label }}</span>
+      </button>
+    </nav>
+
+    <!-- Bottom: Profile & Logout -->
+    <div class="border-t border-white/10 p-5 bg-black/10">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-[#1D4ED8] flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+          {{ userInitials }}
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="text-sm font-medium text-white truncate">{{ user?.name || 'District Officer' }}</div>
+          <div class="text-[11px] text-[#64748B] truncate">{{ user?.badgeId || 'DIST-01' }}</div>
+        </div>
+        <button (click)="logout()" title="Sign Out" class="text-[#64748B] hover:text-[#DC2626] transition-colors p-1.5 rounded-md hover:bg-white/5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT AREA -->
+  <div class="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
+    <!-- Top Header Bar -->
+    <header class="h-16 bg-white border-b border-[#E2E8F0] flex items-center justify-between px-8 flex-shrink-0 z-10 shadow-sm">
+      <div class="flex items-center gap-4">
+        <h2 class="text-lg font-bold text-[#0B192C]">
+          <ng-container *ngIf="activePage === 'incidents'">Incident Management</ng-container>
+          <ng-container *ngIf="activePage === 'rescue-teams'">Rescue Teams Directory</ng-container>
+          <ng-container *ngIf="activePage === 'live-operations'">Live Rescue Operations</ng-container>
+          <ng-container *ngIf="activePage === 'assignments'">Rescue Assignments & Dispatch</ng-container>
+          <ng-container *ngIf="activePage === 'emergency-map'">Emergency Geospatial Map</ng-container>
+          <ng-container *ngIf="activePage === 'reports'">Operational Analytics & Reports</ng-container>
+        </h2>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <!-- Notification Bell Component -->
+        <app-notification-bell 
+          role="DISTRICT_OFFICER" 
+          (notificationAction)="handleNotificationAction($event)">
+        </app-notification-bell>
+
+        <div class="hidden md:flex items-center gap-2 text-xs font-mono text-[#64748B] bg-[#F8FAFC] px-3 py-1.5 rounded-md border border-[#E2E8F0]">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          UTC+05:30
+        </div>
+      </div>
+    </header>
+
+    <!-- Scrollable Page Content -->
+    <main class="flex-1 overflow-y-auto bg-[#F8FAFC] p-6 lg:p-8 flex flex-col min-h-0">
+      <app-incidents *ngIf="activePage === 'incidents'" class="flex-1 flex flex-col w-full min-h-0"></app-incidents>
+      <app-rescue-teams *ngIf="activePage === 'rescue-teams'" class="flex-1 flex flex-col w-full min-h-0"></app-rescue-teams>
+      <app-live-operations *ngIf="activePage === 'live-operations'" class="flex-1 flex flex-col w-full min-h-0"></app-live-operations>
+      <app-assignments *ngIf="activePage === 'assignments'" class="flex-1 flex flex-col w-full min-h-0"></app-assignments>
+      <app-emergency-map *ngIf="activePage === 'emergency-map'" class="flex-1 flex flex-col w-full min-h-0"></app-emergency-map>
+      <app-rescue-reports *ngIf="activePage === 'reports'" class="flex-1 flex flex-col w-full min-h-0"></app-rescue-reports>
+    </main>
+  </div>
+</div>
+
+
+

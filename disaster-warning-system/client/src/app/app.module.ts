@@ -6,13 +6,31 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-// Feature Components
-import { LoginComponent } from './features/auth/login/login.component';
+// Auth & Member 2 Components
+import { LoginComponent } from './features/auth/pages/login/login.component';
+import { RegisterComponent } from './features/auth/pages/register/register.component';
+import { CitizenHomeComponent } from './features/dashboards/citizen-home/citizen-home.component';
+import { RescueTeamDashboardComponent } from './features/dashboards/rescue-team-dashboard/rescue-team-dashboard.component';
+import { DutyOfficerDashboardComponent } from './features/dashboards/duty-officer-dashboard/duty-officer-dashboard.component';
+import { DmcOfficerDashboardComponent } from './features/dashboards/dmc-officer-dashboard/dmc-officer-dashboard.component';
+import { DistrictOfficerDashboardComponent } from './features/dashboards/district-officer-dashboard/district-officer-dashboard.component';
+import { UserSettingsComponent } from './features/settings/user-settings.component';
+import { DutyOfficerReportsComponent } from './features/dashboards/duty-officer-dashboard/duty-officer-reports.component';
+
+// Additional Feature Components (UC1)
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { HazardListComponent } from './features/uc1-warning/hazard-list/hazard-list.component';
 import { CreateWarningComponent } from './features/uc1-warning/create-warning/create-warning.component';
 import { ActiveWarningsComponent } from './features/uc1-warning/active-warnings/active-warnings.component';
 
+// UC3
+import { IncidentsComponent } from './features/uc3-rescue/components/incidents.component';
+import { AssignmentsComponent } from './features/uc3-rescue/components/assignments.component';
+import { RescueTeamsComponent } from './features/uc3-rescue/components/rescue-teams.component';
+import { LiveOperationsComponent } from './features/uc3-rescue/components/live-operations.component';
+import { EmergencyMapComponent } from './features/uc3-rescue/components/emergency-map.component';
+import { RescueReportsComponent } from './features/uc3-rescue/components/rescue-reports.component';
+import { NotificationBellComponent } from './core/components/notification-bell.component';
 // Core Interceptors
 import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
 
@@ -20,6 +38,14 @@ import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
   declarations: [
     AppComponent,
     LoginComponent,
+    RegisterComponent,
+    CitizenHomeComponent,
+    RescueTeamDashboardComponent,
+    DutyOfficerDashboardComponent,
+    DmcOfficerDashboardComponent,
+    DistrictOfficerDashboardComponent,
+    UserSettingsComponent,
+    DutyOfficerReportsComponent,
     DashboardComponent,
     HazardListComponent,
     CreateWarningComponent,
@@ -31,7 +57,16 @@ import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
     ReactiveFormsModule,
     HttpClientModule,
     AppRoutingModule,
+    IncidentsComponent,
+    AssignmentsComponent,
+    RescueTeamsComponent,
+    LiveOperationsComponent,
+    EmergencyMapComponent,
+    RescueReportsComponent,
+    NotificationBellComponent
   ],
+
+
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
   ],

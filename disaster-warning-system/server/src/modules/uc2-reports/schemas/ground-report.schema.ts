@@ -66,6 +66,12 @@ export class GroundReport {
   })
   status!: string;
 
+  @Prop({
+    enum: ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW'],
+    default: 'HIGH',
+  })
+  severity?: string;
+
   @Prop()
   verificationRemarks?: string;
 

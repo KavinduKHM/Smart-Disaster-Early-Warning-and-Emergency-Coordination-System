@@ -9,6 +9,7 @@ import { ReliefService } from '../../services/relief.service';
   selector: 'app-resource-inventory',
   templateUrl:
     './resource-inventory-component.html',
+  styleUrls: ['./resource-inventory-component.scss'],
 })
 export class ResourceInventoryComponent
   implements OnInit {

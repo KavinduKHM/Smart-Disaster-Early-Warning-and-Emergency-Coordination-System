@@ -1,154 +1,139 @@
-<div class="page">
+<main class="allocation-page">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">District Emergency Operations Center · District Logistics</p>
+      <h1>Resource Allocation</h1>
+      <p class="page-description">Coordinate emergency supplies and track distributions to shelters.</p>
+    </div>
+    <div class="allocation-count">
+      <span class="count-icon" aria-hidden="true">⇢</span>
+      <span><strong>{{ allocations.length }}</strong><small>Recorded allocations</small></span>
+    </div>
+  </header>
 
-  <h1>Resource Allocation</h1>
+  <section class="panel allocation-panel">
+    <div class="panel-heading">
+      <span class="heading-icon" aria-hidden="true">⇢</span>
+      <div>
+        <h2>Allocate Relief Resources</h2>
+        <p>Select a resource and destination shelter to record a distribution.</p>
+      </div>
+    </div>
 
-  <div class="card">
-
-    <h2>Allocate Relief Resources</h2>
-
-    <form
-      (ngSubmit)="allocateResource()"
-    >
-
-      <label>Resource</label>
-
-      <select
-        [(ngModel)]="allocation.resourceId"
-        name="resourceId"
-        required
-      >
-
-        <option value="">
-          Select Resource
-        </option>
-
-        <option
-          *ngFor="let resource of resources"
-          [value]="resource._id"
+    <form class="allocation-form" (ngSubmit)="allocateResource()">
+      <label class="field">
+        <span>Resource <b>*</b></span>
+        <select
+          [(ngModel)]="allocation.resourceId"
+          name="resourceId"
+          required
         >
-          {{ resource.name }}
-          -
-          {{ resource.quantity }}
-          {{ resource.unit }}
-        </option>
+          <option value="">Select resource</option>
+          <option
+            *ngFor="let resource of resources"
+            [value]="resource._id"
+          >
+            {{ resource.name }} - {{ resource.quantity }} {{ resource.unit }}
+          </option>
+        </select>
+      </label>
 
-      </select>
-
-
-      <label>Shelter</label>
-
-      <select
-        [(ngModel)]="allocation.shelterId"
-        name="shelterId"
-        required
-      >
-
-        <option value="">
-          Select Shelter
-        </option>
-
-        <option
-          *ngFor="let shelter of shelters"
-          [value]="shelter._id"
+      <label class="field">
+        <span>Shelter <b>*</b></span>
+        <select
+          [(ngModel)]="allocation.shelterId"
+          name="shelterId"
+          required
         >
-          {{ shelter.name }}
-          -
-          {{ shelter.currentOccupancy }}
-          /
-          {{ shelter.capacity }}
-        </option>
+          <option value="">Select shelter</option>
+          <option
+            *ngFor="let shelter of shelters"
+            [value]="shelter._id"
+          >
+            {{ shelter.name }} - {{ shelter.currentOccupancy }} / {{ shelter.capacity }}
+          </option>
+        </select>
+      </label>
 
-      </select>
+      <label class="field">
+        <span>Quantity <b>*</b></span>
+        <input
+          type="number"
+          min="1"
+          placeholder="Enter quantity"
+          [(ngModel)]="allocation.quantity"
+          name="quantity"
+          required
+        />
+      </label>
 
+      <label class="field">
+        <span>Distributed By</span>
+        <input
+          type="text"
+          placeholder="Officer or team name"
+          [(ngModel)]="allocation.distributedBy"
+          name="distributedBy"
+        />
+      </label>
 
-      <label>Quantity</label>
+      <label class="field field-full">
+        <span>Notes</span>
+        <textarea
+          [(ngModel)]="allocation.notes"
+          name="notes"
+          placeholder="Distribution notes"
+          rows="3"
+        ></textarea>
+      </label>
 
-      <input
-        type="number"
-        min="1"
-        [(ngModel)]="allocation.quantity"
-        name="quantity"
-        required
-      />
-
-
-      <label>Distributed By</label>
-
-      <input
-        type="text"
-        [(ngModel)]="allocation.distributedBy"
-        name="distributedBy"
-      />
-
-
-      <label>Notes</label>
-
-      <textarea
-        [(ngModel)]="allocation.notes"
-        name="notes"
-        placeholder="Distribution notes"
-      ></textarea>
-
-
-      <button type="submit">
-        Allocate Resource
-      </button>
-
+      <div class="form-actions">
+        <button class="primary-button" type="submit">
+          <span aria-hidden="true">⇢</span>
+          Allocate Resource
+        </button>
+      </div>
     </form>
+  </section>
 
-  </div>
+  <section class="panel history-panel">
+    <div class="directory-heading">
+      <div>
+        <h2>Distribution History</h2>
+        <p>Resource allocations recorded across district shelters</p>
+      </div>
+      <span class="listed-count">{{ allocations.length }} recorded</span>
+    </div>
 
-
-  <div class="card">
-
-    <h2>Distribution History</h2>
-
-    <table>
-
-      <thead>
-
-        <tr>
-          <th>Resource</th>
-          <th>Shelter</th>
-          <th>Quantity</th>
-          <th>Distributed By</th>
-          <th>Status</th>
-        </tr>
-
-      </thead>
-
-      <tbody>
-
-        <tr
-          *ngFor="let allocation of allocations"
-        >
-
-          <td>
-            {{ allocation.resourceId?.name }}
-          </td>
-
-          <td>
-            {{ allocation.shelterId?.name }}
-          </td>
-
-          <td>
-            {{ allocation.quantity }}
-          </td>
-
-          <td>
-            {{ allocation.distributedBy }}
-          </td>
-
-          <td>
-            {{ allocation.status }}
-          </td>
-
-        </tr>
-
-      </tbody>
-
-    </table>
-
-  </div>
-
-</div>
+    <div class="table-scroll">
+      <table class="allocation-table">
+        <thead>
+          <tr>
+            <th>Resource</th>
+            <th>Shelter</th>
+            <th>Quantity</th>
+            <th>Distributed By</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let allocation of allocations">
+            <td>
+              <div class="resource-name">
+                <span class="resource-icon" aria-hidden="true">▦</span>
+                {{ allocation.resourceId?.name }}
+              </div>
+            </td>
+            <td>{{ allocation.shelterId?.name }}</td>
+            <td class="quantity-cell">{{ allocation.quantity }}</td>
+            <td>{{ allocation.distributedBy }}</td>
+            <td><span class="status-chip">{{ allocation.status }}</span></td>
+          </tr>
+          <tr *ngIf="allocations.length === 0">
+            <td class="empty-state" colspan="5">No resource distributions have been recorded yet.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>

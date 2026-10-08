@@ -32,6 +32,13 @@ export class User {
   phone!: string;
 
   @Prop({ default: '' })
+  address?: string;
+
+  @Prop({ type: Number, default: 7.2906 })
+  latitude?: number;
+
+  @Prop({ type: Number, default: 80.6337 })
+  longitude?: number;
   pushToken?: string;
 
   @Prop({ default: '' })
@@ -43,6 +50,13 @@ export class User {
 
   @Prop()
   organization?: string;
+
+  @Prop()
+  @Prop({ enum: ['WATER_RESCUE', 'SEARCH_AND_RESCUE', 'MEDICAL', 'FIRE', 'EVACUATION', 'GENERAL'] })
+  teamType?: string;
+
+  @Prop()
+  membersCount?: number;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
