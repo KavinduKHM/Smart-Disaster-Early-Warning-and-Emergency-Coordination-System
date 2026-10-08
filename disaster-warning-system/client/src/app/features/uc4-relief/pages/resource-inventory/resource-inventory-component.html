@@ -1,142 +1,146 @@
-<div class="page">
+<main class="inventory-page">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">District Emergency Operations Center · District Logistics</p>
+      <h1>Resource Inventory</h1>
+      <p class="page-description">Track essential supplies and maintain an up-to-date district inventory.</p>
+    </div>
+    <div class="resource-count">
+      <span class="count-icon" aria-hidden="true">▦</span>
+      <span><strong>{{ resources.length }}</strong><small>Inventory items</small></span>
+    </div>
+  </header>
 
-  <h1>Resource Inventory</h1>
+  <section class="panel add-panel">
+    <div class="panel-heading">
+      <span class="heading-icon" aria-hidden="true">＋</span>
+      <div>
+        <h2>Add Resource</h2>
+        <p>Record supplies available for emergency relief operations.</p>
+      </div>
+    </div>
 
-  <div class="card">
+    <form class="resource-form" (ngSubmit)="createResource()">
+      <label class="field">
+        <span>Resource Name <b>*</b></span>
+        <input
+          type="text"
+          placeholder="e.g. Emergency food packs"
+          [(ngModel)]="resource.name"
+          name="name"
+          required
+        />
+      </label>
 
-    <h2>Add Resource</h2>
-
-    <form
-      (ngSubmit)="createResource()"
-    >
-
-      <input
-        type="text"
-        placeholder="Resource Name"
-        [(ngModel)]="resource.name"
-        name="name"
-        required
-      />
-
-      <select
-        [(ngModel)]="resource.category"
-        name="category"
-      >
-
-        <option value="FOOD">
-          Food
-        </option>
-
-        <option value="WATER">
-          Water
-        </option>
-
-        <option value="MEDICINE">
-          Medicine
-        </option>
-
-        <option value="OTHER">
-          Other
-        </option>
-
-      </select>
-
-      <input
-        type="number"
-        placeholder="Quantity"
-        [(ngModel)]="resource.quantity"
-        name="quantity"
-        required
-      />
-
-      <input
-        type="text"
-        placeholder="Unit (kg, bottles, boxes)"
-        [(ngModel)]="resource.unit"
-        name="unit"
-        required
-      />
-
-      <input
-        type="text"
-        placeholder="Organization"
-        [(ngModel)]="resource.organization"
-        name="organization"
-      />
-
-      <input
-        type="text"
-        placeholder="Storage Location"
-        [(ngModel)]="resource.storageLocation"
-        name="storageLocation"
-      />
-
-      <button type="submit">
-        Add Resource
-      </button>
-
-    </form>
-
-  </div>
-
-
-  <div class="card">
-
-    <h2>Current Inventory</h2>
-
-    <table>
-
-      <thead>
-        <tr>
-          <th>Resource</th>
-          <th>Category</th>
-          <th>Quantity</th>
-          <th>Unit</th>
-          <th>Organization</th>
-          <th>Storage</th>
-        </tr>
-      </thead>
-
-      <tbody>
-
-        <tr
-          *ngFor="let resource of resources"
+      <label class="field">
+        <span>Category</span>
+        <select
+          [(ngModel)]="resource.category"
+          name="category"
         >
+          <option value="FOOD">Food</option>
+          <option value="WATER">Water</option>
+          <option value="MEDICINE">Medicine</option>
+          <option value="OTHER">Other</option>
+        </select>
+      </label>
 
-          <td>
-            {{ resource.name }}
-          </td>
+      <label class="field">
+        <span>Quantity <b>*</b></span>
+        <input
+          type="number"
+          placeholder="Enter quantity"
+          [(ngModel)]="resource.quantity"
+          name="quantity"
+          required
+        />
+      </label>
 
-          <td>
-            {{ resource.category }}
-          </td>
+      <label class="field">
+        <span>Unit <b>*</b></span>
+        <input
+          type="text"
+          placeholder="e.g. kg, bottles, boxes"
+          [(ngModel)]="resource.unit"
+          name="unit"
+          required
+        />
+      </label>
 
-          <td
-            [class.low-stock]="
-              resource.quantity <= 10
-            "
-          >
-            {{ resource.quantity }}
-          </td>
+      <label class="field">
+        <span>Organization</span>
+        <input
+          type="text"
+          placeholder="Donor or responsible organization"
+          [(ngModel)]="resource.organization"
+          name="organization"
+        />
+      </label>
 
-          <td>
-            {{ resource.unit }}
-          </td>
+      <label class="field">
+        <span>Storage Location</span>
+        <input
+          type="text"
+          placeholder="Warehouse or facility"
+          [(ngModel)]="resource.storageLocation"
+          name="storageLocation"
+        />
+      </label>
 
-          <td>
-            {{ resource.organization }}
-          </td>
+      <div class="form-actions">
+        <button class="primary-button" type="submit">
+          <span aria-hidden="true">＋</span>
+          Add Resource
+        </button>
+      </div>
+    </form>
+  </section>
 
-          <td>
-            {{ resource.storageLocation }}
-          </td>
+  <section class="panel inventory-panel">
+    <div class="directory-heading">
+      <div>
+        <h2>Current Inventory</h2>
+        <p>Available resources, quantities, and storage locations</p>
+      </div>
+      <span class="listed-count">{{ resources.length }} items</span>
+    </div>
 
-        </tr>
-
-      </tbody>
-
-    </table>
-
-  </div>
-
-</div>
+    <div class="table-scroll">
+      <table class="inventory-table">
+        <thead>
+          <tr>
+            <th>Resource</th>
+            <th>Category</th>
+            <th>Quantity</th>
+            <th>Unit</th>
+            <th>Organization</th>
+            <th>Storage Location</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let resource of resources">
+            <td>
+              <div class="resource-name">
+                <span class="resource-icon" aria-hidden="true">▦</span>
+                {{ resource.name }}
+              </div>
+            </td>
+            <td><span class="category-chip">{{ resource.category }}</span></td>
+            <td
+              class="quantity-cell"
+              [class.low-stock]="resource.quantity <= 10"
+            >
+              {{ resource.quantity }}
+            </td>
+            <td>{{ resource.unit }}</td>
+            <td>{{ resource.organization }}</td>
+            <td>{{ resource.storageLocation }}</td>
+          </tr>
+          <tr *ngIf="resources.length === 0">
+            <td class="empty-state" colspan="6">No resources have been added to the inventory yet.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
