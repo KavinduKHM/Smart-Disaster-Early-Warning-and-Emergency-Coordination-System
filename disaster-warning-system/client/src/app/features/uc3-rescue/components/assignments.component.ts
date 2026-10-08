@@ -2,9 +2,11 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { Subscription } from 'rxjs';
 import { AssignmentService, RescueAssignment, RescueStatusUpdate, AssignmentStatus } from '../services/assignment.service';
 import { IncidentService, Incident } from '../services/incident.service';
 import { TeamService, RescueTeam } from '../services/team.service';
+import { NotificationService } from '../../../core/services/notification.service';
 
 declare const L: any;
 
@@ -82,6 +84,7 @@ declare const L: any;
             <option value="EN_ROUTE">EN_ROUTE (Traveling)</option>
             <option value="ON_SITE">ON_SITE (At Disaster Zone)</option>
             <option value="COMPLETED">COMPLETED (Concluded)</option>
+            <option value="CANCELLED">CANCELLED (Declined - A2)</option>
             <option value="REJECTED">REJECTED (Declined)</option>
           </select>
         </div>
@@ -149,6 +152,12 @@ declare const L: any;
                     <div class="text-[11px] text-[#64748B] mt-0.5">
                       {{ getIncidentDescription(item.incidentId) }}
                     </div>
+                    <!-- Scenario A3 Multi-Unit Operation Badge -->
+                    <div *ngIf="isMultiUnitIncident(item.incidentId)" class="mt-1">
+                      <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                        <span>👥 Multi-Unit ({{ getAssignmentsCountForIncident(item.incidentId) }} Teams)</span>
+                      </span>
+                    </div>
                   </td>
 
                   <!-- Team Details -->
@@ -176,10 +185,19 @@ declare const L: any;
                       <span class="px-2 py-0.5 rounded text-[10px] font-bold border" [ngClass]="getStepClass(item.status, 'COMPLETED')">COMPLETED</span>
                     </div>
 
-                    <div *ngIf="item.status === 'REJECTED'" class="mt-1">
-                      <span class="px-2 py-0.5 bg-red-100 text-[#DC2626] border border-red-300 rounded text-[10px] font-bold">
-                        REJECTED BY TEAM
+                    <!-- Scenario A2: Cancelled / Declined Status Notice & Reassign Action -->
+                    <div *ngIf="item.status === 'CANCELLED' || item.status === 'REJECTED'" class="mt-1.5 flex flex-wrap items-center gap-2">
+                      <span class="px-2 py-0.5 bg-red-100 text-[#DC2626] border border-red-300 rounded text-[10px] font-bold flex items-center gap-1">
+                        <span>🚨</span>
+                        <span>{{ item.status === 'CANCELLED' ? 'CANCELLED (Team Unable to Accept)' : 'REJECTED BY TEAM' }}</span>
                       </span>
+                      
+                      <!-- Scenario A2: Replacement Button -->
+                      <button (click)="openReplacementModal(item); $event.stopPropagation()" 
+                        title="Rescue team unable to accept. Select another team (Scenario A2)" 
+                        class="px-2 py-0.5 text-[10px] font-bold bg-[#DC2626] text-white hover:bg-rose-700 rounded shadow-sm transition-all flex items-center gap-1">
+                        <span>🔄 Select Replacement Team (A2)</span>
+                      </button>
                     </div>
                   </td>
 
@@ -212,6 +230,11 @@ declare const L: any;
                   <td class="px-6 py-4 text-right whitespace-nowrap" (click)="$event.stopPropagation()">
                     <div class="flex items-center justify-end gap-1.5">
                       
+                      <!-- Scenario A3: Reinforce Incident Button -->
+                      <button (click)="openReinforceModal(item.incidentId)" title="Dispatch Additional Unit to this Incident (Scenario A3)" class="px-2 py-1 text-xs font-semibold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 rounded-lg shadow-sm flex items-center gap-1">
+                        <span>👥 + Team (A3)</span>
+                      </button>
+
                       <!-- Track Live Location & ETA Modal Trigger -->
                       <button (click)="openTrackingModal(item)" title="Track Live Location & ETA" class="px-2.5 py-1 text-xs font-semibold bg-[#1D4ED8] text-white hover:bg-blue-700 rounded-lg shadow-sm flex items-center gap-1">
                         <span>📡 Track</span>
@@ -490,10 +513,14 @@ declare const L: any;
           <div class="px-8 py-5 border-b border-[#E2E8F0] flex items-center justify-between bg-[#F8FAFC]">
             <div>
               <h3 class="text-lg font-bold text-[#0B192C]">
-                {{ isEditMode ? 'Update Assignment: ' + activeAssignment?.assignmentId : 'Dispatch Rescue Assignment' }}
+                {{ isReplacementMode ? 'Select Replacement Rescue Team (Scenario A2)' :
+                   isReinforceMode ? 'Dispatch Additional Rescue Team (Scenario A3 Reinforcement)' :
+                   isEditMode ? 'Update Assignment: ' + activeAssignment?.assignmentId : 'Dispatch Rescue Assignment' }}
               </h3>
               <p class="text-xs text-[#64748B] mt-0.5">
-                {{ isEditMode ? 'Modify mission operational instructions.' : 'Deploy an available rescue unit to an active incident location.' }}
+                {{ isReplacementMode ? 'Reassigning after unit reported inability to accept. Incident remains active.' :
+                   isReinforceMode ? 'Adding reinforcement unit. Each assignment is tracked independently.' :
+                   isEditMode ? 'Modify mission operational instructions.' : 'Deploy an available rescue unit to an active incident location.' }}
               </p>
             </div>
             <button (click)="closeModal()" class="text-[#64748B] hover:text-[#DC2626] transition-colors p-2 rounded-full hover:bg-white">
@@ -502,6 +529,45 @@ declare const L: any;
           </div>
 
           <div class="p-8 overflow-y-auto flex-1 bg-white">
+
+            <!-- Scenario A1 Alert Banner -->
+            <div *ngIf="teamUnavailableError" class="p-4 bg-rose-50 border border-rose-300 rounded-xl text-xs text-rose-900 mb-5 space-y-2.5 animate-in fade-in">
+              <div class="flex items-start gap-2.5">
+                <span class="text-lg">⚠️</span>
+                <div>
+                  <strong class="text-sm">Scenario A1 - Selected Rescue Team is Unavailable</strong>
+                  <p class="mt-1 text-[#0B192C]">
+                    The system cannot dispatch <strong>"{{ unavailableTeamName }}"</strong> because this unit is currently 
+                    <span class="font-mono font-bold text-[#DC2626] bg-red-100 px-1.5 py-0.2 rounded border border-red-200">{{ unavailableTeamStatus }}</span>.
+                  </p>
+                </div>
+              </div>
+              <div class="pt-1">
+                <button type="button" (click)="returnToAvailableTeams()" 
+                  class="px-3.5 py-2 bg-[#1D4ED8] hover:bg-blue-700 text-white font-bold rounded-lg shadow-sm transition-colors text-xs flex items-center gap-1.5">
+                  <span>← Return to List of Available Rescue Teams</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Scenario A2 Alert Notice -->
+            <div *ngIf="isReplacementMode" class="p-3.5 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900 mb-5 flex items-center gap-2.5">
+              <span class="text-lg">🚨</span>
+              <div>
+                <strong>Scenario A2 Replacement Flow:</strong>
+                <span> Reassigning for cancelled assignment {{ replacementOldAssignmentId }}. Incident remains open and active.</span>
+              </div>
+            </div>
+
+            <!-- Scenario A3 Alert Notice -->
+            <div *ngIf="isReinforceMode" class="p-3.5 bg-indigo-50 border border-indigo-200 rounded-xl text-xs text-indigo-900 mb-5 flex items-center gap-2.5">
+              <span class="text-lg">👥</span>
+              <div>
+                <strong>Scenario A3 Multi-Unit Flow:</strong>
+                <span> Dispatching an additional team to the same incident. Each assignment is tracked independently.</span>
+              </div>
+            </div>
+
             <form [formGroup]="assignmentForm" class="space-y-5">
               
               <!-- Incident Selection -->
@@ -517,11 +583,17 @@ declare const L: any;
 
               <!-- Rescue Team Selection -->
               <div>
-                <label class="block text-xs font-bold text-[#0B192C] mb-1.5">Assigned Rescue Team <span class="text-[#DC2626]">*</span></label>
-                <select formControlName="teamId" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-2.5 outline-none focus:border-[#1D4ED8] bg-[#F8FAFC] focus:bg-white transition-all">
+                <div class="flex items-center justify-between mb-1.5">
+                  <label class="block text-xs font-bold text-[#0B192C]">Assigned Rescue Team <span class="text-[#DC2626]">*</span></label>
+                  <label class="flex items-center gap-1.5 text-[11px] text-[#64748B] cursor-pointer">
+                    <input type="checkbox" [(ngModel)]="filterAvailableOnly" [ngModelOptions]="{standalone: true}" (change)="onFilterAvailableChange()">
+                    <span>Show Available Units Only</span>
+                  </label>
+                </div>
+                <select formControlName="teamId" (change)="onTeamSelected($event)" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-2.5 outline-none focus:border-[#1D4ED8] bg-[#F8FAFC] focus:bg-white transition-all">
                   <option value="">Select Rescue Team...</option>
-                  <option *ngFor="let tm of teams" [value]="tm.teamId">
-                    {{ tm.teamId }} — {{ tm.name }} ({{ tm.type }} - {{ tm.district }}) [{{ tm.status }}]
+                  <option *ngFor="let tm of selectableTeams" [value]="tm.teamId">
+                    {{ tm.teamId }} — {{ tm.name }} ({{ tm.type }} - {{ tm.district }}) [{{ tm.status === 'AVAILABLE' ? 'READY' : tm.status }}]
                   </option>
                 </select>
               </div>
@@ -635,10 +707,21 @@ export class AssignmentsComponent implements OnInit, OnDestroy {
 
   readonly stages: AssignmentStatus[] = ['ASSIGNED', 'ACCEPTED', 'EN_ROUTE', 'ON_SITE', 'COMPLETED'];
 
+  // Scenarios A1, A2, A3 State
+  teamUnavailableError = false;
+  unavailableTeamName = '';
+  unavailableTeamStatus = '';
+  isReplacementMode = false;
+  replacementOldAssignmentId = '';
+  isReinforceMode = false;
+  filterAvailableOnly = false;
+  private notifSub?: Subscription;
+
   constructor(
     private assignmentService: AssignmentService,
     private incidentService: IncidentService,
     private teamService: TeamService,
+    private notificationService: NotificationService,
     private fb: FormBuilder,
     private sanitizer: DomSanitizer
   ) {
@@ -652,6 +735,14 @@ export class AssignmentsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadAllData();
+
+    // Auto-refresh upon receiving Scenario A4 field telemetry synchronization
+    this.notifSub = this.notificationService.notifications$.subscribe(notifs => {
+      const latestA4 = notifs.find(n => n.category === 'A4_CONNECTIVITY' && Date.now() - n.timestamp < 6000);
+      if (latestA4) {
+        this.loadAllData();
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -659,6 +750,7 @@ export class AssignmentsComponent implements OnInit, OnDestroy {
       this.trackingMap.remove();
       this.trackingMap = null;
     }
+    this.notifSub?.unsubscribe();
   }
 
   loadAllData(): void {
@@ -728,7 +820,7 @@ export class AssignmentsComponent implements OnInit, OnDestroy {
     const stageIndex = this.stages.indexOf(step as AssignmentStatus);
     const currentIndex = this.stages.indexOf(currentStatus as AssignmentStatus);
 
-    if (currentStatus === 'REJECTED') {
+    if (currentStatus === 'REJECTED' || currentStatus === 'CANCELLED') {
       return 'bg-slate-50 text-slate-400 border-slate-200';
     }
 
@@ -753,7 +845,7 @@ export class AssignmentsComponent implements OnInit, OnDestroy {
     if (item.status === 'ASSIGNED') return 'Pending Acceptance';
     if (item.status === 'ON_SITE' || item.status === 'IN_PROGRESS') return 'Arrived On Site';
     if (item.status === 'COMPLETED') return 'Mission Finished';
-    if (item.status === 'REJECTED') return 'Declined by Unit';
+    if (item.status === 'REJECTED' || item.status === 'CANCELLED') return 'Declined by Unit';
 
     // Status is ACCEPTED or EN_ROUTE -> Calculate distance and ETA
     const dist = this.calculateDistanceBetween(item.teamId, item.incidentId);
@@ -779,7 +871,7 @@ export class AssignmentsComponent implements OnInit, OnDestroy {
       'bg-blue-50 text-[#1D4ED8] border-blue-200': status === 'ACCEPTED' || status === 'EN_ROUTE',
       'bg-indigo-50 text-indigo-700 border-indigo-200': status === 'ON_SITE',
       'bg-emerald-50 text-emerald-700 border-emerald-200': status === 'COMPLETED',
-      'bg-slate-50 text-slate-500 border-slate-200': status === 'REJECTED'
+      'bg-slate-50 text-slate-500 border-slate-200': status === 'REJECTED' || status === 'CANCELLED'
     };
   }
 
@@ -1152,10 +1244,19 @@ export class AssignmentsComponent implements OnInit, OnDestroy {
 
   openCreateModal(): void {
     this.isEditMode = false;
+    this.isReplacementMode = false;
+    this.isReinforceMode = false;
+    this.teamUnavailableError = false;
+    this.filterAvailableOnly = false;
     this.activeAssignment = null;
+    
+    // Default to first available team
+    const ready = this.availableTeams;
+    const defaultTeamId = ready.length > 0 ? ready[0].teamId : (this.teams[0]?.teamId || '');
+
     this.assignmentForm.reset({
       incidentId: this.incidents.length > 0 ? this.incidents[0].incidentId : '',
-      teamId: this.teams.length > 0 ? this.teams[0].teamId : '',
+      teamId: defaultTeamId,
       assignedBy: 'District Officer',
       notes: 'Urgent rescue coordination dispatched. Proceed to coordinates immediately.'
     });
@@ -1164,6 +1265,9 @@ export class AssignmentsComponent implements OnInit, OnDestroy {
 
   openEditModal(item: RescueAssignment): void {
     this.isEditMode = true;
+    this.isReplacementMode = false;
+    this.isReinforceMode = false;
+    this.teamUnavailableError = false;
     this.activeAssignment = item;
     this.assignmentForm.patchValue({
       incidentId: item.incidentId,
@@ -1177,13 +1281,124 @@ export class AssignmentsComponent implements OnInit, OnDestroy {
   closeModal(): void {
     this.showModal = false;
     this.activeAssignment = null;
+    this.teamUnavailableError = false;
+    this.isReplacementMode = false;
+    this.isReinforceMode = false;
+    this.filterAvailableOnly = false;
+  }
+
+  // --- Scenario A1 Methods ---
+  onTeamSelected(event: any): void {
+    const teamId = (event.target as HTMLSelectElement).value;
+    const tm = this.teams.find(t => t.teamId === teamId);
+    if (tm && tm.status !== 'AVAILABLE') {
+      this.teamUnavailableError = true;
+      this.unavailableTeamName = tm.name;
+      this.unavailableTeamStatus = tm.status;
+    } else {
+      this.teamUnavailableError = false;
+    }
+  }
+
+  returnToAvailableTeams(): void {
+    this.teamUnavailableError = false;
+    this.filterAvailableOnly = true;
+    const ready = this.availableTeams;
+    if (ready.length > 0) {
+      this.assignmentForm.patchValue({ teamId: ready[0].teamId });
+      this.showFeedback(`Showing available rescue teams only. Selected ${ready[0].name}.`, 'success');
+    }
+  }
+
+  get availableTeams(): RescueTeam[] {
+    return this.teams.filter(t => t.status === 'AVAILABLE');
+  }
+
+  get selectableTeams(): RescueTeam[] {
+    return this.filterAvailableOnly ? this.availableTeams : this.teams;
+  }
+
+  onFilterAvailableChange(): void {
+    if (this.filterAvailableOnly) {
+      const currentTeamId = this.assignmentForm.value.teamId;
+      const isStillAvailable = this.availableTeams.some(t => t.teamId === currentTeamId);
+      if (!isStillAvailable && this.availableTeams.length > 0) {
+        this.assignmentForm.patchValue({ teamId: this.availableTeams[0].teamId });
+        this.teamUnavailableError = false;
+      }
+    }
+  }
+
+  // --- Scenario A2 Methods ---
+  openReplacementModal(item: RescueAssignment): void {
+    this.isEditMode = false;
+    this.isReplacementMode = true;
+    this.isReinforceMode = false;
+    this.replacementOldAssignmentId = item.assignmentId;
+    this.teamUnavailableError = false;
+    this.filterAvailableOnly = true;
+    
+    // Filter available teams excluding the unit that couldn't accept
+    const ready = this.teams.filter(t => t.status === 'AVAILABLE' && t.teamId !== item.teamId);
+    this.assignmentForm.reset({
+      incidentId: item.incidentId,
+      teamId: ready.length > 0 ? ready[0].teamId : '',
+      assignedBy: 'District Officer',
+      notes: `Replacement dispatch for cancelled assignment ${item.assignmentId} (Unit unable to accept). Proceed to incident zone.`
+    });
+    this.showModal = true;
+  }
+
+  // --- Scenario A3 Methods ---
+  openReinforceModal(incidentId: string): void {
+    this.isEditMode = false;
+    this.isReplacementMode = false;
+    this.isReinforceMode = true;
+    this.teamUnavailableError = false;
+    this.filterAvailableOnly = true;
+    
+    // Exclude teams already assigned and not cancelled
+    const activeAssignedIds = this.assignments
+      .filter(a => a.incidentId === incidentId && a.status !== 'CANCELLED' && a.status !== 'REJECTED')
+      .map(a => a.teamId);
+    const ready = this.teams.filter(t => t.status === 'AVAILABLE' && !activeAssignedIds.includes(t.teamId));
+
+    this.assignmentForm.reset({
+      incidentId: incidentId,
+      teamId: ready.length > 0 ? ready[0].teamId : (this.availableTeams[0]?.teamId || ''),
+      assignedBy: 'District Officer',
+      notes: `Reinforcement dispatch: Additional unit deployed to Incident ${incidentId}. Coordinate with field units on site.`
+    });
+    this.showModal = true;
+  }
+
+  getAssignmentsCountForIncident(incidentId: string): number {
+    return this.assignments.filter(a => a.incidentId === incidentId && a.status !== 'CANCELLED' && a.status !== 'REJECTED').length;
+  }
+
+  isMultiUnitIncident(incidentId: string): boolean {
+    return this.getAssignmentsCountForIncident(incidentId) > 1;
   }
 
   onSubmit(): void {
     if (this.assignmentForm.invalid) return;
 
-    this.submitting = true;
     const formValue = this.assignmentForm.value;
+
+    // Check Scenario A1: Selected Rescue Team becomes unavailable
+    const chosenTeam = this.teams.find(t => t.teamId === formValue.teamId);
+    if (chosenTeam && chosenTeam.status !== 'AVAILABLE') {
+      this.teamUnavailableError = true;
+      this.unavailableTeamName = chosenTeam.name;
+      this.unavailableTeamStatus = chosenTeam.status;
+      this.notificationService.showWarning(
+        'Team Unavailable (Scenario A1)',
+        `Rescue Team "${chosenTeam.name}" cannot be dispatched because it is ${chosenTeam.status}. Please select an available team.`
+      );
+      return;
+    }
+
+    this.submitting = true;
 
     if (this.isEditMode && this.activeAssignment) {
       const updatePayload = {
@@ -1217,8 +1432,44 @@ export class AssignmentsComponent implements OnInit, OnDestroy {
       this.assignmentService.createAssignment(createPayload).subscribe({
         next: (created) => {
           this.submitting = false;
+          const assignedId = created.assignmentId || 'Created';
           this.closeModal();
-          this.showFeedback(`Rescue team dispatched successfully (${created.assignmentId || 'Created'}).`, 'success');
+
+          if (this.isReplacementMode) {
+            this.showFeedback(`Replacement team "${chosenTeam?.name}" successfully dispatched (${assignedId}) for Incident ${formValue.incidentId} (Scenario A2).`, 'success');
+            this.notificationService.publishNotification({
+              title: 'Replacement Team Dispatched (A2)',
+              message: `Replacement Rescue Team "${chosenTeam?.name}" dispatched for Incident ${formValue.incidentId}.`,
+              type: 'success',
+              category: 'DISPATCH',
+              targetRole: 'ALL',
+              incidentId: formValue.incidentId,
+              assignmentId: assignedId
+            });
+          } else if (this.isReinforceMode) {
+            this.showFeedback(`Reinforcement unit "${chosenTeam?.name}" successfully dispatched (${assignedId}) to Incident ${formValue.incidentId} (Scenario A3).`, 'success');
+            this.notificationService.publishNotification({
+              title: 'Reinforcement Unit Dispatched (A3)',
+              message: `Additional Rescue Team "${chosenTeam?.name}" dispatched to Incident ${formValue.incidentId}. Independent assignment ${assignedId} created.`,
+              type: 'success',
+              category: 'A3_REINFORCE',
+              targetRole: 'ALL',
+              incidentId: formValue.incidentId,
+              assignmentId: assignedId
+            });
+          } else {
+            this.showFeedback(`Rescue team dispatched successfully (${assignedId}).`, 'success');
+            this.notificationService.publishNotification({
+              title: 'Rescue Assignment Dispatched',
+              message: `Unit "${chosenTeam?.name}" dispatched to Incident ${formValue.incidentId}.`,
+              type: 'info',
+              category: 'DISPATCH',
+              targetRole: 'ALL',
+              incidentId: formValue.incidentId,
+              assignmentId: assignedId
+            });
+          }
+
           this.loadAllData();
         },
         error: (err) => {

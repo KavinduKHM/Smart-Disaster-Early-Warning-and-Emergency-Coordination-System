@@ -47,6 +47,11 @@ export class RescueAssignmentsController {
     return this.rescueAssignmentsService.updateStatus(id, 'REJECTED', updatedBy, notes);
   }
 
+  @Patch(':id/cancel')
+  cancel(@Param('id') id: string, @Body('updatedBy') updatedBy: string, @Body('notes') notes: string) {
+    return this.rescueAssignmentsService.updateStatus(id, 'CANCELLED', updatedBy, notes);
+  }
+
   @Patch(':id/en-route')
   enRoute(@Param('id') id: string, @Body('updatedBy') updatedBy: string) {
     return this.rescueAssignmentsService.updateStatus(id, 'EN_ROUTE', updatedBy);

@@ -214,16 +214,16 @@ import { TeamService, RescueTeam } from '../services/team.service';
                         'text-emerald-600': team.status === 'AVAILABLE',
                         'text-[#1D4ED8]': team.status === 'ASSIGNED' || team.status === 'DISPATCHED' || team.status === 'EN_ROUTE',
                         'text-amber-600': team.status === 'ON_SITE' || team.status === 'IN_PROGRESS',
-                        'text-slate-400': team.status === 'INACTIVE'
+                        'text-rose-600': team.status === 'INACTIVE'
                       }">
                       <span class="w-2 h-2 rounded-full"
                         [ngClass]="{
                           'bg-emerald-500': team.status === 'AVAILABLE',
                           'bg-[#1D4ED8] animate-pulse': team.status === 'ASSIGNED' || team.status === 'DISPATCHED' || team.status === 'EN_ROUTE',
                           'bg-amber-500 animate-pulse': team.status === 'ON_SITE' || team.status === 'IN_PROGRESS',
-                          'bg-slate-300': team.status === 'INACTIVE'
+                          'bg-rose-500': team.status === 'INACTIVE'
                         }"></span>
-                      {{ team.status }}
+                      {{ team.status === 'INACTIVE' ? 'UNAVAILABLE (A1)' : team.status }}
                     </span>
                   </td>
 
@@ -309,12 +309,12 @@ import { TeamService, RescueTeam } from '../services/team.service';
               <div *ngIf="isEditMode">
                 <label class="block text-xs font-bold text-[#0B192C] mb-1.5">Operational Status</label>
                 <select formControlName="status" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-2.5 outline-none focus:border-[#1D4ED8] bg-[#F8FAFC] focus:bg-white">
-                  <option value="AVAILABLE">AVAILABLE</option>
+                  <option value="AVAILABLE">AVAILABLE (Ready for Dispatch)</option>
                   <option value="ASSIGNED">ASSIGNED</option>
                   <option value="DISPATCHED">DISPATCHED</option>
                   <option value="EN_ROUTE">EN_ROUTE</option>
                   <option value="ON_SITE">ON_SITE</option>
-                  <option value="INACTIVE">INACTIVE</option>
+                  <option value="INACTIVE">INACTIVE (UNAVAILABLE - Scenario A1)</option>
                 </select>
               </div>
 

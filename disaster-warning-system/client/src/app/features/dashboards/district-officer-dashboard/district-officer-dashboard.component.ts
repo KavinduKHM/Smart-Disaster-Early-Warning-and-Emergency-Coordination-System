@@ -70,4 +70,12 @@ export class DistrictOfficerDashboardComponent implements OnInit {
     const name = this.user?.name || 'DO';
     return name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2);
   }
+
+  handleNotificationAction(notif: any): void {
+    if (notif.category === 'A2_REJECTED' || notif.actionLabel?.includes('Replacement') || notif.assignmentId) {
+      this.navigate('assignments');
+    } else if (notif.incidentId) {
+      this.navigate('incidents');
+    }
+  }
 }

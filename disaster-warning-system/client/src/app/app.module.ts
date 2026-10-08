@@ -30,6 +30,7 @@ import { RescueTeamsComponent } from './features/uc3-rescue/components/rescue-te
 import { LiveOperationsComponent } from './features/uc3-rescue/components/live-operations.component';
 import { EmergencyMapComponent } from './features/uc3-rescue/components/emergency-map.component';
 import { RescueReportsComponent } from './features/uc3-rescue/components/rescue-reports.component';
+import { NotificationBellComponent } from './core/components/notification-bell.component';
 // Core Interceptors
 import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
 
@@ -61,7 +62,8 @@ import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
     RescueTeamsComponent,
     LiveOperationsComponent,
     EmergencyMapComponent,
-    RescueReportsComponent
+    RescueReportsComponent,
+    NotificationBellComponent
   ],
 
 

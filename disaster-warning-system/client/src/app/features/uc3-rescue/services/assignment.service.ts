@@ -114,6 +114,25 @@ export class AssignmentService {
     );
   }
 
+  cancelAssignment(id: string, updatedBy: string, notes?: string): Observable<RescueAssignment> {
+    const payload = {
+      status: 'CANCELLED',
+      updatedBy: updatedBy || 'Rescue Team',
+      notes: notes || 'Assignment cancelled: Rescue team cannot accept'
+    };
+    return this.http.patch<any>(`${this.apiUrl}/${id}/cancel`, payload).pipe(
+      catchError(() => this.http.patch<any>(`${this.apiUrl}/${id}/reject`, payload)),
+      catchError(() => this.http.patch<any>(`${this.apiUrl}/${id}`, payload)),
+      map((res: any) => {
+        const data = res?.data || res;
+        if (data && (!data.status || data.status === 'REJECTED')) {
+          data.status = 'CANCELLED';
+        }
+        return data;
+      })
+    );
+  }
+
   enRouteAssignment(id: string, updatedBy: string): Observable<RescueAssignment> {
     return this.http.patch<any>(`${this.apiUrl}/${id}/en-route`, { updatedBy }).pipe(
       map((res: any) => res?.data || res)
