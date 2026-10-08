@@ -25,6 +25,11 @@ import { ActiveWarningsComponent } from './features/uc1-warning/active-warnings/
 
 // UC3
 import { IncidentsComponent } from './features/uc3-rescue/components/incidents.component';
+import { AssignmentsComponent } from './features/uc3-rescue/components/assignments.component';
+import { RescueTeamsComponent } from './features/uc3-rescue/components/rescue-teams.component';
+import { LiveOperationsComponent } from './features/uc3-rescue/components/live-operations.component';
+import { EmergencyMapComponent } from './features/uc3-rescue/components/emergency-map.component';
+import { RescueReportsComponent } from './features/uc3-rescue/components/rescue-reports.component';
 // Core Interceptors
 import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
 
@@ -51,8 +56,15 @@ import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
     ReactiveFormsModule,
     HttpClientModule,
     AppRoutingModule,
-    IncidentsComponent
+    IncidentsComponent,
+    AssignmentsComponent,
+    RescueTeamsComponent,
+    LiveOperationsComponent,
+    EmergencyMapComponent,
+    RescueReportsComponent
   ],
+
+
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
   ],
