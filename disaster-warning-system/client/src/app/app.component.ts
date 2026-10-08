@@ -8,6 +8,7 @@ import { NotificationService, ToastMessage } from './core/services/notification.
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
+  title = 'Disaster Warning System';
   toasts$: Observable<ToastMessage[]>;
 
   constructor(private notificationService: NotificationService) {
@@ -20,3 +21,4 @@ export class AppComponent implements OnInit {
     this.notificationService.removeToast(id);
   }
 }
+

@@ -23,6 +23,14 @@ import { HazardListComponent } from './features/uc1-warning/hazard-list/hazard-l
 import { CreateWarningComponent } from './features/uc1-warning/create-warning/create-warning.component';
 import { ActiveWarningsComponent } from './features/uc1-warning/active-warnings/active-warnings.component';
 
+// UC3
+import { IncidentsComponent } from './features/uc3-rescue/components/incidents.component';
+import { AssignmentsComponent } from './features/uc3-rescue/components/assignments.component';
+import { RescueTeamsComponent } from './features/uc3-rescue/components/rescue-teams.component';
+import { LiveOperationsComponent } from './features/uc3-rescue/components/live-operations.component';
+import { EmergencyMapComponent } from './features/uc3-rescue/components/emergency-map.component';
+import { RescueReportsComponent } from './features/uc3-rescue/components/rescue-reports.component';
+import { NotificationBellComponent } from './core/components/notification-bell.component';
 // Core Interceptors
 import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
 
@@ -49,7 +57,16 @@ import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
     ReactiveFormsModule,
     HttpClientModule,
     AppRoutingModule,
+    IncidentsComponent,
+    AssignmentsComponent,
+    RescueTeamsComponent,
+    LiveOperationsComponent,
+    EmergencyMapComponent,
+    RescueReportsComponent,
+    NotificationBellComponent
   ],
+
+
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
   ],

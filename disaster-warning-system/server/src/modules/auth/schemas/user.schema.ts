@@ -52,6 +52,7 @@ export class User {
   organization?: string;
 
   @Prop()
+  @Prop({ enum: ['WATER_RESCUE', 'SEARCH_AND_RESCUE', 'MEDICAL', 'FIRE', 'EVACUATION', 'GENERAL'] })
   teamType?: string;
 
   @Prop()

@@ -42,7 +42,10 @@ export class RescueAssignmentsService {
   }
 
   async findOne(id: string): Promise<RescueAssignment> {
-    const assignment = await this.assignmentModel.findOne({ assignmentId: id }).exec();
+    let assignment = await this.assignmentModel.findOne({ assignmentId: id }).exec();
+    if (!assignment && typeof id === 'string' && id.match(/^[0-9a-fA-F]{24}$/)) {
+      assignment = await this.assignmentModel.findById(id).exec();
+    }
     if (!assignment) {
       throw new NotFoundException(`Rescue assignment with ID ${id} not found`);
     }
@@ -59,12 +62,12 @@ export class RescueAssignmentsService {
     if (notes) updateData.notes = notes;
 
     const updatedAssignment = await this.assignmentModel
-      .findOneAndUpdate({ assignmentId: id }, updateData, { new: true })
+      .findOneAndUpdate({ assignmentId: assignment.assignmentId }, updateData, { new: true })
       .exec();
 
     // Record status history
     await new this.statusUpdateModel({
-      assignmentId: id,
+      assignmentId: assignment.assignmentId,
       status: newStatus,
       updatedBy,
       notes: notes || `Status updated to ${newStatus}`,
@@ -74,6 +77,37 @@ export class RescueAssignmentsService {
   }
 
   async getStatusHistory(id: string): Promise<RescueStatusUpdate[]> {
-    return this.statusUpdateModel.find({ assignmentId: id }).sort({ createdAt: 1 }).exec();
+    const assignment = await this.findOne(id);
+    return this.statusUpdateModel.find({ assignmentId: assignment.assignmentId }).sort({ createdAt: 1 }).exec();
+  }
+
+  async update(id: string, updateAssignmentDto: UpdateAssignmentDto): Promise<RescueAssignment> {
+    const assignment = await this.findOne(id);
+    const updated = await this.assignmentModel
+      .findOneAndUpdate({ assignmentId: assignment.assignmentId }, updateAssignmentDto, { new: true })
+      .exec();
+    if (!updated) {
+      throw new NotFoundException(`Rescue assignment with ID ${id} not found`);
+    }
+    if (updateAssignmentDto.status) {
+      await new this.statusUpdateModel({
+        assignmentId: assignment.assignmentId,
+        status: updateAssignmentDto.status,
+        updatedBy: updateAssignmentDto.updatedBy || 'District Officer',
+        notes: updateAssignmentDto.notes || `Status updated to ${updateAssignmentDto.status}`,
+      }).save();
+    }
+    return updated;
+  }
+
+  async remove(id: string): Promise<any> {
+    const assignment = await this.findOne(id);
+    const res = await this.assignmentModel.findOneAndDelete({ assignmentId: assignment.assignmentId }).exec();
+    if (!res) {
+      throw new NotFoundException(`Rescue assignment with ID ${id} not found`);
+    }
+    await this.statusUpdateModel.deleteMany({ assignmentId: assignment.assignmentId }).exec();
+    return { message: `Assignment ${assignment.assignmentId} successfully deleted` };
   }
 }
+

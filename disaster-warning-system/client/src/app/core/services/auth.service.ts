@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap, map } from 'rxjs';
 
 export interface UserProfile {
   id: string;
@@ -59,25 +59,32 @@ export class AuthService {
   }
 
   login(credentials: { email: string; password: string }): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credentials).pipe(
+    return this.http.post<any>(`${this.apiUrl}/login`, credentials).pipe(
+      map((res: any) => (res && res.data ? res.data : res)),
       tap((res) => {
         this.saveAuthSession(res);
-        this.redirectUserByRole(res.user.role);
+        if (res && res.user && res.user.role) {
+          this.redirectUserByRole(res.user.role);
+        }
       })
     );
   }
 
   register(payload: any): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, payload).pipe(
+    return this.http.post<any>(`${this.apiUrl}/register`, payload).pipe(
+      map((res: any) => (res && res.data ? res.data : res)),
       tap((res) => {
         this.saveAuthSession(res);
-        this.redirectUserByRole(res.user.role);
+        if (res && res.user && res.user.role) {
+          this.redirectUserByRole(res.user.role);
+        }
       })
     );
   }
 
   updateProfile(payload: any): Observable<AuthResponse> {
-    return this.http.put<AuthResponse>(`${this.apiUrl}/profile`, payload, { headers: this.getAuthHeaders() }).pipe(
+    return this.http.put<any>(`${this.apiUrl}/profile`, payload, { headers: this.getAuthHeaders() }).pipe(
+      map((res: any) => (res && res.data ? res.data : res)),
       tap((res) => {
         this.saveAuthSession(res);
       })
@@ -88,13 +95,14 @@ export class AuthService {
     return this.http.put<{ message: string }>(`${this.apiUrl}/change-password`, payload, { headers: this.getAuthHeaders() });
   }
 
-  private saveAuthSession(res: AuthResponse): void {
-    if (res.accessToken) {
-      localStorage.setItem('disaster_token', res.accessToken);
+  private saveAuthSession(res: any): void {
+    const data = res && res.data ? res.data : res;
+    if (data?.accessToken) {
+      localStorage.setItem('disaster_token', data.accessToken);
     }
-    if (res.user) {
-      localStorage.setItem('disaster_user', JSON.stringify(res.user));
-      this.currentUserSubject.next(res.user);
+    if (data?.user) {
+      localStorage.setItem('disaster_user', JSON.stringify(data.user));
+      this.currentUserSubject.next(data.user);
     }
   }
 

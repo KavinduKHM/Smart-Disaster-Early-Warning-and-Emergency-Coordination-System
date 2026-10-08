@@ -63,3 +63,4 @@ export class RegisterDto {
   @Type(() => Number)
   longitude?: number;
 }
+

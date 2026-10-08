@@ -11,6 +11,7 @@ import { HazardWarning } from '../../core/models/warning.model';
 })
 export class DashboardComponent implements OnInit {
   currentUser: UserProfile | null = null;
+  currentUser: UserProfile | User | null = null;
   activeTab: 'active-warnings' | 'hazards' | 'create-warning' = 'active-warnings';
 
   activeWarningsCount = 0;
