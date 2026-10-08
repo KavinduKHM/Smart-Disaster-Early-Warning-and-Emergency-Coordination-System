@@ -9,6 +9,7 @@ import { Model } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import { User, UserDocument } from './schemas/user.schema';
+import { RescueTeam, RescueTeamDocument } from '../uc3-rescue/rescue-teams/schemas/rescue-team.schema';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
@@ -19,8 +20,14 @@ import { UserRole } from './enums/user-role.enum';
 export class AuthService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+    @InjectModel(RescueTeam.name) private readonly rescueTeamModel: Model<RescueTeamDocument>,
     private readonly jwtService: JwtService,
   ) {}
+
+  private async generateTeamId(): Promise<string> {
+    const count = await this.rescueTeamModel.countDocuments();
+    return `TEAM-${(count + 1).toString().padStart(3, '0')}`;
+  }
 
   async register(dto: RegisterDto) {
     const existing = await this.userModel.findOne({ email: dto.email.toLowerCase() }).exec();
@@ -33,7 +40,7 @@ export class AuthService {
 
     let generatedTeamId = dto.badgeId;
 
-    if (role === 'RESCUE_TEAM') {
+    if (role === UserRole.RESCUE_TEAM || role === ('RESCUE_TEAM' as any)) {
       generatedTeamId = await this.generateTeamId();
 
       const newRescueTeam = new this.rescueTeamModel({
@@ -63,6 +70,10 @@ export class AuthService {
       phone: dto.phone || '',
       pushToken: dto.pushToken || '',
       badgeId: dto.badgeId || '',
+      teamId: generatedTeamId,
+      organization: dto.organization,
+      teamType: dto.teamType,
+      membersCount: dto.membersCount,
     });
 
     const savedUser = await newUser.save();
@@ -74,6 +85,7 @@ export class AuthService {
       role: savedUser.role,
       district: savedUser.district,
       riverBasin: savedUser.riverBasin,
+      teamId: savedUser.teamId,
     };
 
     const accessToken = this.jwtService.sign(payload);
@@ -91,6 +103,10 @@ export class AuthService {
         phone: savedUser.phone,
         pushToken: savedUser.pushToken,
         badgeId: savedUser.badgeId,
+        teamId: savedUser.teamId,
+        organization: savedUser.organization,
+        teamType: savedUser.teamType,
+        membersCount: savedUser.membersCount,
       },
     };
   }
@@ -113,6 +129,7 @@ export class AuthService {
       role: user.role,
       district: user.district,
       riverBasin: user.riverBasin,
+      teamId: user.teamId,
     };
 
     const accessToken = this.jwtService.sign(payload);
@@ -130,6 +147,10 @@ export class AuthService {
         phone: user.phone,
         pushToken: user.pushToken,
         badgeId: user.badgeId,
+        teamId: user.teamId,
+        organization: user.organization,
+        teamType: user.teamType,
+        membersCount: user.membersCount,
       },
     };
   }

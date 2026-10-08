@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength, IsEnum, IsOptional } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, MinLength, IsEnum, IsOptional, IsNumber } from 'class-validator';
 import { UserRole } from '../enums/user-role.enum';
 
 export class RegisterDto {
@@ -38,4 +38,25 @@ export class RegisterDto {
   @IsOptional()
   @IsString()
   badgeId?: string;
+
+  @IsOptional()
+  @IsString()
+  organization?: string;
+
+  @IsOptional()
+  @IsString()
+  teamType?: string;
+
+  @IsOptional()
+  @IsNumber()
+  membersCount?: number;
+
+  @IsOptional()
+  @IsNumber()
+  latitude?: number;
+
+  @IsOptional()
+  @IsNumber()
+  longitude?: number;
 }
+

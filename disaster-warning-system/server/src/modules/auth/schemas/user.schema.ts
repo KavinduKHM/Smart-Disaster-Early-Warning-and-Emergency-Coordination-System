@@ -50,6 +50,12 @@ export class User {
 
   @Prop()
   organization?: string;
+
+  @Prop({ enum: ['WATER_RESCUE', 'SEARCH_AND_RESCUE', 'MEDICAL', 'FIRE', 'EVACUATION', 'GENERAL'] })
+  teamType?: string;
+
+  @Prop()
+  membersCount?: number;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
