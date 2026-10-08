@@ -50,6 +50,12 @@ export class User {
 
   @Prop()
   organization?: string;
+
+  @Prop()
+  teamType?: string;
+
+  @Prop()
+  membersCount?: number;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
