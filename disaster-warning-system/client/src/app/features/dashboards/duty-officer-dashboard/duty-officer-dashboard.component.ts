@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Output, EventEmitter } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { AuthService, UserProfile } from '../../../core/services/auth.service';
 import { ReportService, GroundReport } from '../../../core/services/report.service';
@@ -18,6 +18,8 @@ interface DistrictAnalytics {
   templateUrl: './duty-officer-dashboard.component.html'
 })
 export class DutyOfficerDashboardComponent implements OnInit, AfterViewInit {
+  @Output() raiseAlertForReport = new EventEmitter<GroundReport>();
+
   user: UserProfile | null = null;
   reports: GroundReport[] = [];
   warnings: any[] = [];
@@ -38,8 +40,8 @@ export class DutyOfficerDashboardComponent implements OnInit, AfterViewInit {
   selectedDistrictFilter: string = 'ALL';
 
   districtsList = [
-    'ALL', 'Kandy', 'Colombo', 'Badulla', 'Kegalle', 'Kalutara', 'Galle', 
-    'Matara', 'Ratnapura', 'Kurunegala', 'Nuwara Eliya', 'Anuradhapura', 
+    'ALL', 'Kandy', 'Colombo', 'Badulla', 'Kegalle', 'Kalutara', 'Galle',
+    'Matara', 'Ratnapura', 'Kurunegala', 'Nuwara Eliya', 'Anuradhapura',
     'Polonnaruwa', 'Jaffna', 'Batticaloa', 'Trincomalee', 'Hambantota'
   ];
 
@@ -83,7 +85,7 @@ export class DutyOfficerDashboardComponent implements OnInit, AfterViewInit {
     private authService: AuthService,
     private reportService: ReportService,
     private sanitizer: DomSanitizer
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.user = this.authService.currentUserValue;
@@ -102,7 +104,8 @@ export class DutyOfficerDashboardComponent implements OnInit, AfterViewInit {
     // 1. Fetch all ground hazard reports
     this.reportService.getReports().subscribe({
       next: (data) => {
-        this.reports = data || [];
+        const res = data as any;
+        this.reports = Array.isArray(res) ? res : (res && res.data && Array.isArray(res.data) ? res.data : []);
         this.calculateStats();
         this.calculateDistrictAnalytics();
         this.updateOverallMapUrl();
@@ -125,7 +128,7 @@ export class DutyOfficerDashboardComponent implements OnInit, AfterViewInit {
 
   calculateStats(): void {
     const total = this.reports.length;
-    const pending = this.reports.filter(r => r.status === 'PENDING').length;
+    const pending = this.reports.filter(r => r.status === 'PENDING' || r.status === 'PENDING_VERIFICATION').length;
     const verified = this.reports.filter(r => r.status === 'VERIFIED').length;
     const rejected = this.reports.filter(r => r.status === 'REJECTED').length;
     const critical = this.reports.filter(r => r.status === 'VERIFIED' && r.severity === 'CRITICAL').length;
@@ -144,7 +147,7 @@ export class DutyOfficerDashboardComponent implements OnInit, AfterViewInit {
       const entry = map.get(dist)!;
       entry.total += 1;
       if (r.status === 'VERIFIED') entry.verified += 1;
-      if (r.status === 'PENDING') entry.pending += 1;
+      if (r.status === 'PENDING' || r.status === 'PENDING_VERIFICATION') entry.pending += 1;
     }
 
     const totalVerified = this.stats.verified || 1;
@@ -167,8 +170,11 @@ export class DutyOfficerDashboardComponent implements OnInit, AfterViewInit {
 
   get filteredReports(): GroundReport[] {
     return this.reports.filter(r => {
-      const matchesTab = this.activeTabFilter === 'ALL' ? true : r.status === this.activeTabFilter;
-      const matchesDistrict = this.selectedDistrictFilter === 'ALL' ? true : r.district === this.selectedDistrictFilter;
+      const matchesTab = this.activeTabFilter === 'ALL' ? true : 
+        (this.activeTabFilter === 'PENDING' 
+          ? (r.status === 'PENDING' || r.status === 'PENDING_VERIFICATION') 
+          : r.status === this.activeTabFilter);
+      const matchesDistrict = (this.selectedDistrictFilter === 'ALL' || !this.selectedDistrictFilter) ? true : (r.district && r.district.toLowerCase() === this.selectedDistrictFilter.toLowerCase());
       return matchesTab && matchesDistrict;
     });
   }
@@ -342,26 +348,31 @@ export class DutyOfficerDashboardComponent implements OnInit, AfterViewInit {
     this.verificationMapUrl = null;
   }
 
-  confirmVerifyReport(): void {
+  confirmVerifyReport(launchAlert: boolean = false): void {
     if (!this.selectedReportForVerification) return;
 
     this.isSubmittingVerification = true;
     this.actionSuccessMessage = '';
     this.actionErrorMessage = '';
 
+    const targetReport = this.selectedReportForVerification;
     const payload = {
       severity: this.verificationForm.severity,
       remarks: this.verificationForm.remarks
     };
 
-    this.reportService.verifyReport(this.selectedReportForVerification._id, payload).subscribe({
+    this.reportService.verifyReport(targetReport._id, payload).subscribe({
       next: (updated) => {
         this.isSubmittingVerification = false;
+        this.activeTabFilter = 'VERIFIED';
         this.actionSuccessMessage = `Report #${this.getReportNumber(updated)} verified successfully as ${updated.severity || payload.severity}!`;
         setTimeout(() => {
           this.closeVerificationModal();
           this.loadData();
-        }, 1200);
+          if (launchAlert) {
+            this.onRaiseAlert(updated);
+          }
+        }, 1000);
       },
       error: (err) => {
         this.isSubmittingVerification = false;
@@ -402,6 +413,13 @@ export class DutyOfficerDashboardComponent implements OnInit, AfterViewInit {
     });
   }
 
+  onRaiseAlert(report: GroundReport): void {
+    if (this.selectedReportForVerification) {
+      this.closeVerificationModal();
+    }
+    this.raiseAlertForReport.emit(report);
+  }
+
   getCoords(report: GroundReport): { lat: number; lng: number } | null {
     if (!report) return null;
     if (report.latitude && report.longitude) {
@@ -413,9 +431,15 @@ export class DutyOfficerDashboardComponent implements OnInit, AfterViewInit {
     return null;
   }
 
-  getReportNumber(report: GroundReport): string {
+  getReportNumber(report: any): string {
     if (!report) return '';
-    return report.reportId || report.reportNumber || ('REP-' + report._id.substring(report._id.length - 6).toUpperCase());
+    if (report.reportId) return report.reportId;
+    if (report.reportNumber) return report.reportNumber;
+    const id = report._id || report.id || '';
+    if (typeof id === 'string' && id.length > 0) {
+      return 'REP-' + (id.length >= 6 ? id.substring(id.length - 6) : id).toUpperCase();
+    }
+    return 'REP-SUBMITTED';
   }
 
   getSeverityBadgeClass(severity?: string): string {

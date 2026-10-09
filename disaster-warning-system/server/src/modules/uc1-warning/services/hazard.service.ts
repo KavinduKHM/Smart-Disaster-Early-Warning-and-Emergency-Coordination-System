@@ -18,39 +18,59 @@ export class HazardService {
    * Cross-Functional Integration Event:
    * Listens to Duty-Officer-verified ground reports from UC2 and populates UC1 Hazard Registry
    */
+  /**
+   * Cross-Functional Integration Event:
+   * Listens to Duty-Officer-verified ground reports from UC2 and populates/updates UC1 Hazard Registry
+   */
+  @OnEvent('report.verified')
   @OnEvent('ground-report.verified')
   async handleGroundReportVerified(report: any) {
+    console.log(`[EventEmitter] Emitting: report.verified`);
+    console.log(`[WarningService] @OnEvent('report.verified') triggered`);
     try {
+      const reportIdStr = report.reportId || report._id?.toString() || 'RPT-VERIFIED';
+      const hazardTypeStr = report.hazardType || 'FLOOD';
+      const districtStr = report.district || 'Colombo';
+
+      // Find matching active hazard in district by type or linked report
       const existing = await this.hazardModel.findOne({
+        isDeleted: false,
         $or: [
-          { title: { $regex: new RegExp(report.reportId, 'i') } },
-          { description: { $regex: new RegExp(report.reportId, 'i') } },
+          { linkedReportId: reportIdStr },
+          { district: { $regex: new RegExp(`^${districtStr}$`, 'i') }, type: hazardTypeStr },
+          { title: { $regex: new RegExp(reportIdStr, 'i') } },
         ],
       });
 
-      if (!existing) {
-        const hazardTypeStr = report.hazardType || 'FLOOD';
-        const coords = report.location?.coordinates || [80.6337, 7.2906];
+      if (existing) {
+        existing.severity = report.severity || 'HIGH';
+        existing.linkedReportId = reportIdStr;
+        existing.status = HazardStatus.ACTIVE;
+        existing.description += ` | [Updated by verified report ${reportIdStr} at ${new Date().toISOString()}]`;
+        await existing.save();
+        console.log(`[WarningService] Hazard updated: severity ${existing.severity} (linked report ${reportIdStr})`);
+      } else {
+        const coords = report.location?.coordinates || [79.8612, 6.9271]; // Default Colombo
 
-        await this.hazardModel.create({
+        const newHazard = await this.hazardModel.create({
           type: hazardTypeStr,
-          title: `[VERIFIED REPORT]: ${report.reportId} - ${hazardTypeStr}`,
-          description: `Automatically created from verified Ground Report ${report.reportId}. Remarks: ${report.verificationRemarks || 'Verified by Duty Officer.'}`,
+          title: `[VERIFIED REPORT]: ${reportIdStr} - ${hazardTypeStr}`,
+          description: `Automatically created from verified Ground Report ${reportIdStr}. Remarks: ${report.verificationRemarks || 'Verified by Duty Officer.'}`,
           status: HazardStatus.ACTIVE,
-          severity: 'HIGH',
-          district: report.district || 'Kandy',
-          riverBasin: 'Mahaweli',
+          severity: report.severity || 'HIGH',
+          district: districtStr,
+          linkedReportId: reportIdStr,
+          riverBasin: 'Kelani River Basin',
           location: {
             type: 'Point',
             coordinates: coords,
           },
-          reportedBy: report.verifiedBy || report.reportedBy,
           isDeleted: false,
         });
-        console.log(`[UC1 HazardService] Automatically created official Hazard from verified UC2 Report: ${report.reportId}`);
+        console.log(`[WarningService] Hazard created: severity ${newHazard.severity} (linked report ${reportIdStr})`);
       }
     } catch (err) {
-      console.error('[UC1 HazardService] Error handling ground-report.verified event:', err);
+      console.error('[UC1 HazardService] Error handling report.verified event:', err);
     }
   }
 

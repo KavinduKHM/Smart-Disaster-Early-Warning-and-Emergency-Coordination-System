@@ -3,9 +3,9 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { OnEvent } from '@nestjs/event-emitter';
 
 import {
   Shelter,
@@ -38,6 +38,8 @@ import { CreateResourceDto } from './dto/create-resource.dto';
 import { AllocateResourceDto } from './dto/allocate-resource.dto';
 import { CreateReliefNeedDto } from './dto/create-relief-need.dto';
 
+import { OnEvent } from '@nestjs/event-emitter';
+
 @Injectable()
 export class ReliefService {
   constructor(
@@ -55,33 +57,27 @@ export class ReliefService {
 
     @InjectModel(ReliefNeed.name)
     private readonly reliefNeedModel: Model<ReliefNeedDocument>,
-  ) {}
+  ) { }
 
-  /**
-   * Cross-Functional Integration Event:
-   * Listens to UC1 Warning Broadcasts and auto-creates Emergency Relief Need requests for targeted districts
-   */
   @OnEvent('warning.broadcast')
   @OnEvent('warning.escalated')
-  async handleWarningBroadcast(warning: any) {
+  async handleWarningBroadcastOrEscalated(warning: any) {
     try {
-      const targetDistricts: string[] = warning.affectedDistricts || [];
-      console.log(`[UC4 ReliefService] Received Disaster Warning Broadcast (${warning.warningId}). Alerting shelters in districts:`, targetDistricts);
+      const districts = warning.affectedDistricts || ['Kalutara', 'Kandy'];
+      const districtRegexes = districts.map((d: string) => new RegExp(d, 'i'));
 
-      // Auto-create a high-priority ReliefNeed for shelters in affected districts
-      for (const district of targetDistricts) {
-        await this.reliefNeedModel.create({
-          shelterName: `District Emergency Hub - ${district}`,
-          district: district,
-          itemType: 'EMERGENCY_RATIONS_AND_DRINKING_WATER',
-          requestedQuantity: 500,
-          urgencyLevel: warning.warningLevel === 'Emergency' ? 'CRITICAL' : 'HIGH',
-          status: 'OPEN',
-          notes: `Auto-generated from UC1 Warning ${warning.warningId} (${warning.warningLevel}): ${warning.message}`,
-        });
-      }
+      const result = await this.shelterModel.updateMany(
+        {
+          district: { $in: districtRegexes },
+          status: { $ne: 'ACTIVE' },
+        },
+        {
+          $set: { status: 'AVAILABLE' },
+        },
+      );
+      console.log(`[UC4 ReliefService] Auto-activated ${result.modifiedCount} shelters across districts: ${districts.join(', ')}`);
     } catch (err) {
-      console.error('[UC4 ReliefService] Error handling warning.broadcast event:', err);
+      console.error('[UC4 ReliefService] Error handling warning event:', err);
     }
   }
 
@@ -169,8 +165,9 @@ export class ReliefService {
     return this.shelterModel.create(dto);
   }
 
-  async getShelters() {
-    return this.shelterModel.find().sort({ createdAt: -1 });
+  async getShelters(district?: string) {
+    const filter = district ? { district: { $regex: new RegExp(district, 'i') } } : {};
+    return this.shelterModel.find(filter).sort({ createdAt: -1 });
   }
 
   async getShelter(id: string) {

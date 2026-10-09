@@ -771,8 +771,8 @@
   <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[85vh]">
     <div class="px-6 py-4 border-b border-[#E2E8F0] bg-[#F8FAFC] flex items-center justify-between">
       <div>
-        <h3 class="text-sm font-bold text-[#0B192C]">Incident Dossier: {{ activeDetailAssignment.incidentId }}</h3>
-        <p class="text-[11px] text-[#64748B]">Assigned Unit: {{ activeDetailAssignment.teamId }}</p>
+        <h3 class="text-sm font-bold text-[#0B192C]">Incident Dossier: {{ activeDetailAssignment?.incidentId }}</h3>
+        <p class="text-[11px] text-[#64748B]">Assigned Unit: {{ activeDetailAssignment?.teamId }}</p>
       </div>
       <button (click)="closeDetailModal()" class="text-slate-400 hover:text-slate-600">✕</button>
     </div>
@@ -780,17 +780,17 @@
     <div class="p-6 overflow-y-auto space-y-4 text-xs">
       <div class="bg-blue-50 border border-blue-200 rounded-xl p-3">
         <div class="font-bold text-[#1D4ED8] uppercase text-[10px]">Operational Directive</div>
-        <div class="text-[#0B192C] font-medium mt-1">{{ activeDetailAssignment.notes || 'No specific notes entered.' }}</div>
+        <div class="text-[#0B192C] font-medium mt-1">{{ activeDetailAssignment?.notes || 'No specific notes entered.' }}</div>
       </div>
 
       <div class="grid grid-cols-2 gap-3 text-xs">
         <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
           <span class="text-[#64748B] block text-[10px] uppercase font-bold">Current Status</span>
-          <span class="font-bold text-[#0B192C]">{{ activeDetailAssignment.status }}</span>
+          <span class="font-bold text-[#0B192C]">{{ activeDetailAssignment?.status }}</span>
         </div>
         <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
           <span class="text-[#64748B] block text-[10px] uppercase font-bold">Assigned Time</span>
-          <span class="font-bold text-[#0B192C]">{{ activeDetailAssignment.assignedAt | date:'medium' }}</span>
+          <span class="font-bold text-[#0B192C]">{{ activeDetailAssignment?.assignedAt | date:'medium' }}</span>
         </div>
       </div>
     </div>
@@ -800,3 +800,4 @@
     </div>
   </div>
 </div>
+

@@ -30,6 +30,7 @@ export interface Hazard {
   severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
   district: string;
   riverBasin?: string;
+  linkedReportId?: string;
   location: HazardLocation;
   reportedBy?: string;
   createdAt?: string;

@@ -7,10 +7,15 @@ import { AppModule } from './app.module';
 // Fix for Node.js querySrv ETIMEOUT on Windows/ISP networks
 dns.setServers(['8.8.8.8', '8.8.4.4']);
 
+import * as express from 'express';
+
 dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.use(express.json({ limit: '50mb' }));
+  app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
   app.setGlobalPrefix('api');
   app.enableCors({
@@ -29,10 +34,7 @@ async function bootstrap() {
 
   const port = process.env.PORT || 3000;
   await app.listen(port);
-  console.log(`=======================================================`);
-  console.log(`Disaster Early Warning System Server running on port ${port}`);
-  console.log(`API Base URL: http://localhost:${port}/api`);
-  console.log(`=======================================================`);
+  console.log(`Server running on http://localhost:${port}/api`);
 }
 
 bootstrap();

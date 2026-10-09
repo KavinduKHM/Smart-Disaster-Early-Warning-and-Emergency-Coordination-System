@@ -103,13 +103,11 @@ export class AuthService {
         this.router.navigate(['/rescue-team/dashboard']);
         break;
       case 'DUTY_OFFICER':
-        this.router.navigate(['/duty-officer/dashboard']);
+      case 'DISTRICT_OFFICER':
+        this.router.navigate(['/district-officer/dashboard']);
         break;
       case 'DMC_OFFICER':
         this.router.navigate(['/dmc-officer/dashboard']);
-        break;
-      case 'DISTRICT_OFFICER':
-        this.router.navigate(['/relief/shelters']);
         break;
       default:
         this.router.navigate(['/citizen/home']);

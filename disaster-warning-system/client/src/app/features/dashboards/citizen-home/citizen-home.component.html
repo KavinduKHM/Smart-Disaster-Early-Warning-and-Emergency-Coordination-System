@@ -211,26 +211,104 @@
           </div>
         </div>
 
-        <!-- MODULE UC1: Early Warning Broadcast & Alerts (Placeholder) -->
-        <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl space-y-4">
+        <!-- MODULE UC1: Early Warning Broadcast & Multi-Channel Notification Logs -->
+        <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl space-y-6">
           <div class="flex items-center justify-between border-b border-slate-800 pb-3">
             <div class="flex items-center gap-2">
               <span class="text-purple-400 text-xl">📢</span>
-              <h2 class="text-lg font-bold text-white">UC1: National Early Warnings & Bulletins</h2>
+              <h2 class="text-lg font-bold text-white">UC1: Emergency Disaster Advisories & Multi-Channel Alerts</h2>
             </div>
             <span class="px-2.5 py-1 rounded-full bg-purple-500/20 text-purple-300 text-xs font-mono border border-purple-500/30">
-              Module 1 Component
+              Live Broadcast Channel
             </span>
           </div>
 
-          <div class="p-6 rounded-xl bg-slate-800/40 border border-slate-800 text-center space-y-2">
-            <div class="w-12 h-12 mx-auto rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center text-2xl">
-              🛰️
+          <!-- Section A: Active Hazard Warnings -->
+          <div class="space-y-4">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 font-mono flex items-center justify-between">
+              <span>Active Warnings in {{ user?.district || 'Colombo' }}</span>
+              <span class="text-purple-400">{{ activeWarnings.length }} Active</span>
+            </h3>
+
+            <div *ngIf="activeWarnings.length > 0; else noActiveWarnings" class="space-y-3">
+              <div *ngFor="let warn of activeWarnings" class="p-4 rounded-xl bg-slate-800/80 border border-purple-500/40 shadow-lg space-y-2">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span class="px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wider bg-red-600 text-white animate-pulse">
+                      🚨 {{ warn.warningLevel }}
+                    </span>
+                    <span class="font-mono text-xs text-purple-300 font-bold">#{{ warn.warningId }}</span>
+                  </div>
+                  <span class="text-[11px] text-slate-400">{{ warn.issuedAt | date:'short' }}</span>
+                </div>
+
+                <p class="text-sm font-bold text-white leading-snug">{{ warn.message }}</p>
+
+                <div class="p-3 rounded-lg bg-slate-950/60 border border-slate-700/60 text-xs text-amber-300">
+                  <strong class="text-amber-400 font-mono uppercase block mb-0.5">⚠️ Emergency Safety Directive:</strong>
+                  {{ warn.emergencyInstructions }}
+                </div>
+
+                <!-- Targeted channels badge list -->
+                <div class="flex flex-wrap gap-2 pt-1 text-[11px] font-mono">
+                  <span class="px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30">📧 Email Broadcast</span>
+                  <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">💬 WhatsApp Business</span>
+                  <span class="px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30">📱 Mobile Push</span>
+                  <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">🔊 Zone Siren</span>
+                </div>
+              </div>
             </div>
-            <h3 class="font-bold text-sm text-white">Early Warning Broadcast System</h3>
-            <p class="text-xs text-slate-400 max-w-md mx-auto leading-relaxed">
-              DMC National Early Warning bulletins, flood risk alerts, and weather advisories issued by DMC Officers will be displayed in this panel.
-            </p>
+
+            <ng-template #noActiveWarnings>
+              <div class="p-5 rounded-xl bg-slate-800/40 border border-slate-800 text-center space-y-1">
+                <p class="text-xs text-slate-400">No active disaster warning bulletins issued for {{ user?.district || 'Colombo' }} District right now.</p>
+              </div>
+            </ng-template>
+          </div>
+
+          <!-- Section B: Dispatched Notification Logs for this User (Email & WhatsApp) -->
+          <div class="space-y-3 pt-2 border-t border-slate-800">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 font-mono flex items-center justify-between">
+              <span>📩 Received Emergency Messages (Email & WhatsApp Logs)</span>
+              <span class="text-emerald-400 font-mono">{{ myNotificationLogs.length }} Messages Logged</span>
+            </h3>
+
+            <div *ngIf="myNotificationLogs.length > 0; else noLogs" class="space-y-3">
+              <div *ngFor="let log of myNotificationLogs" class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-1.5">
+                <div class="flex items-center justify-between text-xs">
+                  <div class="flex items-center gap-2">
+                    <span *ngIf="log.channel === 'EMAIL'" class="px-2 py-0.5 rounded bg-blue-600/30 text-blue-300 border border-blue-500/30 font-bold text-[10px]">
+                      📧 EMAIL SENT
+                    </span>
+                    <span *ngIf="log.channel === 'WHATSAPP'" class="px-2 py-0.5 rounded bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 font-bold text-[10px]">
+                      💬 WHATSAPP DELIVERED
+                    </span>
+                    <span *ngIf="log.channel !== 'EMAIL' && log.channel !== 'WHATSAPP'" class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-bold text-[10px]">
+                      📱 {{ log.channel }}
+                    </span>
+                    <span class="font-mono text-slate-400 text-[11px]">{{ log.recipientAddress }}</span>
+                  </div>
+
+                  <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                    {{ log.status }}
+                  </span>
+                </div>
+
+                <p class="text-xs text-slate-200 font-mono leading-relaxed pl-2 border-l-2 border-slate-700">
+                  {{ log.details }}
+                </p>
+
+                <div class="text-[10px] text-slate-500 font-mono text-right">
+                  Sent: {{ log.sentAt | date:'mediumTime' }}
+                </div>
+              </div>
+            </div>
+
+            <ng-template #noLogs>
+              <div class="p-4 rounded-xl bg-slate-800/40 border border-slate-800 text-center text-xs text-slate-400">
+                Dispatched Email and WhatsApp alert logs for {{ user?.email }} will appear here when an emergency warning is issued.
+              </div>
+            </ng-template>
           </div>
         </div>
 
