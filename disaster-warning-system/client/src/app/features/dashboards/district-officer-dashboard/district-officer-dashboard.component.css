@@ -8,6 +8,23 @@
   overflow: hidden;
   font-family: 'Inter', system-ui, sans-serif;
   background: #F8FAFC;
+  color: #0B192C;
   z-index: 9999;
+}
+
+:host ::ng-deep input:not([type="checkbox"]):not([type="radio"]),
+:host ::ng-deep select,
+:host ::ng-deep textarea {
+  color: #0B192C !important;
+}
+
+:host ::ng-deep option {
+  color: #0B192C !important;
+  background-color: #FFFFFF !important;
+}
+
+:host ::ng-deep input::placeholder,
+:host ::ng-deep textarea::placeholder {
+  color: #94A3B8 !important;
 }
 

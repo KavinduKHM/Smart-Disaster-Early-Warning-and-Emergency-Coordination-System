@@ -48,7 +48,14 @@ const routes: Routes = [
   { path: 'uc3/rescue-dashboard', component: RescueTeamDashboardComponent, canActivate: [AuthGuard] },
   { path: 'uc4/relief-dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'uc4/resources', component: DashboardComponent, canActivate: [AuthGuard] },
-  { path: 'relief/shelters', component: DistrictOfficerDashboardComponent, canActivate: [AuthGuard] },
+  {
+    path: 'relief',
+    loadChildren: () =>
+      import('./features/uc4-relief/relief.module').then(
+        (module) => module.ReliefModule,
+      ),
+    canActivate: [AuthGuard],
+  },
 
   { path: '**', redirectTo: 'login' },
 ];

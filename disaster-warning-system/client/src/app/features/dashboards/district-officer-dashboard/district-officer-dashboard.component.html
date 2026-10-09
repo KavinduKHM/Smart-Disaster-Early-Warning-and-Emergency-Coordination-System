@@ -38,6 +38,36 @@
         </svg>
         <span class="text-sm font-medium flex-1 truncate">{{ item.label }}</span>
       </button>
+
+      <div class="pt-4 mt-4 border-t border-white/10">
+        <div class="px-4 pb-2 text-[11px] font-semibold text-[#64748B] uppercase tracking-wider">
+          Relief Management
+        </div>
+        <a routerLink="/relief/shelters"
+          routerLinkActive="bg-[#1D4ED8] text-white shadow-md"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-sm font-medium text-[#64748B] hover:bg-white/5 hover:text-white transition-all duration-200">
+          Shelters
+        </a>
+        <a routerLink="/relief/evacuees"
+          routerLinkActive="bg-[#1D4ED8] text-white shadow-md"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-sm font-medium text-[#64748B] hover:bg-white/5 hover:text-white transition-all duration-200">
+          Evacuees
+        </a>
+        <a routerLink="/relief/resources"
+          routerLinkActive="bg-[#1D4ED8] text-white shadow-md"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-sm font-medium text-[#64748B] hover:bg-white/5 hover:text-white transition-all duration-200">
+          Resources
+        </a>
+        <a routerLink="/relief/allocation"
+          routerLinkActive="bg-[#1D4ED8] text-white shadow-md"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-sm font-medium text-[#64748B] hover:bg-white/5 hover:text-white transition-all duration-200">
+          Resource Allocation
+        </a>
+      </div>
     </nav>
 
     <!-- Bottom: Profile & Logout -->
@@ -105,6 +135,4 @@
     </main>
   </div>
 </div>
-
-
 
