@@ -34,6 +34,18 @@
     transform 150ms ease;
 }
 
+.main-nav .dashboard-nav-link {
+  margin-right: 12px;
+  border-color: #dce6f7;
+  background: #f2f6ff;
+  color: #2448b4;
+}
+
+.main-nav .dashboard-nav-link:hover {
+  border-color: #b9caff;
+  background: #e8efff;
+}
+
 .main-nav a:hover {
   transform: translateY(-1px);
   border-color: #dce6ff;
