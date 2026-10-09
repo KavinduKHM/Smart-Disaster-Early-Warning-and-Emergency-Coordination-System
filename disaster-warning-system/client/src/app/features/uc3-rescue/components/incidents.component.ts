@@ -252,42 +252,42 @@ import { IncidentService, Incident } from '../services/incident.service';
               <div class="grid grid-cols-2 gap-5">
                 <div>
                   <label class="block text-xs font-bold text-[#0B192C] mb-1.5">Incident Type <span class="text-[#DC2626]">*</span></label>
-                  <input formControlName="type" type="text" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-2.5 outline-none focus:border-[#1D4ED8] transition-all bg-[#F8FAFC] focus:bg-white" placeholder="e.g. FLOOD, Landslide, Medical">
+                  <input formControlName="type" type="text" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-2.5 outline-none focus:border-[#1D4ED8] transition-all bg-[#F8FAFC] focus:bg-white text-[#0B192C] placeholder-[#94A3B8]" placeholder="e.g. FLOOD, Landslide, Medical">
                 </div>
                 <div>
                   <label class="block text-xs font-bold text-[#0B192C] mb-1.5">District <span class="text-[#DC2626]">*</span></label>
-                  <input formControlName="district" type="text" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-2.5 outline-none focus:border-[#1D4ED8] transition-all bg-[#F8FAFC] focus:bg-white" placeholder="e.g. Kandy, Badulla, Ratnapura">
+                  <input formControlName="district" type="text" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-2.5 outline-none focus:border-[#1D4ED8] transition-all bg-[#F8FAFC] focus:bg-white text-[#0B192C] placeholder-[#94A3B8]" placeholder="e.g. Kandy, Badulla, Ratnapura">
                 </div>
               </div>
 
               <div>
                 <label class="block text-xs font-bold text-[#0B192C] mb-1.5">Description <span class="text-[#DC2626]">*</span></label>
-                <textarea formControlName="description" rows="3" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-3 outline-none focus:border-[#1D4ED8] transition-all bg-[#F8FAFC] focus:bg-white" placeholder="Detailed report of the situation..."></textarea>
+                <textarea formControlName="description" rows="3" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-3 outline-none focus:border-[#1D4ED8] transition-all bg-[#F8FAFC] focus:bg-white text-[#0B192C] placeholder-[#94A3B8]" placeholder="Detailed report of the situation..."></textarea>
               </div>
 
               <div class="grid grid-cols-2 gap-5">
                 <div>
                   <label class="block text-xs font-bold text-[#0B192C] mb-1.5">Priority Level <span class="text-[#DC2626]">*</span></label>
-                  <select formControlName="priority" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-2.5 outline-none focus:border-[#1D4ED8] transition-all bg-[#F8FAFC] focus:bg-white">
-                    <option value="CRITICAL">CRITICAL</option>
-                    <option value="HIGH">HIGH</option>
-                    <option value="MEDIUM">MEDIUM</option>
-                    <option value="LOW">LOW</option>
+                  <select formControlName="priority" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-2.5 outline-none focus:border-[#1D4ED8] transition-all bg-[#F8FAFC] focus:bg-white text-[#0B192C]">
+                    <option value="CRITICAL" class="text-[#0B192C] bg-white">CRITICAL</option>
+                    <option value="HIGH" class="text-[#0B192C] bg-white">HIGH</option>
+                    <option value="MEDIUM" class="text-[#0B192C] bg-white">MEDIUM</option>
+                    <option value="LOW" class="text-[#0B192C] bg-white">LOW</option>
                   </select>
                 </div>
                 <div>
                   <label class="block text-xs font-bold text-[#0B192C] mb-1.5">People Affected <span class="text-[#DC2626]">*</span></label>
-                  <input formControlName="peopleAffected" type="number" min="0" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-2.5 outline-none focus:border-[#1D4ED8] transition-all bg-[#F8FAFC] focus:bg-white">
+                  <input formControlName="peopleAffected" type="number" min="0" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-2.5 outline-none focus:border-[#1D4ED8] transition-all bg-[#F8FAFC] focus:bg-white text-[#0B192C] placeholder-[#94A3B8]">
                 </div>
               </div>
 
               <!-- Status (Visible during edit mode) -->
               <div *ngIf="isEditMode">
                 <label class="block text-xs font-bold text-[#0B192C] mb-1.5">Status</label>
-                <select formControlName="status" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-2.5 outline-none focus:border-[#1D4ED8] transition-all bg-[#F8FAFC] focus:bg-white">
-                  <option value="ACTIVE">ACTIVE</option>
-                  <option value="CLOSED">CLOSED</option>
-                  <option value="ARCHIVED">ARCHIVED</option>
+                <select formControlName="status" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-2.5 outline-none focus:border-[#1D4ED8] transition-all bg-[#F8FAFC] focus:bg-white text-[#0B192C]">
+                  <option value="ACTIVE" class="text-[#0B192C] bg-white">ACTIVE</option>
+                  <option value="CLOSED" class="text-[#0B192C] bg-white">CLOSED</option>
+                  <option value="ARCHIVED" class="text-[#0B192C] bg-white">ARCHIVED</option>
                 </select>
               </div>
 
@@ -299,17 +299,17 @@ import { IncidentService, Incident } from '../services/incident.service';
                 </div>
                 <div>
                   <label class="block text-xs font-semibold text-[#64748B] mb-1">Longitude <span class="text-[#DC2626]">*</span></label>
-                  <input formControlName="longitude" type="number" step="0.0001" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-3 py-2 outline-none focus:border-[#1D4ED8] bg-white" placeholder="e.g. 80.6337">
+                  <input formControlName="longitude" type="number" step="0.0001" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-3 py-2 outline-none focus:border-[#1D4ED8] bg-white text-[#0B192C] placeholder-[#94A3B8]" placeholder="e.g. 80.6337">
                 </div>
                 <div>
                   <label class="block text-xs font-semibold text-[#64748B] mb-1">Latitude <span class="text-[#DC2626]">*</span></label>
-                  <input formControlName="latitude" type="number" step="0.0001" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-3 py-2 outline-none focus:border-[#1D4ED8] bg-white" placeholder="e.g. 7.2906">
+                  <input formControlName="latitude" type="number" step="0.0001" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-3 py-2 outline-none focus:border-[#1D4ED8] bg-white text-[#0B192C] placeholder-[#94A3B8]" placeholder="e.g. 7.2906">
                 </div>
               </div>
 
               <div>
                 <label class="block text-xs font-bold text-[#0B192C] mb-1.5">Required Assistance (comma-separated)</label>
-                <input formControlName="requiredAssistance" type="text" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-2.5 outline-none focus:border-[#1D4ED8] transition-all bg-[#F8FAFC] focus:bg-white" placeholder="BOAT_RESCUE, MEDICAL, EVACUATION">
+                <input formControlName="requiredAssistance" type="text" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-2.5 outline-none focus:border-[#1D4ED8] transition-all bg-[#F8FAFC] focus:bg-white text-[#0B192C] placeholder-[#94A3B8]" placeholder="BOAT_RESCUE, MEDICAL, EVACUATION">
               </div>
 
             </form>

@@ -573,9 +573,9 @@ declare const L: any;
               <!-- Incident Selection -->
               <div>
                 <label class="block text-xs font-bold text-[#0B192C] mb-1.5">Target Incident <span class="text-[#DC2626]">*</span></label>
-                <select formControlName="incidentId" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-2.5 outline-none focus:border-[#1D4ED8] bg-[#F8FAFC] focus:bg-white transition-all">
-                  <option value="">Select Incident...</option>
-                  <option *ngFor="let inc of incidents" [value]="inc.incidentId">
+                <select formControlName="incidentId" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-2.5 outline-none focus:border-[#1D4ED8] bg-[#F8FAFC] focus:bg-white text-[#0B192C] transition-all">
+                  <option value="" class="text-[#0B192C] bg-white">Select Incident...</option>
+                  <option *ngFor="let inc of incidents" [value]="inc.incidentId" class="text-[#0B192C] bg-white">
                     {{ inc.incidentId }} — {{ inc.type }} ({{ inc.district }}) [{{ inc.priority }}]
                   </option>
                 </select>
@@ -590,9 +590,9 @@ declare const L: any;
                     <span>Show Available Units Only</span>
                   </label>
                 </div>
-                <select formControlName="teamId" (change)="onTeamSelected($event)" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-2.5 outline-none focus:border-[#1D4ED8] bg-[#F8FAFC] focus:bg-white transition-all">
-                  <option value="">Select Rescue Team...</option>
-                  <option *ngFor="let tm of selectableTeams" [value]="tm.teamId">
+                <select formControlName="teamId" (change)="onTeamSelected($event)" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-2.5 outline-none focus:border-[#1D4ED8] bg-[#F8FAFC] focus:bg-white text-[#0B192C] transition-all">
+                  <option value="" class="text-[#0B192C] bg-white">Select Rescue Team...</option>
+                  <option *ngFor="let tm of selectableTeams" [value]="tm.teamId" class="text-[#0B192C] bg-white">
                     {{ tm.teamId }} — {{ tm.name }} ({{ tm.type }} - {{ tm.district }}) [{{ tm.status === 'AVAILABLE' ? 'READY' : tm.status }}]
                   </option>
                 </select>
@@ -601,13 +601,13 @@ declare const L: any;
               <!-- Dispatch Notes -->
               <div>
                 <label class="block text-xs font-bold text-[#0B192C] mb-1.5">Operational Instructions / Directives</label>
-                <textarea formControlName="notes" rows="3" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-3 outline-none focus:border-[#1D4ED8] bg-[#F8FAFC] focus:bg-white transition-all" placeholder="Provide mission objectives, hazards, rendezvous coordinates, and briefing notes..."></textarea>
+                <textarea formControlName="notes" rows="3" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-3 outline-none focus:border-[#1D4ED8] bg-[#F8FAFC] focus:bg-white text-[#0B192C] placeholder-[#94A3B8] transition-all" placeholder="Provide mission objectives, hazards, rendezvous coordinates, and briefing notes..."></textarea>
               </div>
 
               <!-- Assigned By -->
               <div>
                 <label class="block text-xs font-bold text-[#0B192C] mb-1.5">Assigned By <span class="text-[#DC2626]">*</span></label>
-                <input formControlName="assignedBy" type="text" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-2.5 outline-none focus:border-[#1D4ED8] bg-[#F8FAFC] focus:bg-white transition-all">
+                <input formControlName="assignedBy" type="text" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-2.5 outline-none focus:border-[#1D4ED8] bg-[#F8FAFC] focus:bg-white text-[#0B192C] placeholder-[#94A3B8] transition-all">
               </div>
 
             </form>
