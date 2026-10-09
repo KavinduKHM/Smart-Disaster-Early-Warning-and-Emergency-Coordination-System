@@ -16,11 +16,11 @@ import { CreateResourceDto } from './dto/create-resource.dto';
 import { AllocateResourceDto } from './dto/allocate-resource.dto';
 import { CreateReliefNeedDto } from './dto/create-relief-need.dto';
 
-@Controller('uc4-relief')
+@Controller(['uc4-relief', 'relief'])
 export class ReliefController {
   constructor(
     private readonly reliefService: ReliefService,
-  ) {}
+  ) { }
 
   // ==========================
   // DASHBOARD
@@ -59,8 +59,10 @@ export class ReliefController {
   }
 
   @Get('shelters')
-  getShelters() {
-    return this.reliefService.getShelters();
+  getShelters(
+    @Query('district') district?: string,
+  ) {
+    return this.reliefService.getShelters(district);
   }
 
   @Get('shelters/:id')

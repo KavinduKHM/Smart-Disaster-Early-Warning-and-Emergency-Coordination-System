@@ -65,6 +65,7 @@
     <header class="h-16 bg-white border-b border-[#E2E8F0] flex items-center justify-between px-8 flex-shrink-0 z-10 shadow-sm">
       <div class="flex items-center gap-4">
         <h2 class="text-lg font-bold text-[#0B192C]">
+          <ng-container *ngIf="activePage === 'verification-queue'">Ground Hazard Report Verification Desk</ng-container>
           <ng-container *ngIf="activePage === 'incidents'">Incident Management</ng-container>
           <ng-container *ngIf="activePage === 'rescue-teams'">Rescue Teams Directory</ng-container>
           <ng-container *ngIf="activePage === 'live-operations'">Live Rescue Operations</ng-container>
@@ -92,6 +93,7 @@
 
     <!-- Scrollable Page Content -->
     <main class="flex-1 overflow-y-auto bg-[#F8FAFC] p-6 lg:p-8 flex flex-col min-h-0">
+      <app-duty-officer-dashboard *ngIf="activePage === 'verification-queue'" class="flex-1 flex flex-col w-full min-h-0"></app-duty-officer-dashboard>
       <app-incidents *ngIf="activePage === 'incidents'" class="flex-1 flex flex-col w-full min-h-0"></app-incidents>
       <app-rescue-teams *ngIf="activePage === 'rescue-teams'" class="flex-1 flex flex-col w-full min-h-0"></app-rescue-teams>
       <app-live-operations *ngIf="activePage === 'live-operations'" class="flex-1 flex flex-col w-full min-h-0"></app-live-operations>

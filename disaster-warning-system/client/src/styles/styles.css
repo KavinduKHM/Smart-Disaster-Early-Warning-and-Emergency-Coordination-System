@@ -10,23 +10,17 @@
   html, body {
     margin: 0;
     padding: 0;
-    background-color: #020617; /* slate-950 */
-    color: #f8fafc; /* slate-50 */
+    background-color: #0b1528; /* Deep Emergency Navy Blue */
+    color: #f8fafc;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
   body {
     overscroll-behavior: none;
   }
-  main > :first-child {
-    margin-top: 0 !important;
-  }
-  main > :last-child {
-    margin-bottom: 0 !important;
-  }
 }
 
-/* Custom sleek scrollbar for scrollable containers */
+/* Custom sleek scrollbar */
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -37,36 +31,45 @@
   border-radius: 8px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(51, 65, 85, 0.8);
+  background: rgba(59, 130, 246, 0.4);
   border-radius: 8px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(99, 102, 241, 0.8);
+  background: rgba(249, 115, 22, 0.8); /* Orange Hover */
 }
 
-/* Glassmorphism & Card Glow Effects */
+/* Glassmorphism & Emergency Card Glow Effects */
 .glass-panel {
-  background: rgba(15, 23, 42, 0.75);
+  background: rgba(15, 23, 42, 0.85);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.15);
 }
 
 .glass-card {
-  background: rgba(15, 23, 42, 0.6);
+  background: rgba(15, 23, 42, 0.7);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(59, 130, 246, 0.15);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .glass-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.5), 0 0 20px -2px rgba(59, 130, 246, 0.2);
-  border-color: rgba(59, 130, 246, 0.4);
+  box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.5), 0 0 20px -2px rgba(249, 115, 22, 0.3);
+  border-color: rgba(249, 115, 22, 0.5); /* Vibrant Orange border glow on hover */
 }
 
-/* Smooth Interactive Button Physics */
+/* Emergency Orange Glow Accent */
+.orange-glow {
+  box-shadow: 0 0 15px rgba(249, 115, 22, 0.4);
+}
+
+/* Blue & Orange Gradient Accents */
+.bg-gradient-blue-orange {
+  background: linear-gradient(135deg, #1d4ed8 0%, #ea580c 100%);
+}
+
 .btn-interactive {
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -78,11 +81,11 @@
 }
 
 /* Pulse Glow & Shimmer */
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.3); }
-  50% { box-shadow: 0 0 25px rgba(239, 68, 68, 0.6); }
+@keyframes pulse-orange-glow {
+  0%, 100% { box-shadow: 0 0 15px rgba(249, 115, 22, 0.4); }
+  50% { box-shadow: 0 0 28px rgba(249, 115, 22, 0.8); }
 }
 
-.animate-pulse-glow {
-  animation: pulse-glow 2.5s infinite ease-in-out;
+.animate-pulse-orange {
+  animation: pulse-orange-glow 2s infinite ease-in-out;
 }

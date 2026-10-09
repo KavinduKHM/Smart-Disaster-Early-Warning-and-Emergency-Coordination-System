@@ -24,15 +24,15 @@ export class CreateHazardDto {
   @IsString()
   description!: string;
 
-  @IsNotEmpty({ message: 'Latitude is required' })
+  @IsOptional()
   @IsNumber({}, { message: 'Latitude must be a valid number' })
   @Type(() => Number)
-  latitude!: number;
+  latitude?: number;
 
-  @IsNotEmpty({ message: 'Longitude is required' })
+  @IsOptional()
   @IsNumber({}, { message: 'Longitude must be a valid number' })
   @Type(() => Number)
-  longitude!: number;
+  longitude?: number;
 
   @IsOptional()
   @IsString()

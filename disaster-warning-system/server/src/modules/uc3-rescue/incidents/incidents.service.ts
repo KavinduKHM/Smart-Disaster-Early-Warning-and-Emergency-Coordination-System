@@ -5,11 +5,52 @@ import { Incident, IncidentDocument } from './schemas/incident.schema';
 import { CreateIncidentDto } from './dto/create-incident.dto';
 import { UpdateIncidentDto } from './dto/update-incident.dto';
 
+import { OnEvent } from '@nestjs/event-emitter';
+
 @Injectable()
 export class IncidentsService {
   constructor(
     @InjectModel(Incident.name) private incidentModel: Model<IncidentDocument>,
   ) {}
+
+  @OnEvent('warning.escalated')
+  async handleWarningEscalated(warning: any) {
+    try {
+      const district = (warning.affectedDistricts && warning.affectedDistricts[0]) || 'Kalutara';
+      const warningIdStr = warning.warningId || warning._id;
+
+      const existing = await this.incidentModel.findOne({
+        $or: [
+          { description: { $regex: new RegExp(warningIdStr, 'i') } },
+          { linkedWarningId: warningIdStr },
+        ],
+      });
+
+      if (!existing) {
+        const count = await this.incidentModel.countDocuments();
+        const incidentId = `INC-${new Date().getFullYear()}-${(count + 1).toString().padStart(3, '0')}`;
+
+        await this.incidentModel.create({
+          incidentId,
+          type: 'FLOOD_RESCUE',
+          description: `Auto-generated from Warning ${warningIdStr}: ${warning.message || 'Evacuate immediately'}`,
+          district,
+          location: {
+            type: 'Point',
+            coordinates: [80.6337, 7.2906],
+          },
+          priority: 'CRITICAL',
+          peopleAffected: 50,
+          requiredAssistance: ['WATER_RESCUE', 'MEDICAL'],
+          status: 'ACTIVE',
+          createdBy: warning.issuedBy || 'DMC_OFFICER',
+        });
+        console.log(`[UC3 IncidentsService] Auto-created CRITICAL Rescue Incident ${incidentId} from escalated Warning ${warningIdStr}`);
+      }
+    } catch (err) {
+      console.error('[UC3 IncidentsService] Error handling warning.escalated event:', err);
+    }
+  }
 
   async create(createIncidentDto: CreateIncidentDto): Promise<Incident> {
     const count = await this.incidentModel.countDocuments();

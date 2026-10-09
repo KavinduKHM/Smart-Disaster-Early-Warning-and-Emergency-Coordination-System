@@ -99,6 +99,20 @@
           </svg>
           <span>Create Warning Wizard</span>
         </button>
+
+        <button
+          (click)="switchTab('verified-reports')"
+          [ngClass]="{ 'bg-slate-800 text-emerald-400 font-semibold border-l-4 border-emerald-500': activeTab === 'verified-reports' }"
+          class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs text-slate-300 hover:bg-slate-800/60 hover:text-white transition-all text-left"
+        >
+          <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <span>Verified Ground Reports</span>
+          <span *ngIf="verifiedReportsCount > 0" class="ml-auto px-2 py-0.5 text-[10px] rounded-full bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30">
+            {{ verifiedReportsCount }}
+          </span>
+        </button>
       </div>
 
       <!-- Quick Delivery Metrics Widget -->
@@ -137,6 +151,24 @@
               <div class="bg-amber-500 h-full rounded-full" style="width: 100%"></div>
             </div>
           </div>
+          <div>
+            <div class="flex justify-between text-[11px] mb-1">
+              <span class="text-slate-400">Email Direct Bulletin</span>
+              <span class="text-slate-200 font-mono">98.1%</span>
+            </div>
+            <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+              <div class="bg-purple-500 h-full rounded-full" style="width: 98.1%"></div>
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-between text-[11px] mb-1">
+              <span class="text-slate-400">WhatsApp Business API</span>
+              <span class="text-slate-200 font-mono">96.7%</span>
+            </div>
+            <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+              <div class="bg-teal-500 h-full rounded-full" style="width: 96.7%"></div>
+            </div>
+          </div>
         </div>
       </div>
     </aside>
@@ -145,7 +177,7 @@
     <main class="flex-1 overflow-y-auto p-6 bg-slate-950 space-y-6">
       <!-- Top Quick Stats Overview Grid -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex items-center space-x-4 shadow-sm">
+        <div (click)="switchTab('active-warnings')" class="bg-slate-900 border border-slate-800 hover:border-red-500/40 rounded-2xl p-4 flex items-center space-x-4 shadow-sm cursor-pointer transition-all">
           <div class="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
@@ -157,19 +189,19 @@
           </div>
         </div>
 
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex items-center space-x-4 shadow-sm">
-          <div class="p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl text-blue-400">
+        <div (click)="switchTab('verified-reports')" class="bg-slate-900 border border-slate-800 hover:border-emerald-500/40 rounded-2xl p-4 flex items-center space-x-4 shadow-sm cursor-pointer transition-all">
+          <div class="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-400">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
           </div>
           <div>
-            <p class="text-xs text-slate-400 font-medium">Target Citizens Reached</p>
-            <p class="text-2xl font-bold text-white tracking-tight mt-0.5">{{ totalCitizensReached | number }}</p>
+            <p class="text-xs text-slate-400 font-medium">Verified Reports</p>
+            <p class="text-2xl font-bold text-emerald-400 tracking-tight mt-0.5">{{ verifiedReportsCount }}</p>
           </div>
         </div>
 
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex items-center space-x-4 shadow-sm">
+        <div (click)="switchTab('hazards')" class="bg-slate-900 border border-slate-800 hover:border-orange-500/40 rounded-2xl p-4 flex items-center space-x-4 shadow-sm cursor-pointer transition-all">
           <div class="p-3 bg-orange-500/10 border border-orange-500/20 rounded-xl text-orange-400">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
@@ -182,7 +214,7 @@
         </div>
 
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex items-center space-x-4 shadow-sm">
-          <div class="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-400">
+          <div class="p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl text-blue-400">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
@@ -197,8 +229,9 @@
       <!-- Feature Component Tabs -->
       <div [ngSwitch]="activeTab">
         <app-active-warnings *ngSwitchCase="'active-warnings'"></app-active-warnings>
-        <app-hazard-list *ngSwitchCase="'hazards'"></app-hazard-list>
-        <app-create-warning *ngSwitchCase="'create-warning'" (warningCreated)="switchTab('active-warnings')"></app-create-warning>
+        <app-hazard-list *ngSwitchCase="'hazards'" (issueWarningForHazard)="onIssueWarningForHazard($event)"></app-hazard-list>
+        <app-create-warning *ngSwitchCase="'create-warning'" [preselectedHazardId]="selectedHazardIdForWarning" (warningCreated)="switchTab('active-warnings')"></app-create-warning>
+        <app-duty-officer-dashboard *ngSwitchCase="'verified-reports'" (raiseAlertForReport)="onRaiseAlertForReport($event)"></app-duty-officer-dashboard>
       </div>
     </main>
   </div>

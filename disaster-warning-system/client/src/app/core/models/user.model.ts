@@ -19,7 +19,16 @@ export interface User {
   phone?: string;
   pushToken?: string;
   badgeId?: string;
+  address?: string;
+  latitude?: number;
+  longitude?: number;
+  teamId?: string;
+  organization?: string;
+  teamType?: string;
+  membersCount?: number;
 }
+
+export type UserProfile = User;
 
 export interface AuthResponse {
   message?: string;

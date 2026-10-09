@@ -22,7 +22,11 @@
             "tsConfig": "tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "/assets"
+              }
             ],
             "styles": [
               "src/styles/styles.css"
@@ -33,7 +37,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "buildTarget": "disaster-warning-client:build"
+            "buildTarget": "disaster-warning-client:build",
+            "proxyConfig": "proxy.conf.json"
           }
         }
       }

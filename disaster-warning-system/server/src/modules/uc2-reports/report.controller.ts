@@ -25,7 +25,7 @@ import { JwtAuthGuard, OptionalJwtAuthGuard } from '../auth/guards/jwt-auth.guar
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { CloudinaryService } from '../shared/cloudinary/cloudinary.service';
 
-@Controller('reports')
+@Controller(['uc2-reports/reports', 'reports'])
 export class ReportController {
   constructor(
     private readonly reportService: ReportService,

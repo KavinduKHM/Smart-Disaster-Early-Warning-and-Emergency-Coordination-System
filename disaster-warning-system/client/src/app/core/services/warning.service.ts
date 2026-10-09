@@ -4,13 +4,15 @@ import { Observable, map } from 'rxjs';
 import { Hazard } from '../models/hazard.model';
 import { HazardWarning, NotificationChannel } from '../models/warning.model';
 import { NotificationLog } from '../models/notification-log.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class WarningService {
-  private hazardsUrl = '/api/hazards';
-  private warningsUrl = '/api/warnings';
+  private baseUrl = environment.apiUrl || 'http://localhost:3000/api';
+  private hazardsUrl = `${this.baseUrl}/uc1-warning/hazards`;
+  private warningsUrl = `${this.baseUrl}/uc1-warning/warnings`;
 
   constructor(private http: HttpClient) {}
 
@@ -26,7 +28,12 @@ export class WarningService {
   }
 
   createHazard(hazard: Partial<Hazard>): Observable<Hazard> {
-    return this.http.post<any>(this.hazardsUrl, hazard).pipe(map((res) => res.data || res));
+    const payload = {
+      ...hazard,
+      latitude: (hazard as any).latitude ?? hazard.location?.coordinates?.[1] ?? 7.2906,
+      longitude: (hazard as any).longitude ?? hazard.location?.coordinates?.[0] ?? 80.6337,
+    };
+    return this.http.post<any>(this.hazardsUrl, payload).pipe(map((res) => res.data || res));
   }
 
   updateHazard(id: string, hazard: Partial<Hazard>): Observable<Hazard> {

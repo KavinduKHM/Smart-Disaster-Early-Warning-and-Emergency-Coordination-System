@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException, BadRequestException, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { HazardWarning, HazardWarningDocument } from '../schemas/hazard-warning.schema';
 import { Hazard, HazardDocument } from '../schemas/hazard.schema';
 import { NotificationService } from './notification.service';
@@ -21,6 +22,7 @@ export class WarningService {
     @InjectModel(Hazard.name)
     private readonly hazardModel: Model<HazardDocument>,
     private readonly notificationService: NotificationService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   private async generateWarningId(): Promise<string> {
@@ -60,6 +62,9 @@ export class WarningService {
     // Automatically trigger multi-channel alert broadcast upon warning issuance
     const broadcastResult = await this.notificationService.broadcastWarning(savedWarning._id.toString());
 
+    // Cross-Functional Integration Event: Broadcast triggered
+    this.eventEmitter.emit('warning.broadcast', savedWarning);
+
     return {
       message: 'Disaster warning issued and broadcast initiated successfully.',
       warning: savedWarning,
@@ -77,6 +82,9 @@ export class WarningService {
     }
 
     const result = await this.notificationService.broadcastWarning(id, dto?.channels);
+
+    // Cross-Functional Integration Event
+    this.eventEmitter.emit('warning.broadcast', warning);
 
     return {
       message: 'Multi-channel broadcast completed successfully.',
@@ -108,6 +116,9 @@ export class WarningService {
 
     // Immediately dispatch re-broadcast for escalated warning
     const broadcastResult = await this.notificationService.broadcastWarning(savedWarning._id.toString());
+
+    // Cross-Functional Integration Event: Escalation to UC3 Rescue & UC4 Relief
+    this.eventEmitter.emit('warning.escalated', savedWarning);
 
     return {
       message: `Warning ${warning.warningId} successfully escalated from '${oldLevel}' to '${dto.newWarningLevel}'.`,
