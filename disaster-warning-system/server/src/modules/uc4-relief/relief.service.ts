@@ -38,6 +38,8 @@ import { CreateResourceDto } from './dto/create-resource.dto';
 import { AllocateResourceDto } from './dto/allocate-resource.dto';
 import { CreateReliefNeedDto } from './dto/create-relief-need.dto';
 
+import { OnEvent } from '@nestjs/event-emitter';
+
 @Injectable()
 export class ReliefService {
   constructor(
@@ -55,7 +57,29 @@ export class ReliefService {
 
     @InjectModel(ReliefNeed.name)
     private readonly reliefNeedModel: Model<ReliefNeedDocument>,
-  ) {}
+  ) { }
+
+  @OnEvent('warning.broadcast')
+  @OnEvent('warning.escalated')
+  async handleWarningBroadcastOrEscalated(warning: any) {
+    try {
+      const districts = warning.affectedDistricts || ['Kalutara', 'Kandy'];
+      const districtRegexes = districts.map((d: string) => new RegExp(d, 'i'));
+
+      const result = await this.shelterModel.updateMany(
+        {
+          district: { $in: districtRegexes },
+          status: { $ne: 'ACTIVE' },
+        },
+        {
+          $set: { status: 'AVAILABLE' },
+        },
+      );
+      console.log(`[UC4 ReliefService] Auto-activated ${result.modifiedCount} shelters across districts: ${districts.join(', ')}`);
+    } catch (err) {
+      console.error('[UC4 ReliefService] Error handling warning event:', err);
+    }
+  }
 
   // ================================
   // DASHBOARD
@@ -141,8 +165,9 @@ export class ReliefService {
     return this.shelterModel.create(dto);
   }
 
-  async getShelters() {
-    return this.shelterModel.find().sort({ createdAt: -1 });
+  async getShelters(district?: string) {
+    const filter = district ? { district: { $regex: new RegExp(district, 'i') } } : {};
+    return this.shelterModel.find(filter).sort({ createdAt: -1 });
   }
 
   async getShelter(id: string) {

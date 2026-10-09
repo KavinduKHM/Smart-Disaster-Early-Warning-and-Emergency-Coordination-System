@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService, UserProfile } from '../../../core/services/auth.service';
 
+import { ActivatedRoute } from '@angular/router';
+
 export type DashboardPage = 
+  | 'verification-queue'
   | 'incidents' 
   | 'rescue-teams' 
   | 'live-operations' 
@@ -16,9 +19,14 @@ export type DashboardPage =
 })
 export class DistrictOfficerDashboardComponent implements OnInit {
   user: UserProfile | null = null;
-  activePage: DashboardPage = 'incidents';
+  activePage: DashboardPage = 'verification-queue';
 
   readonly navItems: { id: DashboardPage; label: string; icon: string; }[] = [
+    { 
+      id: 'verification-queue', 
+      label: 'Report Verification Queue', 
+      icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' 
+    },
     { 
       id: 'incidents', 
       label: 'Incidents', 
@@ -46,16 +54,24 @@ export class DistrictOfficerDashboardComponent implements OnInit {
     },
     { 
       id: 'reports', 
-      label: 'Reports', 
+      label: 'Reports & Analytics', 
       icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z' 
     },
   ];
 
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
     this.user = this.authService.currentUserValue;
+    this.route.queryParams.subscribe(params => {
+      if (params['tab']) {
+        this.activePage = params['tab'] as DashboardPage;
+      }
+    });
   }
 
   navigate(page: DashboardPage): void {

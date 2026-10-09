@@ -1,36 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, tap, map } from 'rxjs';
+import { BehaviorSubject, Observable, map, tap } from 'rxjs';
+import { User, AuthResponse, UserProfile } from '../models/user.model';
 
-export interface UserProfile {
-  id: string;
-  name: string;
-  email: string;
-  role: 'CITIZEN' | 'RESCUE_TEAM' | 'DUTY_OFFICER' | 'DMC_OFFICER' | 'DISTRICT_OFFICER';
-  district: string;
-  phone?: string;
-  address?: string;
-  latitude?: number;
-  longitude?: number;
-  badgeId?: string;
-  teamId?: string;
-  organization?: string;
-  teamType?: string;
-  membersCount?: number;
-}
-
-export interface AuthResponse {
-  accessToken: string;
-  user: UserProfile;
-}
+export { UserProfile };
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:3000/api/auth';
-  private currentUserSubject = new BehaviorSubject<UserProfile | null>(this.getStoredUser());
+  private apiUrl = '/api/auth';
+  private currentUserSubject = new BehaviorSubject<User | null>(this.getStoredUser());
   public currentUser$ = this.currentUserSubject.asObservable();
 
   constructor(private http: HttpClient, private router: Router) {}
@@ -61,7 +42,7 @@ export class AuthService {
   login(credentials: { email: string; password: string }): Observable<AuthResponse> {
     return this.http.post<any>(`${this.apiUrl}/login`, credentials).pipe(
       map((res: any) => (res && res.data ? res.data : res)),
-      tap((res) => {
+      tap((res: any) => {
         this.saveAuthSession(res);
         if (res && res.user && res.user.role) {
           this.redirectUserByRole(res.user.role);
@@ -73,7 +54,7 @@ export class AuthService {
   register(payload: any): Observable<AuthResponse> {
     return this.http.post<any>(`${this.apiUrl}/register`, payload).pipe(
       map((res: any) => (res && res.data ? res.data : res)),
-      tap((res) => {
+      tap((res: any) => {
         this.saveAuthSession(res);
         if (res && res.user && res.user.role) {
           this.redirectUserByRole(res.user.role);
@@ -85,7 +66,7 @@ export class AuthService {
   updateProfile(payload: any): Observable<AuthResponse> {
     return this.http.put<any>(`${this.apiUrl}/profile`, payload, { headers: this.getAuthHeaders() }).pipe(
       map((res: any) => (res && res.data ? res.data : res)),
-      tap((res) => {
+      tap((res: any) => {
         this.saveAuthSession(res);
       })
     );
@@ -122,13 +103,11 @@ export class AuthService {
         this.router.navigate(['/rescue-team/dashboard']);
         break;
       case 'DUTY_OFFICER':
-        this.router.navigate(['/duty-officer/dashboard']);
+      case 'DISTRICT_OFFICER':
+        this.router.navigate(['/district-officer/dashboard']);
         break;
       case 'DMC_OFFICER':
         this.router.navigate(['/dmc-officer/dashboard']);
-        break;
-      case 'DISTRICT_OFFICER':
-        this.router.navigate(['/relief/shelters']);
         break;
       default:
         this.router.navigate(['/citizen/home']);

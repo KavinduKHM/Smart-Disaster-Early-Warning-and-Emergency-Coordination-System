@@ -129,11 +129,11 @@
       <!-- Drawer Header -->
       <div class="flex items-center justify-between pb-4 border-b border-slate-800">
         <div>
-          <span class="px-2.5 py-0.5 rounded text-[10px] font-bold border uppercase tracking-wider" [ngClass]="getLevelBadgeClass(selectedWarning.warningLevel)">
-            {{ selectedWarning.warningLevel }}
+          <span *ngIf="selectedWarning?.warningLevel" class="px-2.5 py-0.5 rounded text-[10px] font-bold border uppercase tracking-wider" [ngClass]="getLevelBadgeClass(selectedWarning.warningLevel)">
+            {{ selectedWarning?.warningLevel }}
           </span>
           <h3 class="text-lg font-bold text-white mt-1">Warning Details & Logs</h3>
-          <p class="text-xs text-slate-400">ID: {{ selectedWarning.warningId }}</p>
+          <p class="text-xs text-slate-400">ID: {{ selectedWarning?.warningId }}</p>
         </div>
         <button (click)="closeDrawer()" class="p-2 text-slate-400 hover:text-white bg-slate-800 rounded-xl">✕</button>
       </div>
@@ -142,19 +142,19 @@
       <div class="space-y-4">
         <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
           <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Broadcast Message</span>
-          <p class="text-sm font-semibold text-slate-100 leading-relaxed">{{ selectedWarning.message }}</p>
+          <p class="text-sm font-semibold text-slate-100 leading-relaxed">{{ selectedWarning?.message }}</p>
         </div>
 
         <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
           <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Emergency Action Directives</span>
-          <p class="text-xs text-slate-300 leading-relaxed">{{ selectedWarning.emergencyInstructions }}</p>
+          <p class="text-xs text-slate-300 leading-relaxed">{{ selectedWarning?.emergencyInstructions }}</p>
         </div>
       </div>
 
       <!-- Delivery Metrics Breakdown -->
       <div class="space-y-3">
         <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider">Channel Delivery Breakdown</h4>
-        <div *ngFor="let m of selectedWarning.deliveryStatus" class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+        <div *ngFor="let m of selectedWarning?.deliveryStatus" class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
           <div class="flex items-center justify-between text-xs">
             <span class="font-bold text-white">{{ m.channel }} Dispatch</span>
             <span class="text-emerald-400 font-mono">{{ getChannelProgressPercentage(m) }}% Delivered</span>

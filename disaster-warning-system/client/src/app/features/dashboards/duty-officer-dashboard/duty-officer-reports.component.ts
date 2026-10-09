@@ -78,7 +78,8 @@ export class DutyOfficerReportsComponent implements OnInit {
     this.isLoading = true;
     this.reportService.getReports().subscribe({
       next: (data) => {
-        this.reports = data || [];
+        const res = data as any;
+        this.reports = Array.isArray(res) ? res : (res && res.data && Array.isArray(res.data) ? res.data : []);
         this.isLoading = false;
       },
       error: (err) => {
@@ -90,8 +91,11 @@ export class DutyOfficerReportsComponent implements OnInit {
 
   get filteredReports(): GroundReport[] {
     return this.reports.filter(r => {
-      const matchesStatus = this.activeTabFilter === 'ALL' ? true : r.status === this.activeTabFilter;
-      const matchesDistrict = this.selectedDistrictFilter === 'ALL' ? true : r.district === this.selectedDistrictFilter;
+      const matchesStatus = this.activeTabFilter === 'ALL' ? true : 
+        (this.activeTabFilter === 'PENDING' 
+          ? (r.status === 'PENDING' || r.status === 'PENDING_VERIFICATION') 
+          : r.status === this.activeTabFilter);
+      const matchesDistrict = (this.selectedDistrictFilter === 'ALL' || !this.selectedDistrictFilter) ? true : (r.district && r.district.toLowerCase() === this.selectedDistrictFilter.toLowerCase());
       const matchesHazard = this.selectedHazardFilter === 'ALL' ? true : r.hazardType === this.selectedHazardFilter;
       const matchesSeverity = this.selectedSeverityFilter === 'ALL' ? true : r.severity === this.selectedSeverityFilter;
 
@@ -109,7 +113,7 @@ export class DutyOfficerReportsComponent implements OnInit {
   }
 
   get pendingCount(): number {
-    return this.reports.filter(r => r.status === 'PENDING').length;
+    return this.reports.filter(r => r.status === 'PENDING' || r.status === 'PENDING_VERIFICATION').length;
   }
 
   get verifiedCount(): number {
@@ -233,9 +237,15 @@ export class DutyOfficerReportsComponent implements OnInit {
     return null;
   }
 
-  getReportNumber(report: GroundReport): string {
+  getReportNumber(report: any): string {
     if (!report) return '';
-    return report.reportId || report.reportNumber || ('REP-' + report._id.substring(report._id.length - 6).toUpperCase());
+    if (report.reportId) return report.reportId;
+    if (report.reportNumber) return report.reportNumber;
+    const id = report._id || report.id || '';
+    if (typeof id === 'string' && id.length > 0) {
+      return 'REP-' + (id.length >= 6 ? id.substring(id.length - 6) : id).toUpperCase();
+    }
+    return 'REP-SUBMITTED';
   }
 
   getSeverityBadgeClass(severity?: string): string {

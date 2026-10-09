@@ -20,7 +20,7 @@ import { Roles } from '../../auth/decorators/roles.decorator';
 import { UserRole } from '../../auth/enums/user-role.enum';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 
-@Controller('hazards')
+@Controller(['uc1-warning/hazards', 'hazards'])
 export class HazardController {
   constructor(private readonly hazardService: HazardService) {}
 

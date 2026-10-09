@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, Output, EventEmitter, Input } from '@angular/core';
 import { WarningService } from '../../../core/services/warning.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { Hazard } from '../../../core/models/hazard.model';
@@ -9,7 +9,7 @@ import { WarningLevel, NotificationChannel } from '../../../core/models/warning.
   templateUrl: './create-warning.component.html',
   styles: [],
 })
-export class CreateWarningComponent implements OnInit {
+export class CreateWarningComponent implements OnInit, OnChanges {
   @Input() preselectedHazardId?: string;
   @Output() warningCreated = new EventEmitter<void>();
 
@@ -62,6 +62,8 @@ export class CreateWarningComponent implements OnInit {
     { key: NotificationChannel.PUSH, label: 'Mobile Push Notification', desc: 'High-priority alert banner sent to mobile devices', selected: true },
     { key: NotificationChannel.SMS, label: 'SMS Gateway Broadcast', desc: 'Cellular text message sent to registered phones in target zone', selected: true },
     { key: NotificationChannel.AUDIBLE, label: 'Audible Siren Alert', desc: 'Activates high-decibel area sirens & loud sound override', selected: true },
+    { key: NotificationChannel.EMAIL, label: 'Emergency Email Alert', desc: 'Official DMC disaster warning bulletin sent to registered email addresses', selected: true },
+    { key: NotificationChannel.WHATSAPP, label: 'WhatsApp Business API', desc: 'Direct WhatsApp template message broadcast to citizen numbers', selected: true },
   ];
 
   constructor(
@@ -71,6 +73,17 @@ export class CreateWarningComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadHazards();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['preselectedHazardId'] && this.preselectedHazardId) {
+      if (this.hazards.length > 0) {
+        this.selectedHazardId = this.preselectedHazardId;
+        this.onHazardSelect();
+      } else {
+        this.loadHazards();
+      }
+    }
   }
 
   loadHazards(): void {

@@ -373,17 +373,26 @@
             </div>
           </div>
 
-          <!-- Footer Action Button -->
-          <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between">
-            <span class="text-[10px] font-mono text-slate-400 font-semibold">
+          <!-- Footer Action Buttons -->
+          <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2">
+            <span class="text-[10px] font-mono text-slate-400 font-semibold truncate">
               📍 {{ rep.district }} District
             </span>
 
-            <button 
-              (click)="openVerificationModal(rep); $event.stopPropagation()"
-              class="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-95 text-white font-bold text-xs shadow-md hover:shadow-blue-500/20 transition-all duration-200 flex items-center gap-1">
-              <span>🔍</span> {{ rep.status === 'PENDING' ? 'Review & Verify' : 'View Details' }}
-            </button>
+            <div class="flex items-center gap-1.5 shrink-0">
+              <button 
+                *ngIf="rep.status === 'VERIFIED'"
+                (click)="onRaiseAlert(rep); $event.stopPropagation()"
+                class="px-2.5 py-1.5 rounded-xl bg-red-600 hover:bg-red-500 active:scale-95 text-white font-bold text-xs shadow-md shadow-red-600/30 transition-all duration-200 flex items-center gap-1">
+                <span>🚨</span> Issue Warning
+              </button>
+
+              <button 
+                (click)="openVerificationModal(rep); $event.stopPropagation()"
+                class="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-95 text-white font-bold text-xs shadow-md hover:shadow-blue-500/20 transition-all duration-200 flex items-center gap-1">
+                <span>🔍</span> {{ rep.status === 'PENDING' ? 'Review & Verify' : 'View Details' }}
+              </button>
+            </div>
           </div>
 
         </div>
@@ -548,20 +557,27 @@
           Close
         </button>
 
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2">
           <button 
             (click)="confirmRejectReport()"
             [disabled]="isSubmittingVerification"
-            class="px-4 py-2 rounded-xl bg-rose-600/20 hover:bg-rose-600/40 active:scale-95 text-rose-300 border border-rose-500/30 font-bold text-xs transition-all duration-200 flex items-center gap-1">
+            class="px-3.5 py-2 rounded-xl bg-rose-600/20 hover:bg-rose-600/40 active:scale-95 text-rose-300 border border-rose-500/30 font-bold text-xs transition-all duration-200 flex items-center gap-1">
             <span>🚫</span> Reject Report
           </button>
 
           <button 
-            (click)="confirmVerifyReport()"
+            (click)="confirmVerifyReport(false)"
             [disabled]="isSubmittingVerification"
-            class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-bold text-xs shadow-lg hover:shadow-emerald-500/20 transition-all duration-200 flex items-center gap-1.5">
+            class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-bold text-xs shadow-lg hover:shadow-emerald-500/20 transition-all duration-200 flex items-center gap-1.5">
             <span *ngIf="isSubmittingVerification" class="animate-spin">🔄</span>
-            <span>{{ isSubmittingVerification ? 'Processing...' : '✅ Approve & Verify Incident' }}</span>
+            <span>{{ isSubmittingVerification ? 'Processing...' : '✅ Approve & Verify' }}</span>
+          </button>
+
+          <button 
+            (click)="confirmVerifyReport(true)"
+            [disabled]="isSubmittingVerification"
+            class="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 active:scale-95 text-white font-bold text-xs shadow-lg shadow-red-600/30 transition-all duration-200 flex items-center gap-1.5">
+            <span>🚨</span> Verify & Raise Alert
           </button>
         </div>
       </div>

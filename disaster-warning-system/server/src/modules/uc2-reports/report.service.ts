@@ -1,6 +1,7 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { GroundReport, GroundReportDocument } from './schemas/ground-report.schema';
 import { ReportVerification, ReportVerificationDocument } from './schemas/report-verification.schema';
 import { CreateReportDto } from './dto/create-report.dto';
@@ -16,14 +17,23 @@ import { CloudinaryService } from '../shared/cloudinary/cloudinary.service';
  * Implements clean architecture, dependency injection, and audit logging.
  */
 @Injectable()
-export class ReportService {
+export class ReportService implements OnModuleInit {
   constructor(
     @InjectModel(GroundReport.name)
     private readonly reportModel: Model<GroundReportDocument>,
     @InjectModel(ReportVerification.name)
     private readonly verificationModel: Model<ReportVerificationDocument>,
     private readonly cloudinaryService: CloudinaryService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
+
+  async onModuleInit() {
+    try {
+      await this.seedReports();
+    } catch (err) {
+      console.warn('[ReportService] Auto-seed on init warning:', err);
+    }
+  }
 
   /**
    * Generates a unique, human-readable report ID in the format `REP-YYYY-XXXX`
@@ -99,7 +109,12 @@ export class ReportService {
     const filter: any = {};
 
     if (query.status) {
-      filter.status = query.status.toUpperCase();
+      const statusUpper = query.status.toUpperCase();
+      if (statusUpper === 'PENDING_VERIFICATION') {
+        filter.status = 'PENDING';
+      } else {
+        filter.status = statusUpper;
+      }
     }
 
     if (query.district) {
@@ -211,6 +226,10 @@ export class ReportService {
       remarks: report.verificationRemarks,
       verifiedAt: report.verifiedAt,
     }).save();
+
+    // Cross-Functional Integration Event: Notify UC1 (Hazard Module)
+    this.eventEmitter.emit('ground-report.verified', report);
+    this.eventEmitter.emit('report.verified', report);
 
     return report;
   }

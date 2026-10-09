@@ -61,16 +61,16 @@
       <!-- Hazard Details Preview Card -->
       <div *ngIf="selectedHazard" class="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-2 text-xs">
         <div class="flex items-center justify-between">
-          <span class="font-bold text-slate-200 text-sm">{{ selectedHazard.title }}</span>
+          <span class="font-bold text-slate-200 text-sm">{{ selectedHazard?.title }}</span>
           <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
-            {{ selectedHazard.severity }} SEVERITY
+            {{ selectedHazard?.severity }} SEVERITY
           </span>
         </div>
-        <p class="text-slate-400">{{ selectedHazard.description }}</p>
+        <p class="text-slate-400">{{ selectedHazard?.description }}</p>
         <div class="flex space-x-4 text-[11px] text-slate-500 pt-2 border-t border-slate-800">
-          <span>District: <strong class="text-slate-300">{{ selectedHazard.district }}</strong></span>
-          <span *ngIf="selectedHazard.riverBasin">River Basin: <strong class="text-slate-300">{{ selectedHazard.riverBasin }}</strong></span>
-          <span>Location: <strong class="text-slate-300">{{ selectedHazard.location.coordinates[1] }}, {{ selectedHazard.location.coordinates[0] }}</strong></span>
+          <span>District: <strong class="text-slate-300">{{ selectedHazard?.district }}</strong></span>
+          <span *ngIf="selectedHazard?.riverBasin">River Basin: <strong class="text-slate-300">{{ selectedHazard?.riverBasin }}</strong></span>
+          <span *ngIf="selectedHazard?.location?.coordinates">Location: <strong class="text-slate-300">{{ selectedHazard?.location?.coordinates?.[1] }}, {{ selectedHazard?.location?.coordinates?.[0] }}</strong></span>
         </div>
       </div>
     </div>

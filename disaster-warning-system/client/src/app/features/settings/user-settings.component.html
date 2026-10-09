@@ -22,14 +22,14 @@
       <!-- User Profile Pill -->
       <div *ngIf="user" class="hidden sm:flex items-center gap-3 bg-slate-800/80 px-3 py-1.5 rounded-full border border-slate-700">
         <div class="w-7 h-7 rounded-full bg-blue-600 text-white font-bold text-xs flex items-center justify-center uppercase shadow-inner">
-          {{ user.name.charAt(0) }}
+          {{ user?.name?.charAt(0) }}
         </div>
         <div class="text-left">
-          <div class="text-xs font-bold text-slate-200 leading-tight">{{ user.name }}</div>
-          <div class="text-[10px] text-slate-400 leading-none">{{ user.district }} District</div>
+          <div class="text-xs font-bold text-slate-200 leading-tight">{{ user?.name }}</div>
+          <div class="text-[10px] text-slate-400 leading-none">{{ user?.district }} District</div>
         </div>
-        <span class="ml-1 px-2 py-0.5 rounded-full text-[10px] font-bold border uppercase tracking-wider" [ngClass]="getRoleBadgeClass(user.role)">
-          {{ user.role }}
+        <span *ngIf="user?.role" class="ml-1 px-2 py-0.5 rounded-full text-[10px] font-bold border uppercase tracking-wider" [ngClass]="getRoleBadgeClass(user.role)">
+          {{ user?.role }}
         </span>
       </div>
 

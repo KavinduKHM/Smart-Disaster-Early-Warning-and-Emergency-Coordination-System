@@ -22,7 +22,7 @@ export interface GroundReport {
     coordinates: number[]; // [longitude, latitude]
   };
   photos?: string[];
-  status: 'PENDING' | 'VERIFIED' | 'REJECTED' | 'RESOLVED' | 'ARCHIVED';
+  status: 'PENDING' | 'PENDING_VERIFICATION' | 'VERIFIED' | 'REJECTED' | 'RESOLVED' | 'ARCHIVED';
   verificationRemarks?: string;
   verificationNotes?: string;
   verifiedBy?: string;
@@ -146,5 +146,12 @@ export class ReportService {
   getShelters(district?: string): Observable<ReliefShelter[]> {
     const url = district ? `${this.apiUrl}/relief/shelters?district=${district}` : `${this.apiUrl}/relief/shelters`;
     return this.http.get<ReliefShelter[]>(url, { headers: this.getAuthHeaders() });
+  }
+
+  /**
+   * Triggers database seeding for initial ground hazard reports if database is empty
+   */
+  seedReports(): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/reports/seed`, {}, { headers: this.getAuthHeaders() });
   }
 }

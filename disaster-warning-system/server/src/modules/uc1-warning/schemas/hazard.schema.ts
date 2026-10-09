@@ -42,6 +42,9 @@ export class Hazard {
   @Prop({ required: true, default: 'MEDIUM' }) // LOW, MEDIUM, HIGH, CRITICAL
   severity!: string;
 
+  @Prop({ default: '' })
+  linkedReportId?: string;
+
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User' })
   reportedBy?: MongooseSchema.Types.ObjectId;
 

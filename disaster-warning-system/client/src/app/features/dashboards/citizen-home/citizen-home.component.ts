@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { AuthService, UserProfile } from '../../../core/services/auth.service';
 import { ReportService, GroundReport, ReliefShelter } from '../../../core/services/report.service';
+import { WarningService } from '../../../core/services/warning.service';
+import { HazardWarning } from '../../../core/models/warning.model';
+import { NotificationLog } from '../../../core/models/notification-log.model';
 
 @Component({
   selector: 'app-citizen-home',
@@ -12,7 +15,9 @@ export class CitizenHomeComponent implements OnInit {
   myReports: GroundReport[] = [];
   districtReports: GroundReport[] = [];
   shelters: ReliefShelter[] = [];
-  
+  activeWarnings: HazardWarning[] = [];
+  myNotificationLogs: NotificationLog[] = [];
+
   stats = {
     total: 0,
     pending: 0,
@@ -56,16 +61,17 @@ export class CitizenHomeComponent implements OnInit {
   ];
 
   districts = [
-    'Kandy', 'Colombo', 'Badulla', 'Kegalle', 'Kalutara', 'Galle', 
-    'Matara', 'Ratnapura', 'Kurunegala', 'Nuwara Eliya', 'Anuradhapura', 
+    'Kandy', 'Colombo', 'Badulla', 'Kegalle', 'Kalutara', 'Galle',
+    'Matara', 'Ratnapura', 'Kurunegala', 'Nuwara Eliya', 'Anuradhapura',
     'Polonnaruwa', 'Jaffna', 'Batticaloa', 'Trincomalee', 'Hambantota'
   ];
 
   constructor(
     private authService: AuthService,
     private reportService: ReportService,
+    private warningService: WarningService,
     private sanitizer: DomSanitizer
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.user = this.authService.currentUserValue;
@@ -82,7 +88,7 @@ export class CitizenHomeComponent implements OnInit {
     // 1. Fetch citizen's own reports from DB
     this.reportService.getMyReports().subscribe({
       next: (res) => {
-        this.myReports = res || [];
+        this.myReports = Array.isArray(res) ? res : (res && (res as any).data && Array.isArray((res as any).data) ? (res as any).data : []);
       },
       error: (err) => console.error('Error loading my reports:', err)
     });
@@ -90,7 +96,7 @@ export class CitizenHomeComponent implements OnInit {
     // 2. Fetch district hazard reports from DB
     this.reportService.getReports(district).subscribe({
       next: (res) => {
-        this.districtReports = res || [];
+        this.districtReports = Array.isArray(res) ? res : (res && (res as any).data && Array.isArray((res as any).data) ? (res as any).data : []);
         this.isLoading = false;
       },
       error: (err) => {
@@ -117,28 +123,80 @@ export class CitizenHomeComponent implements OnInit {
     // 4. Fetch relief shelters from DB
     this.reportService.getShelters(district).subscribe({
       next: (res) => {
-        this.shelters = res || [];
+        this.shelters = Array.isArray(res) ? res : (res && (res as any).data && Array.isArray((res as any).data) ? (res as any).data : []);
       },
       error: (err) => console.error('Error loading shelters:', err)
+    });
+
+    // 5. Fetch live warnings and notification logs for citizen's district
+    this.warningService.getWarnings().subscribe({
+      next: (warnings) => {
+        const list = warnings || [];
+        this.activeWarnings = list.filter(w => 
+          !w.status || w.status === 'ISSUED' || w.status === 'BROADCAST_COMPLETE'
+        );
+
+        this.myNotificationLogs = [];
+        this.activeWarnings.forEach(w => {
+          const wId = w._id || w.warningId;
+          if (wId) {
+            this.warningService.getNotificationLogs(wId).subscribe({
+              next: (logs) => {
+                const userEmail = this.user?.email?.toLowerCase() || '';
+                const userPhone = this.user?.phone || '';
+
+                const userLogs = (logs || []).filter(l => {
+                  const rAddr = (l.recipientAddress || '').toLowerCase();
+                  const cId = (l.citizenId as any)?._id || (l.citizenId as any);
+                  return (
+                    cId === this.user?.id ||
+                    cId === (this.user as any)?._id ||
+                    (userEmail && rAddr.includes(userEmail)) ||
+                    (userPhone && rAddr.includes(userPhone)) ||
+                    rAddr.includes('push_device')
+                  );
+                });
+
+                // Avoid duplicates
+                userLogs.forEach(ul => {
+                  if (!this.myNotificationLogs.some(existing => existing._id === ul._id)) {
+                    this.myNotificationLogs.push(ul);
+                  }
+                });
+              },
+              error: (err) => console.warn('Error fetching warning notification logs:', err)
+            });
+          }
+        });
+      },
+      error: (err) => console.warn('Error fetching active warnings for citizen:', err)
     });
   }
 
   get verifiedIncidentsList(): GroundReport[] {
-    return this.districtReports.filter(r => r.status === 'VERIFIED');
+    if (!Array.isArray(this.districtReports)) return [];
+    return this.districtReports.filter(r => r && r.status === 'VERIFIED');
   }
 
   get myPendingReportsList(): GroundReport[] {
-    return this.myReports.filter(r => r.status === 'PENDING');
+    if (!Array.isArray(this.myReports)) return [];
+    return this.myReports.filter(r => r && r.status === 'PENDING');
   }
 
-  getReportNumber(report: GroundReport): string {
+  getReportNumber(report: any): string {
     if (!report) return '';
-    return report.reportId || report.reportNumber || ('REP-' + report._id.substring(report._id.length - 6).toUpperCase());
+    if (report.reportId) return report.reportId;
+    if (report.reportNumber) return report.reportNumber;
+    const id = report._id || report.id || '';
+    if (typeof id === 'string' && id.length > 0) {
+      return 'REP-' + (id.length >= 6 ? id.substring(id.length - 6) : id).toUpperCase();
+    }
+    return 'REP-SUBMITTED';
   }
 
   getReportLocation(report: GroundReport): string {
     if (!report) return '';
-    return report.address || report.locationName || (report.district + ' District');
+    return report.address || report.locationName || (report.district ? (report.district + ' District') : 'Location recorded');
   }
 
   getReportCoords(report: GroundReport): { lat: number; lng: number } | null {
@@ -234,7 +292,7 @@ export class CitizenHomeComponent implements OnInit {
         if (data && data.address) {
           const addr = data.address;
           const placeName = (addr.state_district || addr.district || addr.county || addr.city || addr.state || '').toLowerCase();
-          
+
           const matchedDistrict = this.districts.find(d => placeName.includes(d.toLowerCase()));
           if (matchedDistrict) {
             this.newReport.district = matchedDistrict;
@@ -310,7 +368,7 @@ export class CitizenHomeComponent implements OnInit {
       const locName = this.getReportLocation(report);
       mapQuery = encodeURIComponent(`${locName}, ${report.district || 'Kandy'}, Sri Lanka`);
     }
-    
+
     const rawUrl = `https://maps.google.com/maps?q=${mapQuery}&z=15&output=embed`;
     this.selectedReportMapUrl = this.sanitizer.bypassSecurityTrustResourceUrl(rawUrl);
   }

@@ -34,7 +34,7 @@ export class CreateReportDto {
   @IsOptional()
   reportedBy?: string;
 
-  @IsEnum(['CITIZEN', 'DUTY_OFFICER'])
+  @IsEnum(['CITIZEN', 'DUTY_OFFICER', 'VOLUNTEER', 'FIELD_OFFICER', 'FIRST_RESPONDER', 'OFFICER'])
   @IsOptional()
   reporterType?: string;
 }
