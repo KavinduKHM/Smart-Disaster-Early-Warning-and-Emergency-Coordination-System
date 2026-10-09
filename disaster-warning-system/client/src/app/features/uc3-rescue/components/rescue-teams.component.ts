@@ -274,23 +274,23 @@ import { TeamService, RescueTeam } from '../services/team.service';
               
               <div>
                 <label class="block text-xs font-bold text-[#0B192C] mb-1.5">Team Name <span class="text-[#DC2626]">*</span></label>
-                <input formControlName="name" type="text" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-2.5 outline-none focus:border-[#1D4ED8] bg-[#F8FAFC] focus:bg-white" placeholder="e.g. Navy Water Rescue Unit 2">
+                <input formControlName="name" type="text" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-2.5 outline-none focus:border-[#1D4ED8] bg-[#F8FAFC] focus:bg-white text-[#0B192C] placeholder-[#94A3B8]" placeholder="e.g. Navy Water Rescue Unit 2">
               </div>
 
               <div class="grid grid-cols-2 gap-4">
                 <div>
                   <label class="block text-xs font-bold text-[#0B192C] mb-1.5">Organization <span class="text-[#DC2626]">*</span></label>
-                  <input formControlName="organization" type="text" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-2.5 outline-none focus:border-[#1D4ED8] bg-[#F8FAFC] focus:bg-white" placeholder="e.g. Sri Lanka Navy / Army / Red Cross">
+                  <input formControlName="organization" type="text" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-2.5 outline-none focus:border-[#1D4ED8] bg-[#F8FAFC] focus:bg-white text-[#0B192C] placeholder-[#94A3B8]" placeholder="e.g. Sri Lanka Navy / Army / Red Cross">
                 </div>
                 <div>
                   <label class="block text-xs font-bold text-[#0B192C] mb-1.5">Specialization <span class="text-[#DC2626]">*</span></label>
-                  <select formControlName="type" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-2.5 outline-none focus:border-[#1D4ED8] bg-[#F8FAFC] focus:bg-white">
-                    <option value="WATER_RESCUE">WATER_RESCUE</option>
-                    <option value="SEARCH_AND_RESCUE">SEARCH_AND_RESCUE</option>
-                    <option value="MEDICAL">MEDICAL</option>
-                    <option value="FIRE">FIRE</option>
-                    <option value="EVACUATION">EVACUATION</option>
-                    <option value="GENERAL">GENERAL</option>
+                  <select formControlName="type" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-2.5 outline-none focus:border-[#1D4ED8] bg-[#F8FAFC] focus:bg-white text-[#0B192C]">
+                    <option value="WATER_RESCUE" class="text-[#0B192C] bg-white">WATER_RESCUE</option>
+                    <option value="SEARCH_AND_RESCUE" class="text-[#0B192C] bg-white">SEARCH_AND_RESCUE</option>
+                    <option value="MEDICAL" class="text-[#0B192C] bg-white">MEDICAL</option>
+                    <option value="FIRE" class="text-[#0B192C] bg-white">FIRE</option>
+                    <option value="EVACUATION" class="text-[#0B192C] bg-white">EVACUATION</option>
+                    <option value="GENERAL" class="text-[#0B192C] bg-white">GENERAL</option>
                   </select>
                 </div>
               </div>
@@ -298,23 +298,23 @@ import { TeamService, RescueTeam } from '../services/team.service';
               <div class="grid grid-cols-2 gap-4">
                 <div>
                   <label class="block text-xs font-bold text-[#0B192C] mb-1.5">Members Count <span class="text-[#DC2626]">*</span></label>
-                  <input formControlName="members" type="number" min="1" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-2.5 outline-none focus:border-[#1D4ED8] bg-[#F8FAFC] focus:bg-white">
+                  <input formControlName="members" type="number" min="1" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-2.5 outline-none focus:border-[#1D4ED8] bg-[#F8FAFC] focus:bg-white text-[#0B192C] placeholder-[#94A3B8]">
                 </div>
                 <div>
                   <label class="block text-xs font-bold text-[#0B192C] mb-1.5">Station District <span class="text-[#DC2626]">*</span></label>
-                  <input formControlName="district" type="text" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-2.5 outline-none focus:border-[#1D4ED8] bg-[#F8FAFC] focus:bg-white" placeholder="e.g. Kandy">
+                  <input formControlName="district" type="text" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-2.5 outline-none focus:border-[#1D4ED8] bg-[#F8FAFC] focus:bg-white text-[#0B192C] placeholder-[#94A3B8]" placeholder="e.g. Kandy">
                 </div>
               </div>
 
               <div *ngIf="isEditMode">
                 <label class="block text-xs font-bold text-[#0B192C] mb-1.5">Operational Status</label>
-                <select formControlName="status" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-2.5 outline-none focus:border-[#1D4ED8] bg-[#F8FAFC] focus:bg-white">
-                  <option value="AVAILABLE">AVAILABLE (Ready for Dispatch)</option>
-                  <option value="ASSIGNED">ASSIGNED</option>
-                  <option value="DISPATCHED">DISPATCHED</option>
-                  <option value="EN_ROUTE">EN_ROUTE</option>
-                  <option value="ON_SITE">ON_SITE</option>
-                  <option value="INACTIVE">INACTIVE (UNAVAILABLE - Scenario A1)</option>
+                <select formControlName="status" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-4 py-2.5 outline-none focus:border-[#1D4ED8] bg-[#F8FAFC] focus:bg-white text-[#0B192C]">
+                  <option value="AVAILABLE" class="text-[#0B192C] bg-white">AVAILABLE (Ready for Dispatch)</option>
+                  <option value="ASSIGNED" class="text-[#0B192C] bg-white">ASSIGNED</option>
+                  <option value="DISPATCHED" class="text-[#0B192C] bg-white">DISPATCHED</option>
+                  <option value="EN_ROUTE" class="text-[#0B192C] bg-white">EN_ROUTE</option>
+                  <option value="ON_SITE" class="text-[#0B192C] bg-white">ON_SITE</option>
+                  <option value="INACTIVE" class="text-[#0B192C] bg-white">INACTIVE (UNAVAILABLE - Scenario A1)</option>
                 </select>
               </div>
 
@@ -324,11 +324,11 @@ import { TeamService, RescueTeam } from '../services/team.service';
                 </div>
                 <div>
                   <label class="block text-xs text-[#64748B] mb-1">Longitude</label>
-                  <input formControlName="longitude" type="number" step="0.0001" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-3 py-2 outline-none focus:border-[#1D4ED8] bg-white">
+                  <input formControlName="longitude" type="number" step="0.0001" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-3 py-2 outline-none focus:border-[#1D4ED8] bg-white text-[#0B192C] placeholder-[#94A3B8]">
                 </div>
                 <div>
                   <label class="block text-xs text-[#64748B] mb-1">Latitude</label>
-                  <input formControlName="latitude" type="number" step="0.0001" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-3 py-2 outline-none focus:border-[#1D4ED8] bg-white">
+                  <input formControlName="latitude" type="number" step="0.0001" class="w-full text-sm border border-[#E2E8F0] rounded-lg px-3 py-2 outline-none focus:border-[#1D4ED8] bg-white text-[#0B192C] placeholder-[#94A3B8]">
                 </div>
               </div>
 

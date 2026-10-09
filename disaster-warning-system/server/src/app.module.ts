@@ -13,6 +13,10 @@ import { TransformInterceptor } from './common/interceptors/transform.intercepto
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 
 
+import * as dns from 'dns';
+try {
+  dns.setServers(['8.8.8.8', '8.8.4.4']);
+} catch {}
 import * as net from 'net';
 
 function isPortOpen(host: string, port: number): Promise<boolean> {
@@ -43,7 +47,8 @@ async function resolveMongoUri(configService?: ConfigService): Promise<string> {
 
   const targetUri = envFileUri || processUri || '';
 
-  if (targetUri && !targetUri.includes('127.0.0.1') && !targetUri.includes('localhost') && !targetUri.includes('j5gvtgv.mongodb.net')) {
+  if (targetUri && !targetUri.includes('user:pass@')) {
+    console.log(`Connecting to MongoDB Atlas URI: ${targetUri.replace(/:([^:@]+)@/, ':****@')}`);
     return targetUri;
   }
 

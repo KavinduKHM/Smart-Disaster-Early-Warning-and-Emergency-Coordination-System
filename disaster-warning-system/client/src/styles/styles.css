@@ -18,6 +18,16 @@
   body {
     overscroll-behavior: none;
   }
+  input, select, textarea {
+    color: #0b192c;
+  }
+  option {
+    color: #0b192c;
+    background-color: #ffffff;
+  }
+  input::placeholder, textarea::placeholder {
+    color: #94a3b8;
+  }
 }
 
 /* Custom sleek scrollbar */
