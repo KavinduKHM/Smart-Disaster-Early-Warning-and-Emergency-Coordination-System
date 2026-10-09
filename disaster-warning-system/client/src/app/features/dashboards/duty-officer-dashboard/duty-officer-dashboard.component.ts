@@ -19,6 +19,7 @@ interface DistrictAnalytics {
 })
 export class DutyOfficerDashboardComponent implements OnInit, AfterViewInit {
   @Output() raiseAlertForReport = new EventEmitter<GroundReport>();
+  @Output() goToHazardReports = new EventEmitter<void>();
 
   user: UserProfile | null = null;
   reports: GroundReport[] = [];
@@ -27,16 +28,8 @@ export class DutyOfficerDashboardComponent implements OnInit, AfterViewInit {
 
   isLoading: boolean = true;
 
-  stats = {
-    total: 0,
-    pending: 0,
-    verified: 0,
-    rejected: 0,
-    critical: 0
-  };
-
   // Filter state
-  activeTabFilter: 'PENDING' | 'VERIFIED' | 'REJECTED' | 'ALL' = 'PENDING';
+  activeTabFilter: 'PENDING' | 'VERIFIED' | 'CRITICAL' | 'REJECTED' | 'ALL' = 'PENDING';
   selectedDistrictFilter: string = 'ALL';
 
   districtsList = [
@@ -106,7 +99,6 @@ export class DutyOfficerDashboardComponent implements OnInit, AfterViewInit {
       next: (data) => {
         const res = data as any;
         this.reports = Array.isArray(res) ? res : (res && res.data && Array.isArray(res.data) ? res.data : []);
-        this.calculateStats();
         this.calculateDistrictAnalytics();
         this.updateOverallMapUrl();
         this.isLoading = false;
@@ -126,14 +118,104 @@ export class DutyOfficerDashboardComponent implements OnInit, AfterViewInit {
     });
   }
 
-  calculateStats(): void {
-    const total = this.reports.length;
-    const pending = this.reports.filter(r => r.status === 'PENDING' || r.status === 'PENDING_VERIFICATION').length;
-    const verified = this.reports.filter(r => r.status === 'VERIFIED').length;
-    const rejected = this.reports.filter(r => r.status === 'REJECTED').length;
-    const critical = this.reports.filter(r => r.status === 'VERIFIED' && r.severity === 'CRITICAL').length;
+  onGoToHazardReports(): void {
+    this.goToHazardReports.emit();
+  }
 
-    this.stats = { total, pending, verified, rejected, critical };
+  get districtReports(): GroundReport[] {
+    if (!this.selectedDistrictFilter || this.selectedDistrictFilter === 'ALL') {
+      return this.reports;
+    }
+    const target = this.selectedDistrictFilter.trim().toLowerCase();
+    return this.reports.filter(r => {
+      if (!r.district) return false;
+      return r.district.trim().toLowerCase() === target;
+    });
+  }
+
+  get stats() {
+    const list = this.districtReports;
+    const total = list.length;
+    const pending = list.filter(r => r.status === 'PENDING' || r.status === 'PENDING_VERIFICATION').length;
+    const verified = list.filter(r => r.status === 'VERIFIED').length;
+    const rejected = list.filter(r => r.status === 'REJECTED').length;
+    const critical = list.filter(r => (r.status === 'VERIFIED' || r.status === 'PENDING') && r.severity === 'CRITICAL').length;
+    return { total, pending, verified, rejected, critical };
+  }
+
+  get filteredReports(): GroundReport[] {
+    const list = this.districtReports;
+    return list.filter(r => {
+      if (this.activeTabFilter === 'ALL') return true;
+      if (this.activeTabFilter === 'PENDING') return r.status === 'PENDING' || r.status === 'PENDING_VERIFICATION';
+      if (this.activeTabFilter === 'VERIFIED') return r.status === 'VERIFIED';
+      if (this.activeTabFilter === 'CRITICAL') return r.severity === 'CRITICAL';
+      if (this.activeTabFilter === 'REJECTED') return r.status === 'REJECTED';
+      return true;
+    });
+  }
+
+  onDistrictChange(newDistrict: string): void {
+    this.selectedDistrictFilter = newDistrict;
+    const list = this.districtReports;
+    if (this.activeTabFilter === 'PENDING') {
+      const pendingCount = list.filter(r => r.status === 'PENDING' || r.status === 'PENDING_VERIFICATION').length;
+      if (pendingCount === 0 && list.length > 0) {
+        const verifiedCount = list.filter(r => r.status === 'VERIFIED').length;
+        this.activeTabFilter = verifiedCount > 0 ? 'VERIFIED' : 'ALL';
+      }
+    }
+    this.focusMapOnDistrict(newDistrict);
+    this.renderAllIncidentMarkers();
+  }
+
+  focusMapOnDistrict(district: string): void {
+    if (!this.leafletMap) return;
+    if (!district || district === 'ALL') {
+      this.leafletMap.flyTo([7.8731, 80.7718], 8, { duration: 1.0 });
+      return;
+    }
+    const distReports = this.reports.filter(r => 
+      r.district && r.district.toLowerCase() === district.toLowerCase() && this.getCoords(r) !== null
+    );
+    if (distReports.length > 0) {
+      const coords = this.getCoords(distReports[0]);
+      if (coords) {
+        this.leafletMap.flyTo([coords.lat, coords.lng], 12, { duration: 1.2 });
+        return;
+      }
+    }
+    const districtCoords: { [key: string]: [number, number] } = {
+      colombo: [6.9271, 79.8612],
+      kandy: [7.2906, 80.6337],
+      galle: [6.0535, 80.2210],
+      kalutara: [6.5854, 79.9607],
+      badulla: [6.9934, 81.0550],
+      kegalle: [7.2513, 80.3464],
+      matara: [5.9549, 80.5550],
+      ratnapura: [6.6828, 80.4034],
+      kurunegala: [7.4863, 80.3623],
+      'nuwara eliya': [6.9497, 80.7891],
+      anuradhapura: [8.3114, 80.4037],
+      polonnaruwa: [7.9403, 81.0188],
+      jaffna: [9.6615, 80.0255],
+      batticaloa: [7.7310, 81.6747],
+      trincomalee: [8.5874, 81.2152],
+      hambantota: [6.1429, 81.1212]
+    };
+    const center = districtCoords[district.toLowerCase()];
+    if (center) {
+      this.leafletMap.flyTo(center, 11, { duration: 1.2 });
+    }
+  }
+
+  focusOnReport(report: GroundReport, event?: MouseEvent): void {
+    if (event) event.stopPropagation();
+    this.selectedReportForMap = report;
+    const coords = this.getCoords(report);
+    if (coords && this.leafletMap) {
+      this.leafletMap.flyTo([coords.lat, coords.lng], 14, { duration: 1.2 });
+    }
   }
 
   calculateDistrictAnalytics(): void {
@@ -150,7 +232,7 @@ export class DutyOfficerDashboardComponent implements OnInit, AfterViewInit {
       if (r.status === 'PENDING' || r.status === 'PENDING_VERIFICATION') entry.pending += 1;
     }
 
-    const totalVerified = this.stats.verified || 1;
+    const totalVerified = this.reports.filter(r => r.status === 'VERIFIED').length || 1;
     const analytics: DistrictAnalytics[] = [];
 
     map.forEach((val, key) => {
@@ -166,17 +248,6 @@ export class DutyOfficerDashboardComponent implements OnInit, AfterViewInit {
 
     analytics.sort((a, b) => b.verified - a.verified);
     this.districtAnalytics = analytics;
-  }
-
-  get filteredReports(): GroundReport[] {
-    return this.reports.filter(r => {
-      const matchesTab = this.activeTabFilter === 'ALL' ? true : 
-        (this.activeTabFilter === 'PENDING' 
-          ? (r.status === 'PENDING' || r.status === 'PENDING_VERIFICATION') 
-          : r.status === this.activeTabFilter);
-      const matchesDistrict = (this.selectedDistrictFilter === 'ALL' || !this.selectedDistrictFilter) ? true : (r.district && r.district.toLowerCase() === this.selectedDistrictFilter.toLowerCase());
-      return matchesTab && matchesDistrict;
-    });
   }
 
   get reportsWithCoords(): GroundReport[] {
@@ -224,16 +295,20 @@ export class DutyOfficerDashboardComponent implements OnInit, AfterViewInit {
     }
 
     try {
-      // Center map over Sri Lanka [lat: 7.8731, lng: 80.7718] zoom level 8
+      // Center map over Sri Lanka [lat: 7.8731, lng: 80.7718] zoom level 7.5
       this.leafletMap = L.map('sriLankaMultiPinMap').setView([7.8731, 80.7718], 8);
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
-        attribution: '© OpenStreetMap contributors'
+        attribution: '© OpenStreetMap'
       }).addTo(this.leafletMap);
 
       this.markersGroup = L.layerGroup().addTo(this.leafletMap);
       this.renderAllIncidentMarkers();
+
+      setTimeout(() => {
+        if (this.leafletMap) this.leafletMap.invalidateSize();
+      }, 400);
     } catch (e) {
       console.warn('Leaflet initialization warning:', e);
       this.useLeafletMap = false;
@@ -251,50 +326,62 @@ export class DutyOfficerDashboardComponent implements OnInit, AfterViewInit {
       const coords = this.getCoords(rep);
       if (!coords) continue;
 
-      let pinColor = '#3b82f6'; // Low / Blue
-      if (rep.severity === 'CRITICAL') pinColor = '#ef4444'; // Red
-      else if (rep.severity === 'HIGH') pinColor = '#f97316'; // Orange
-      else if (rep.severity === 'MEDIUM') pinColor = '#f59e0b'; // Amber
-      else if (rep.status === 'PENDING') pinColor = '#8b5cf6'; // Purple for Pending
+      let pinColor = '#10B981'; // Verified default: emerald
+      if (rep.severity === 'CRITICAL') pinColor = '#EF4444'; // Red
+      else if (rep.severity === 'HIGH') pinColor = '#F97316'; // Orange
+      else if (rep.severity === 'MEDIUM') pinColor = '#F59E0B'; // Amber
+      if (rep.status === 'PENDING' || rep.status === 'PENDING_VERIFICATION') pinColor = '#8B5CF6'; // Purple for Pending
+      else if (rep.status === 'REJECTED') pinColor = '#64748B'; // Slate
+
+      const isDistrictMatch = !this.selectedDistrictFilter || this.selectedDistrictFilter === 'ALL' || 
+        (rep.district && rep.district.toLowerCase() === this.selectedDistrictFilter.toLowerCase());
+
+      const pinSize = isDistrictMatch ? 30 : 22;
+      const borderSize = isDistrictMatch ? 3 : 2;
 
       const iconHtml = `
         <div style="
           background-color: ${pinColor};
-          width: 30px;
-          height: 30px;
+          width: ${pinSize}px;
+          height: ${pinSize}px;
           border-radius: 50%;
-          border: 2px solid #ffffff;
-          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+          border: ${borderSize}px solid #ffffff;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 15px;
+          font-size: ${isDistrictMatch ? '14px' : '10px'};
           color: white;
           cursor: pointer;
         ">
-          ⚠️
+          ${rep.status === 'VERIFIED' ? '✅' : '⚠️'}
         </div>
       `;
 
       const customIcon = L.divIcon({
         className: 'custom-leaflet-pin',
         html: iconHtml,
-        iconSize: [30, 30],
-        iconAnchor: [15, 15]
+        iconSize: [pinSize, pinSize],
+        iconAnchor: [pinSize / 2, pinSize / 2]
       });
 
       const repNum = this.getReportNumber(rep);
-      const locStr = rep.address || rep.district + ' District';
+      const locStr = rep.address || (rep.district + ' District');
 
       const popupHtml = `
-        <div style="font-family: sans-serif; padding: 4px; max-width: 220px; color: #0f172a;">
-          <div style="font-weight: bold; font-size: 13px; color: #1e293b;">#${repNum} • ${rep.hazardType}</div>
-          <div style="font-size: 11px; color: #475569; margin-top: 2px;">📍 ${locStr}</div>
-          <div style="font-size: 10px; margin-top: 4px; font-weight: bold; color: ${pinColor}; uppercase;">
-            Status: ${rep.status} ${rep.severity ? '• ' + rep.severity : ''}
+        <div style="font-family: Inter, sans-serif; padding: 4px; max-width: 230px; color: #0B192C;">
+          <div style="font-weight: 700; font-size: 13px; color: #0B192C;">#${repNum} • ${rep.hazardType}</div>
+          <div style="font-size: 11px; color: #64748B; margin-top: 2px;">📍 ${locStr}</div>
+          <div style="display: flex; gap: 6px; margin-top: 6px;">
+            <span style="font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; background: #ECFDF5; color: #059669; border: 1px solid #A7F3D0;">
+              ${rep.status}
+            </span>
+            <span style="font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; background: #FEF2F2; color: #DC2626; border: 1px solid #FECACA;">
+              ${rep.severity || 'HIGH'}
+            </span>
           </div>
-          <div style="font-size: 11px; color: #334155; margin-top: 6px; background: #f1f5f9; padding: 6px; rounded: 6px;">
-            "${rep.description.substring(0, 75)}..."
+          <div style="font-size: 11px; color: #334155; margin-top: 8px; background: #F8FAFC; padding: 6px; border-radius: 6px; border: 1px solid #E2E8F0;">
+            "${(rep.description || '').substring(0, 75)}..."
           </div>
         </div>
       `;
@@ -302,27 +389,16 @@ export class DutyOfficerDashboardComponent implements OnInit, AfterViewInit {
       const marker = L.marker([coords.lat, coords.lng], { icon: customIcon })
         .bindPopup(popupHtml);
 
+      marker.on('click', () => {
+        this.selectedReportForMap = rep;
+      });
+
       this.markersGroup.addLayer(marker);
     }
   }
 
   selectReportForMap(report: GroundReport): void {
-    this.selectedReportForMap = report;
-    const coords = this.getCoords(report);
-
-    if (coords && this.leafletMap) {
-      this.leafletMap.flyTo([coords.lat, coords.lng], 14, { duration: 1.2 });
-    }
-
-    let mapQuery = '';
-    if (coords) {
-      mapQuery = `${coords.lat},${coords.lng}`;
-    } else {
-      mapQuery = encodeURIComponent(`${report.address || report.district || 'Sri Lanka'}, Sri Lanka`);
-    }
-
-    const rawUrl = `https://maps.google.com/maps?q=${mapQuery}&z=14&output=embed`;
-    this.mapEmbedUrl = this.sanitizer.bypassSecurityTrustResourceUrl(rawUrl);
+    this.focusOnReport(report);
   }
 
   openVerificationModal(report: GroundReport): void {
@@ -444,20 +520,21 @@ export class DutyOfficerDashboardComponent implements OnInit, AfterViewInit {
 
   getSeverityBadgeClass(severity?: string): string {
     switch (severity) {
-      case 'CRITICAL': return 'bg-rose-500/20 text-rose-400 border-rose-500/30';
-      case 'HIGH': return 'bg-orange-500/20 text-orange-400 border-orange-500/30';
-      case 'MEDIUM': return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
-      case 'LOW': return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
-      default: return 'bg-slate-500/20 text-slate-400 border-slate-500/30';
+      case 'CRITICAL': return 'bg-red-100 text-red-700 border-red-300';
+      case 'HIGH': return 'bg-orange-100 text-orange-700 border-orange-300';
+      case 'MEDIUM': return 'bg-amber-100 text-amber-700 border-amber-300';
+      case 'LOW': return 'bg-blue-100 text-blue-700 border-blue-300';
+      default: return 'bg-slate-100 text-slate-600 border-slate-300';
     }
   }
 
   getStatusBadgeClass(status: string): string {
     switch (status) {
-      case 'VERIFIED': return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
-      case 'PENDING': return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
-      case 'REJECTED': return 'bg-rose-500/20 text-rose-400 border-rose-500/30';
-      default: return 'bg-slate-500/20 text-slate-400 border-slate-500/30';
+      case 'VERIFIED': return 'bg-emerald-100 text-emerald-700 border-emerald-300';
+      case 'PENDING': return 'bg-amber-100 text-amber-700 border-amber-300';
+      case 'PENDING_VERIFICATION': return 'bg-amber-100 text-amber-700 border-amber-300';
+      case 'REJECTED': return 'bg-red-100 text-red-700 border-red-300';
+      default: return 'bg-slate-100 text-slate-600 border-slate-300';
     }
   }
 

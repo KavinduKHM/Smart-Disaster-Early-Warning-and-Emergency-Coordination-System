@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Location } from '@angular/common';
 import { AuthService, UserProfile } from '../../../core/services/auth.service';
@@ -9,6 +9,7 @@ import { ReportService, GroundReport } from '../../../core/services/report.servi
   templateUrl: './duty-officer-reports.component.html'
 })
 export class DutyOfficerReportsComponent implements OnInit {
+  @Input() embedded: boolean = false;
   user: UserProfile | null = null;
   reports: GroundReport[] = [];
   isLoading: boolean = true;
@@ -250,20 +251,21 @@ export class DutyOfficerReportsComponent implements OnInit {
 
   getSeverityBadgeClass(severity?: string): string {
     switch (severity) {
-      case 'CRITICAL': return 'bg-rose-500/20 text-rose-400 border-rose-500/30';
-      case 'HIGH': return 'bg-orange-500/20 text-orange-400 border-orange-500/30';
-      case 'MEDIUM': return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
-      case 'LOW': return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
-      default: return 'bg-slate-500/20 text-slate-400 border-slate-500/30';
+      case 'CRITICAL': return 'bg-red-100 text-red-700 border-red-300';
+      case 'HIGH': return 'bg-orange-100 text-orange-700 border-orange-300';
+      case 'MEDIUM': return 'bg-amber-100 text-amber-700 border-amber-300';
+      case 'LOW': return 'bg-blue-100 text-blue-700 border-blue-300';
+      default: return 'bg-slate-100 text-slate-600 border-slate-300';
     }
   }
 
   getStatusBadgeClass(status: string): string {
     switch (status) {
-      case 'VERIFIED': return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
-      case 'PENDING': return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
-      case 'REJECTED': return 'bg-rose-500/20 text-rose-400 border-rose-500/30';
-      default: return 'bg-slate-500/20 text-slate-400 border-slate-500/30';
+      case 'VERIFIED': return 'bg-emerald-100 text-emerald-700 border-emerald-300';
+      case 'PENDING': return 'bg-amber-100 text-amber-700 border-amber-300';
+      case 'PENDING_VERIFICATION': return 'bg-amber-100 text-amber-700 border-amber-300';
+      case 'REJECTED': return 'bg-red-100 text-red-700 border-red-300';
+      default: return 'bg-slate-100 text-slate-600 border-slate-300';
     }
   }
 
