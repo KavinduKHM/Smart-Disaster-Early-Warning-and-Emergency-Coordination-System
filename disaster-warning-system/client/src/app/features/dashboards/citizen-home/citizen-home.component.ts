@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { AuthService, UserProfile } from '../../../core/services/auth.service';
 import { ReportService, GroundReport, ReliefShelter } from '../../../core/services/report.service';
@@ -10,13 +10,20 @@ import { NotificationLog } from '../../../core/models/notification-log.model';
   selector: 'app-citizen-home',
   templateUrl: './citizen-home.component.html'
 })
-export class CitizenHomeComponent implements OnInit {
+export class CitizenHomeComponent implements OnInit, OnDestroy {
   user: UserProfile | null = null;
   myReports: GroundReport[] = [];
   districtReports: GroundReport[] = [];
   shelters: ReliefShelter[] = [];
   activeWarnings: HazardWarning[] = [];
   myNotificationLogs: NotificationLog[] = [];
+
+  // Popup Alert & Notification Center State
+  activePopupWarning: HazardWarning | null = null;
+  dismissedWarningIds: Set<string> = new Set();
+  showNotificationCenterModal: boolean = false;
+  activeNotificationTab: 'WARNINGS' | 'MESSAGES' = 'WARNINGS';
+  private pollTimer: any = null;
 
   stats = {
     total: 0,
@@ -79,6 +86,88 @@ export class CitizenHomeComponent implements OnInit {
       this.newReport.district = this.user.district;
     }
     this.loadData();
+
+    // 5-second polling timer for instant disaster popup warnings and notification updates
+    this.pollTimer = setInterval(() => {
+      this.fetchLiveWarnings();
+    }, 5000);
+  }
+
+  ngOnDestroy(): void {
+    if (this.pollTimer) {
+      clearInterval(this.pollTimer);
+    }
+  }
+
+  fetchLiveWarnings(): void {
+    this.warningService.getWarnings().subscribe({
+      next: (warnings) => {
+        const list = warnings || [];
+        this.activeWarnings = list.filter(w => 
+          !w.status || w.status === 'ISSUED' || w.status === 'BROADCAST_COMPLETE'
+        );
+
+        // Check if there is an unacknowledged active warning to trigger the Popup Alert Modal
+        for (const warn of this.activeWarnings) {
+          const wId = warn._id || warn.warningId;
+          if (wId && !this.dismissedWarningIds.has(wId)) {
+            if (!this.activePopupWarning) {
+              this.activePopupWarning = warn;
+            }
+            break;
+          }
+        }
+
+        // Fetch logs for citizen's notifications
+        this.activeWarnings.forEach(w => {
+          const wId = w._id || w.warningId;
+          if (wId) {
+            this.warningService.getNotificationLogs(wId).subscribe({
+              next: (logs) => {
+                const userEmail = this.user?.email?.toLowerCase() || '';
+                const userPhone = this.user?.phone || '';
+
+                const userLogs = (logs || []).filter(l => {
+                  const rAddr = (l.recipientAddress || '').toLowerCase();
+                  const cId = (l.citizenId as any)?._id || (l.citizenId as any);
+                  return (
+                    cId === this.user?.id ||
+                    cId === (this.user as any)?._id ||
+                    (userEmail && rAddr.includes(userEmail)) ||
+                    (userPhone && rAddr.includes(userPhone)) ||
+                    rAddr.includes('push_device')
+                  );
+                });
+
+                userLogs.forEach(ul => {
+                  if (!this.myNotificationLogs.some(existing => existing._id === ul._id)) {
+                    this.myNotificationLogs.push(ul);
+                  }
+                });
+              }
+            });
+          }
+        });
+      }
+    });
+  }
+
+  dismissPopupAlert(warning: HazardWarning | null): void {
+    if (warning) {
+      const wId = warning._id || warning.warningId;
+      if (wId) {
+        this.dismissedWarningIds.add(wId);
+      }
+    }
+    this.activePopupWarning = null;
+  }
+
+  openNotificationCenter(): void {
+    this.showNotificationCenterModal = true;
+  }
+
+  closeNotificationCenter(): void {
+    this.showNotificationCenterModal = false;
   }
 
   loadData(): void {
@@ -128,49 +217,8 @@ export class CitizenHomeComponent implements OnInit {
       error: (err) => console.error('Error loading shelters:', err)
     });
 
-    // 5. Fetch live warnings and notification logs for citizen's district
-    this.warningService.getWarnings().subscribe({
-      next: (warnings) => {
-        const list = warnings || [];
-        this.activeWarnings = list.filter(w => 
-          !w.status || w.status === 'ISSUED' || w.status === 'BROADCAST_COMPLETE'
-        );
-
-        this.myNotificationLogs = [];
-        this.activeWarnings.forEach(w => {
-          const wId = w._id || w.warningId;
-          if (wId) {
-            this.warningService.getNotificationLogs(wId).subscribe({
-              next: (logs) => {
-                const userEmail = this.user?.email?.toLowerCase() || '';
-                const userPhone = this.user?.phone || '';
-
-                const userLogs = (logs || []).filter(l => {
-                  const rAddr = (l.recipientAddress || '').toLowerCase();
-                  const cId = (l.citizenId as any)?._id || (l.citizenId as any);
-                  return (
-                    cId === this.user?.id ||
-                    cId === (this.user as any)?._id ||
-                    (userEmail && rAddr.includes(userEmail)) ||
-                    (userPhone && rAddr.includes(userPhone)) ||
-                    rAddr.includes('push_device')
-                  );
-                });
-
-                // Avoid duplicates
-                userLogs.forEach(ul => {
-                  if (!this.myNotificationLogs.some(existing => existing._id === ul._id)) {
-                    this.myNotificationLogs.push(ul);
-                  }
-                });
-              },
-              error: (err) => console.warn('Error fetching warning notification logs:', err)
-            });
-          }
-        });
-      },
-      error: (err) => console.warn('Error fetching active warnings for citizen:', err)
-    });
+    // 5. Initial warning fetch
+    this.fetchLiveWarnings();
   }
 
   get verifiedIncidentsList(): GroundReport[] {
